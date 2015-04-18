@@ -1,0 +1,6 @@
+﻿- Färgmarkering i waveform som visar var man är
+- Inställning för genomsnittet på nivåmätaren
+- Inställning för minuter på progressbar
+- Spara markörer för att kunna klippa valda delar
+- Efterbehandling, normalisering
+- Efterbehandling, brusreducering

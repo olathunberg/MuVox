@@ -1,0 +1,102 @@
+﻿using GalaSoft.MvvmLight;
+using NAudio.Wave;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RecordToMP3.Features.Recorder
+{
+    internal class Recorder : ICleanup
+    {
+        #region Fields
+        private WaveIn waveIn;
+        private WaveFileWriter writer;
+        private int secondsRecorded = 0;
+        private RecordingState recordingState;
+        #endregion
+
+        #region Constructors
+        public Recorder(WaveIn waveIn)
+        {
+            this.waveIn = waveIn;
+            recordingState = RecordingState.Monitoring;
+
+            //waveIn.DataAvailable += waveIn_DataAvailable;
+            waveIn.RecordingStopped += waveIn_RecordingStopped;
+        }
+        #endregion
+
+        #region Events
+        private void waveIn_RecordingStopped(object sender, StoppedEventArgs e)
+        {
+            if (writer != null)
+            {
+                writer.Dispose();
+                writer = null;
+            }
+
+            if (e.Exception != null)
+            {
+                //MessageBox.Show(String.Format("A problem was encountered during recording {0}",
+                //                              e.Exception.Message));
+            }
+
+        }
+        #endregion
+
+        public RecordingState RecordingState { get { return recordingState; } }
+
+        public int GetSecondsRecorded()
+        {
+            if (writer != null)
+                return (int)(writer.Length / writer.WaveFormat.AverageBytesPerSecond);
+            else
+                return 0;
+        }
+
+        // Använd SampleProvider för att returnera data till UX
+
+        public void StartRecording()
+        {
+            if (writer == null)
+            {
+                var outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
+                Directory.CreateDirectory(outputFolder);
+                var outputFilename = String.Format("RecordToMP3 {0:yyy-MM-dd HH-mm-ss}.wav", DateTime.Now);
+                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename), waveIn.WaveFormat);
+            }
+            // Bryt ut till egen funktion
+            if (recordingState == RecordingState.Monitoring)
+                recordingState = RecordingState.Recording;
+            else if (recordingState == RecordingState.Recording)
+                recordingState = RecordingState.Paused;
+            else if (recordingState == RecordingState.Paused)
+                recordingState = RecordingState.Recording;
+        }
+
+        public void StopRecording()
+        {
+            recordingState = RecordingState.Monitoring;
+            writer.Dispose();
+            writer = null;
+        }
+
+
+        public void Write(byte[] data, int offset, int count)
+        {
+            if (recordingState == RecordingState.Recording)
+                writer.Write(data, offset, count);
+        }
+
+        #region Public methods
+        public void Cleanup()
+        {
+
+        }
+        #endregion
+
+    }
+}
