@@ -4,3 +4,5 @@
 - Spara markörer för att kunna klippa valda delar
 - Efterbehandling, normalisering
 - Efterbehandling, brusreducering
+- Effetivare grafer, rita bara om den ändrade biten
+- Flytta all inspelningslogik till Recorder

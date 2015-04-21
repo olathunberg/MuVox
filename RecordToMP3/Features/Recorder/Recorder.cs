@@ -14,22 +14,57 @@ namespace RecordToMP3.Features.Recorder
         #region Fields
         private WaveIn waveIn;
         private WaveFileWriter writer;
-        private int secondsRecorded = 0;
         private RecordingState recordingState;
         #endregion
 
         #region Constructors
-        public Recorder(WaveIn waveIn)
+        public Recorder()
         {
-            this.waveIn = waveIn;
             recordingState = RecordingState.Monitoring;
 
-            //waveIn.DataAvailable += waveIn_DataAvailable;
+            waveIn = new WaveIn();
+            waveIn.DataAvailable += waveIn_DataAvailable;
             waveIn.RecordingStopped += waveIn_RecordingStopped;
+            waveIn.BufferMilliseconds = 20;
+            waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
+
+
+            waveIn.StartRecording();
         }
         #endregion
 
+        public Action<float, float, float, float> NewSample { get; set; }
+
         #region Events
+        private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
+        {
+            if (recordingState == RecordingState.Recording)
+                writer.Write(e.Buffer, 0, e.BytesRecorded);
+
+            float maxL = 0;
+            float minL = 0;
+            float maxR = 0;
+            float minR = 0;
+
+            for (int index = 0; index < e.BytesRecorded; index += 4)
+            {
+                short sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
+                float sample32 = sample / 32768f;
+
+                maxL = Math.Max(sample32, maxL);
+                minL = Math.Min(sample32, minL);
+
+                sample = (short)((e.Buffer[index + 3] << 8) | (e.Buffer[index + 2]));
+                sample32 = sample / 32768f;
+
+                maxR = Math.Max(sample32, maxR);
+                minR = Math.Min(sample32, minR);
+            }
+
+            if (NewSample != null)
+                NewSample(minL, maxL, minR, maxR);
+        }
+
         private void waveIn_RecordingStopped(object sender, StoppedEventArgs e)
         {
             if (writer != null)
@@ -84,17 +119,12 @@ namespace RecordToMP3.Features.Recorder
             writer = null;
         }
 
-
-        public void Write(byte[] data, int offset, int count)
-        {
-            if (recordingState == RecordingState.Recording)
-                writer.Write(data, offset, count);
-        }
-
         #region Public methods
         public void Cleanup()
         {
-
+            waveIn.StopRecording();
+            waveIn.Dispose();
+            waveIn = null;
         }
         #endregion
 

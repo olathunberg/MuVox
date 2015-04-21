@@ -25,7 +25,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         public VolumeMeter()
         {
-            MinDb = -30;
+            MinDb = -24;
             MaxDb = 12;
             Orientation = Orientation.Vertical;
         }

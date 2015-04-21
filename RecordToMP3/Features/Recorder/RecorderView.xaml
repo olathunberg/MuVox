@@ -47,13 +47,22 @@
                 <TextBlock Style="{StaticResource Header}" Text="Recording time"/>
                 <TextBlock Style="{StaticResource defaultTextBlock}" Text="{Binding TimeRecorded}" FontSize="30" FontWeight="Bold"/>
             </StackPanel>
+         <StackPanel>
+            <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerLeft"
+                                           MinHeight="100" 
+                                           Foreground="{StaticResource BorderBrushSelected}" 
+                                           Background="{StaticResource BackgroundNormal}"
+                                           Fill="Transparent"
+                                           BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"
+                                           Margin="0,0,0,5"/>
 
-            <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewer"
+            <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerRight"
                                            MinHeight="100" 
                                            Foreground="{StaticResource BorderBrushSelected}" 
                                            Background="{StaticResource BackgroundNormal}"
                                            Fill="Transparent"
                                            BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"/>
+            </StackPanel>
         </DockPanel>
 
         <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding SecondsRecorded}" Maximum="4800"/>

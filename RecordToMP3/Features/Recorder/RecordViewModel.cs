@@ -16,7 +16,6 @@ namespace RecordToMP3.Features.Recorder
     {
         #region Fields
         private RecorderView owner;
-        private WaveIn waveIn;
         private float rightAmplitude = 0f;
         private float leftAmplitude = 0f;
         private int secondsRecorded = 0;
@@ -29,15 +28,8 @@ namespace RecordToMP3.Features.Recorder
         #region Constructors
         public RecorderViewModel()
         {
-            waveIn = new WaveIn();
-            waveIn.DataAvailable += waveIn_DataAvailable;
-            waveIn.BufferMilliseconds = 20;
-            waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
-
-            recorder = new Recorder(waveIn);
-
-            waveIn.StartRecording();
-
+            recorder = new Recorder();
+            recorder.NewSample = RecorderNewSamlpe;
             SecondsRecorded = 0;
         }
         #endregion
@@ -144,9 +136,6 @@ namespace RecordToMP3.Features.Recorder
         #region Overrides
         public override void Cleanup()
         {
-            waveIn.StopRecording();
-            waveIn.Dispose();
-            waveIn = null;
             if (recorder != null)
                 recorder.Cleanup();
             base.Cleanup();
@@ -154,35 +143,14 @@ namespace RecordToMP3.Features.Recorder
         #endregion
 
         #region Events
-        private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
+        private void RecorderNewSamlpe(float minL, float maxL, float minR, float maxR)
         {
-                recorder.Write(e.Buffer, 0, e.BytesRecorded);
+            SecondsRecorded = recorder.GetSecondsRecorded();
 
-            if (recorder != null)
-                SecondsRecorded = recorder.GetSecondsRecorded();
-
-            float maxL = 0;
-            float minL = 0;
-            float maxR = 0;
-            float minR = 0;
-
-            for (int index = 0; index < e.BytesRecorded; index += 4)
-            {
-                short sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
-                float sample32 = sample / 32768f;
-
-                maxL = Math.Max(sample32, maxL);
-                minL = Math.Min(sample32, minL);
-
-                sample = (short)((e.Buffer[index + 3] << 8) | (e.Buffer[index + 2]));
-                sample32 = sample / 32768f;
-
-                maxR = Math.Max(sample32, maxR);
-                minR = Math.Min(sample32, minR);
-            }
-
-            if (owner != null && owner.WaveFormViewer != null)
-                owner.WaveFormViewer.AddValue(maxL, minL);
+            if (owner != null && owner.WaveFormViewerLeft != null)
+                owner.WaveFormViewerLeft.AddValue(maxL, minL);
+            if (owner != null && owner.WaveFormViewerRight != null)
+                owner.WaveFormViewerRight.AddValue(maxR, minR);
 
             amplitudesL.Enqueue(maxL);
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
