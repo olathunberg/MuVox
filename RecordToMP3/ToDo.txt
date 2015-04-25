@@ -5,4 +5,5 @@
 - Efterbehandling, normalisering
 - Efterbehandling, brusreducering
 - Effetivare grafer, rita bara om den ändrade biten
-- Flytta all inspelningslogik till Recorder
+x Flytta all inspelningslogik till Recorder
+- Visa maxvärdet ur genomsnittet på nivåmätaren

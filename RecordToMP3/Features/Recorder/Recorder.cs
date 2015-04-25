@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using NAudio.Lame;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace RecordToMP3.Features.Recorder
         #region Fields
         private WaveIn waveIn;
         private WaveFileWriter writer;
+        private LameMP3FileWriter mp3Writer;
         private RecordingState recordingState;
         #endregion
 
@@ -28,7 +30,6 @@ namespace RecordToMP3.Features.Recorder
             waveIn.BufferMilliseconds = 20;
             waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
 
-
             waveIn.StartRecording();
         }
         #endregion
@@ -39,7 +40,10 @@ namespace RecordToMP3.Features.Recorder
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
             if (recordingState == RecordingState.Recording)
-                writer.Write(e.Buffer, 0, e.BytesRecorded);
+            {
+                writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+                mp3Writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+            }
 
             float maxL = 0;
             float minL = 0;
@@ -72,6 +76,11 @@ namespace RecordToMP3.Features.Recorder
                 writer.Dispose();
                 writer = null;
             }
+            if(mp3Writer != null)
+            {
+                mp3Writer.Dispose();
+                mp3Writer = null;
+            }
 
             if (e.Exception != null)
             {
@@ -100,8 +109,9 @@ namespace RecordToMP3.Features.Recorder
             {
                 var outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
-                var outputFilename = String.Format("RecordToMP3 {0:yyy-MM-dd HH-mm-ss}.wav", DateTime.Now);
-                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename), waveIn.WaveFormat);
+                var outputFilename = String.Format("RecordToMP3 {0:yyy-MM-dd HH-mm-ss}", DateTime.Now);
+                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename)+".wav", waveIn.WaveFormat);
+                mp3Writer = new LameMP3FileWriter(Path.Combine(outputFolder, outputFilename+".mp3"), waveIn.WaveFormat, 192000);
             }
             // Bryt ut till egen funktion
             if (recordingState == RecordingState.Monitoring)
@@ -117,6 +127,8 @@ namespace RecordToMP3.Features.Recorder
             recordingState = RecordingState.Monitoring;
             writer.Dispose();
             writer = null;
+            mp3Writer.Dispose();
+            mp3Writer = null;
         }
 
         #region Public methods
