@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 
@@ -22,7 +23,7 @@ namespace RecordToMP3.Features.Recorder
         public RecorderViewModel()
         {
             recorder = new Recorder();
-            recorder.NewSample = RecorderNewSamlpe;
+            recorder.NewSample = RecorderNewSample;
             SecondsRecorded = 0;
         }
         #endregion
@@ -136,7 +137,7 @@ namespace RecordToMP3.Features.Recorder
         #endregion
 
         #region Events
-        private void RecorderNewSamlpe(float minL, float maxL, float minR, float maxR)
+        private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
         {
             SecondsRecorded = recorder.GetSecondsRecorded();
 

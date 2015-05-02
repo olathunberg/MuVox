@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
@@ -13,113 +14,114 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         #region Fields
         private int blankZone = 2;
         private int renderPosition;
-        private Polygon waveForm = new Polygon();
         private double xScale = 2;
         private double yScale = 40;
         private double yTranslate = 40;
+        private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
+        private int[] maxPoints;
+        private int[] minPoints;
+
         #endregion
 
-        #region Dependency properties
-        // Using a DependencyProperty as the backing store for Fill.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty FillProperty =
-            DependencyProperty.Register("Fill", typeof(Brush), typeof(WaveFormViewer), new PropertyMetadata(new SolidColorBrush(Colors.Transparent)));
-
-        public Brush Fill
-        {
-            get { return (Brush)GetValue(FillProperty); }
-            set { SetValue(FillProperty, value); }
-        }
+        #region Properties
+        public Color LineColor { get; set; }
         #endregion
 
         public WaveFormViewer()
         {
             this.SizeChanged += OnSizeChanged;
             InitializeComponent();
-            waveForm.StrokeThickness = 1;
-            mainCanvas.Children.Add(waveForm);
         }
+    
         #region Events
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             renderPosition = 0;
-            ClearAllPoints();
+            maxPoints = new int[(int)((ActualWidth / xScale))];
+            minPoints = new int[(int)((ActualWidth / xScale))];
 
             this.yTranslate = this.ActualHeight / 2;
             this.yScale = this.ActualHeight / 2;
+
+            bitmap = null;
+            bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
+            bitmap.Lock();
+            bitmap.Clear();
+            bitmap.Unlock();
+            mainCanvas.Source = bitmap;
+
+            ClearAllPoints();
         }
         #endregion
 
         #region Private methods
         private int Points
         {
-            get { return waveForm.Points.Count / 2; }
-        }
-
-        private int BottomPointIndex(int position)
-        {
-            return waveForm.Points.Count - position - 1;
+            get { return maxPoints.Length; }
         }
 
         private void ClearAllPoints()
         {
-            waveForm.Points.Clear();
+            for (int i = 0; i < Points; i++)
+            {
+                maxPoints[i] = SampleToYPosition(0);
+                minPoints[i] = SampleToYPosition(0);
+            }
         }
 
         private void CreatePoint(float topValue, float bottomValue)
         {
-            double topYPos = SampleToYPosition(topValue);
-            double bottomYPos = SampleToYPosition(bottomValue);
-            double xPos = renderPosition * xScale;
-            if (renderPosition >= Points)
-            {
-                int insertPos = Points;
-                waveForm.Points.Insert(insertPos, new Point(xPos, topYPos));
-                waveForm.Points.Insert(insertPos + 1, new Point(xPos, bottomYPos));
-            }
-            else
-            {
-                waveForm.Points[renderPosition] = new Point(xPos, topYPos);
-                waveForm.Points[BottomPointIndex(renderPosition)] = new Point(xPos, bottomYPos);
-            }
+            var topYPos = SampleToYPosition(topValue);
+            var bottomYPos = SampleToYPosition(bottomValue);
+
+            maxPoints[renderPosition] = (int)topYPos;
+            minPoints[renderPosition] = (int)bottomYPos;
             renderPosition++;
         }
 
-        private double SampleToYPosition(float value)
+        private int SampleToYPosition(float value)
         {
-            return yTranslate + value * yScale;
+            return (int)(yTranslate + value * yScale);
         }
         #endregion
 
         #region Public methods
         public void AddValue(float maxValue, float minValue)
         {
-            waveForm.Stroke = this.Foreground;
-            waveForm.Fill = this.Fill;
-            int visiblePixels = (int)((ActualWidth / xScale));
-            if (visiblePixels > 0)
+            if (bitmap == null)
+                return;
+
+            if (Points > 0)
             {
+                if (renderPosition<Points-blankZone)
+
+                    using (bitmap.GetBitmapContext())
+                    {
+                        var i = renderPosition -1;
+                        bitmap.FillRectangle((i ) * (int)xScale, SampleToYPosition(-1), (i+blankZone+2) * (int)xScale, SampleToYPosition(1), 0);
+                    }
+                
                 CreatePoint(maxValue, minValue);
 
-                if (renderPosition >= visiblePixels)
+                if (renderPosition > 1)
+                    using (bitmap.GetBitmapContext())
+                    {
+                        var i = renderPosition -1;
+                        bitmap.DrawLineAa((i - 1) * (int)xScale, maxPoints[i - 1], (i) * (int)xScale, maxPoints[i], LineColor);
+                        bitmap.DrawLineAa((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
+                    }
+
+                if (renderPosition >= Points)
                     renderPosition = 0;
 
-                int erasePosition = (renderPosition + blankZone) % visiblePixels;
-                if (erasePosition < Points)
-                {
-                    double yPos = SampleToYPosition(0);
-                    waveForm.Points[erasePosition] = new Point(erasePosition * xScale, yPos);
-                    waveForm.Points[BottomPointIndex(erasePosition)] = new Point(erasePosition * xScale, yPos);
-                }
+                //int erasePosition = (renderPosition + blankZone) % Points;
+                //if (erasePosition < Points)
+                //{
+                //    double yPos = SampleToYPosition(0);
+                //    maxPoints[erasePosition] = (int)yPos;
+                //    minPoints[erasePosition] = (int)yPos;
+                //}
             }
-        }
-
-        /// <summary>
-        /// Clears the waveform and repositions on the left
-        /// </summary>
-        public void Reset()
-        {
-            renderPosition = 0;
-            ClearAllPoints();
         }
         #endregion
     }

@@ -3,10 +3,13 @@ using NAudio.Lame;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace RecordToMP3.Features.Recorder
 {
@@ -27,10 +30,11 @@ namespace RecordToMP3.Features.Recorder
             waveIn = new WaveIn();
             waveIn.DataAvailable += waveIn_DataAvailable;
             waveIn.RecordingStopped += waveIn_RecordingStopped;
-            waveIn.BufferMilliseconds = 20;
+            waveIn.BufferMilliseconds = 15;
             waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
 
-            waveIn.StartRecording();
+            if (!(bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
+                waveIn.StartRecording();
         }
         #endregion
 
@@ -41,8 +45,19 @@ namespace RecordToMP3.Features.Recorder
         {
             if (recordingState == RecordingState.Recording)
             {
-                writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
-                mp3Writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+                Task.Run(async () =>
+                    {
+                        await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+                        await mp3Writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+                    });
+            }
+            else if (recordingState == Features.Recorder.RecordingState.RequestedStop)
+            {
+                recordingState = Features.Recorder.RecordingState.Monitoring;
+                writer.Dispose();
+                writer = null;
+                mp3Writer.Dispose();
+                mp3Writer = null;
             }
 
             float maxL = 0;
@@ -76,7 +91,7 @@ namespace RecordToMP3.Features.Recorder
                 writer.Dispose();
                 writer = null;
             }
-            if(mp3Writer != null)
+            if (mp3Writer != null)
             {
                 mp3Writer.Dispose();
                 mp3Writer = null;
@@ -101,8 +116,6 @@ namespace RecordToMP3.Features.Recorder
                 return 0;
         }
 
-        // Använd SampleProvider för att returnera data till UX
-
         public void StartRecording()
         {
             if (writer == null)
@@ -110,8 +123,8 @@ namespace RecordToMP3.Features.Recorder
                 var outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
                 var outputFilename = String.Format("RecordToMP3 {0:yyy-MM-dd HH-mm-ss}", DateTime.Now);
-                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename)+".wav", waveIn.WaveFormat);
-                mp3Writer = new LameMP3FileWriter(Path.Combine(outputFolder, outputFilename+".mp3"), waveIn.WaveFormat, 192000);
+                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename) + ".wav", waveIn.WaveFormat);
+                mp3Writer = new LameMP3FileWriter(Path.Combine(outputFolder, outputFilename + ".mp3"), waveIn.WaveFormat, 192000);
             }
             // Bryt ut till egen funktion
             if (recordingState == RecordingState.Monitoring)
@@ -124,11 +137,7 @@ namespace RecordToMP3.Features.Recorder
 
         public void StopRecording()
         {
-            recordingState = RecordingState.Monitoring;
-            writer.Dispose();
-            writer = null;
-            mp3Writer.Dispose();
-            mp3Writer = null;
+            recordingState = RecordingState.RequestedStop;
         }
 
         #region Public methods

@@ -6,10 +6,13 @@ using System.Windows.Media;
 
 namespace RecordToMP3.UI_Features.VolumeMeter
 {
-    internal class VolumeMeter : Control
+    internal class VolumeMeter : FrameworkElement
     {
         private Brush accentColor;
+        private Brush foreground;
+        private Brush background;
 
+        #region Dependency properties
         public float Amplitude
         {
             get { return (float)GetValue(AmplitudeProperty); }
@@ -18,7 +21,9 @@ namespace RecordToMP3.UI_Features.VolumeMeter
 
         // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AmplitudeProperty =
-            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(-3.0f, (s,e)=>(s as Control).InvalidateVisual()));
+            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(-3.0f, (s, e) => (s as FrameworkElement).InvalidateVisual()));
+        
+        #endregion
 
         /// <summary>
         /// Basic volume meter
@@ -30,12 +35,33 @@ namespace RecordToMP3.UI_Features.VolumeMeter
             Orientation = Orientation.Vertical;
         }
 
+        #region Properties
         public Brush AccentColor
         {
             get { return accentColor; }
             set
             {
                 accentColor = value;
+                this.InvalidateVisual();
+            }
+        }
+
+        public Brush Foreground
+        {
+            get { return foreground; }
+            set
+            {
+                foreground = value;
+                this.InvalidateVisual();
+            }
+        }
+
+        public Brush Background
+        {
+            get { return background; }
+            set
+            {
+                background = value;
                 this.InvalidateVisual();
             }
         }
@@ -57,6 +83,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         [DefaultValue(Orientation.Vertical)]
         public Orientation Orientation { get; set; }
+        #endregion   
 
         // <summary>
         /// Paints the volume meter

@@ -1,9 +1,16 @@
-﻿- Färgmarkering i waveform som visar var man är
+﻿GUI
+- Egen implementation av raltids GUI, tar för mycket kraft
+- Effetivare grafer, rita bara om den ändrade biten
+- Färgmarkering i waveform som visar var man är
+- Visa maxvärdet ur genomsnittet på nivåmätaren
+
+INSTÄLLNINGAAR
 - Inställning för genomsnittet på nivåmätaren
 - Inställning för minuter på progressbar
+
+FUNKTION
 - Spara markörer för att kunna klippa valda delar
 - Efterbehandling, normalisering
 - Efterbehandling, brusreducering
-- Effetivare grafer, rita bara om den ändrade biten
+
 x Flytta all inspelningslogik till Recorder
-- Visa maxvärdet ur genomsnittet på nivåmätaren
