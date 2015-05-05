@@ -1,7 +1,7 @@
 ﻿GUI
-- Egen implementation av raltids GUI, tar för mycket kraft
-- Effetivare grafer, rita bara om den ändrade biten
-- Färgmarkering i waveform som visar var man är
+x Egen implementation av raltids GUI, tar för mycket kraft
+x Effetivare grafer, rita bara om den ändrade biten
+x Färgmarkering i waveform som visar var man är
 - Visa maxvärdet ur genomsnittet på nivåmätaren
 
 INSTÄLLNINGAAR

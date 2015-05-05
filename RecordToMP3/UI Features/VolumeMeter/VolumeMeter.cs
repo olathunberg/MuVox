@@ -8,21 +8,10 @@ namespace RecordToMP3.UI_Features.VolumeMeter
 {
     internal class VolumeMeter : FrameworkElement
     {
+        #region Fields
         private Brush accentColor;
         private Brush foreground;
         private Brush background;
-
-        #region Dependency properties
-        public float Amplitude
-        {
-            get { return (float)GetValue(AmplitudeProperty); }
-            set { SetValue(AmplitudeProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AmplitudeProperty =
-            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(-3.0f, (s, e) => (s as FrameworkElement).InvalidateVisual()));
-        
         #endregion
 
         /// <summary>
@@ -34,6 +23,23 @@ namespace RecordToMP3.UI_Features.VolumeMeter
             MaxDb = 12;
             Orientation = Orientation.Vertical;
         }
+
+        #region Dependency properties
+        public float Amplitude
+        {
+            get { return (float)GetValue(AmplitudeProperty); }
+            set { SetValue(AmplitudeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AmplitudeProperty =
+            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(-3.0f, (s, e) =>
+                {
+                    if (e.OldValue != e.NewValue)
+                        (s as FrameworkElement).InvalidateVisual();
+                }));
+
+        #endregion
 
         #region Properties
         public Brush AccentColor
@@ -83,7 +89,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         [DefaultValue(Orientation.Vertical)]
         public Orientation Orientation { get; set; }
-        #endregion   
+        #endregion
 
         // <summary>
         /// Paints the volume meter
@@ -109,6 +115,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
                 width = (int)(width * percent);
 
                 drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, 1, width, height));
+                // TODO: Draw top mark
             }
             else
             {
@@ -116,7 +123,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
                 if (this.ActualHeight - 1 - height > 0)
                 {
                     drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, this.ActualHeight - 1 - height, width, height));
-                    drawingContext.DrawLine(new Pen(accentColor,2),new Point(1, this.ActualHeight - 1 - height), new Point(width+1, this.ActualHeight - 1 - height));
+                    drawingContext.DrawLine(new Pen(accentColor, 2), new Point(1, this.ActualHeight - 1 - height), new Point(width + 1, this.ActualHeight - 1 - height));
                 }
             }
         }

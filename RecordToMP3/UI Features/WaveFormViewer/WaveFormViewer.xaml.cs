@@ -32,7 +32,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             this.SizeChanged += OnSizeChanged;
             InitializeComponent();
         }
-    
+
         #region Events
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -93,22 +93,23 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
             if (Points > 0)
             {
-                if (renderPosition<Points-blankZone)
+                if (renderPosition < Points - blankZone)
 
                     using (bitmap.GetBitmapContext())
                     {
-                        var i = renderPosition -1;
-                        bitmap.FillRectangle((i ) * (int)xScale, SampleToYPosition(-1), (i+blankZone+2) * (int)xScale, SampleToYPosition(1), 0);
+                        var i = renderPosition - 1;
+                        bitmap.FillRectangle((i) * (int)xScale, SampleToYPosition(-1), (i + blankZone + 2) * (int)xScale, SampleToYPosition(1), 0);
                     }
-                
+
                 CreatePoint(maxValue, minValue);
 
                 if (renderPosition > 1)
                     using (bitmap.GetBitmapContext())
                     {
-                        var i = renderPosition -1;
+                        var i = renderPosition - 1;
                         bitmap.DrawLineAa((i - 1) * (int)xScale, maxPoints[i - 1], (i) * (int)xScale, maxPoints[i], LineColor);
-                        bitmap.DrawLineAa((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
+                        if (maxPoints[i] != minPoints[i])
+                            bitmap.DrawLineAa((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
                     }
 
                 if (renderPosition >= Points)
