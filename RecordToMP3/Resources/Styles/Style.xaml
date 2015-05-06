@@ -14,6 +14,7 @@
         <ResourceDictionary Source="Menu.xaml" />
         <ResourceDictionary Source="ScrollBar.xaml" />
         <ResourceDictionary Source="ScrollViewer.xaml" />
+        <ResourceDictionary Source="ListBox.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="Header" TargetType="TextBlock" BasedOn="{StaticResource defaultTextBlock}">

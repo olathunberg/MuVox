@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
@@ -39,7 +40,10 @@ namespace RecordToMP3.Features.Recorder
                     {
                         if (recorder != null)
                             recorder.StartRecording();
+                        if (Markers == null)
+                            Markers = new ObservableCollection<int>();
 
+                        Markers.Clear();
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => true));
@@ -55,17 +59,35 @@ namespace RecordToMP3.Features.Recorder
                     () =>
                     {
                         recorder.StopRecording();
-                
+
                         SecondsRecorded = 0;
-                      
+
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
             }
         }
+
+        private RelayCommand setMarkerCommand;
+        public ICommand SetMarker
+        {
+            get
+            {
+                return setMarkerCommand ?? (setMarkerCommand = new RelayCommand(
+                    () =>
+                    {
+                        Markers.Add(SecondsRecorded);
+                        RaisePropertyChanged(() => Markers);
+                    },
+                    () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
+            }
+        }
+
         #endregion
 
         #region Properties
+        public ObservableCollection<int> Markers { get; set; }
+
         public string StartButtonText
         {
             get
@@ -97,17 +119,6 @@ namespace RecordToMP3.Features.Recorder
             set
             {
                 secondsRecorded = value;
-                TimeRecorded = string.Format("{0:00}:{1:00}", secondsRecorded / 60, secondsRecorded % 60);
-                RaisePropertyChanged();
-            }
-        }
-
-        public string TimeRecorded
-        {
-            get { return timeRecorded; }
-            set
-            {
-                timeRecorded = value;
                 RaisePropertyChanged();
             }
         }

@@ -111,7 +111,7 @@ namespace RecordToMP3.Features.Recorder
         public int GetSecondsRecorded()
         {
             if (writer != null)
-                return (int)(writer.Length / writer.WaveFormat.AverageBytesPerSecond);
+                return (int)(writer.Length / (writer.WaveFormat.AverageBytesPerSecond/10));
             else
                 return 0;
         }

@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:VolumeMeter="clr-namespace:RecordToMP3.UI_Features.VolumeMeter" 
              xmlns:WaveFormViewer="clr-namespace:RecordToMP3.UI_Features.WaveFormViewer" 
-             xmlns:WaveViewer="clr-namespace:RecordToMP3.UI_Features" 
+             xmlns:WaveViewer="clr-namespace:RecordToMP3.UI_Features"
+             xmlns:converters="clr-namespace:RecordToMP3.UI_Features.Converters"
              x:Class="RecordToMP3.Features.Recorder.RecorderView" 
              Focusable="True"
              DataContext="{DynamicResource RecorderViewModel}" 
@@ -21,19 +22,21 @@
                 <Setter Property="Margin" Value="10,10"/>
             </Style>
             <local:RecorderViewModel x:Key="RecorderViewModel" />
+            <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
         <KeyBinding Key="F1" Command="{Binding StartRecording}"/>
         <KeyBinding Key="F2" Command="{Binding StopRecording}"/>
+        <KeyBinding Key="F3" Command="{Binding SetMarker}"/>
     </UserControl.InputBindings>
 
-    <DockPanel Width="Auto" x:Name="MainGrid">
+    <DockPanel Width="Auto" x:Name="MainGrid" LastChildFill="True">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <Button Content="{Binding StartButtonText}" Command="{Binding StartRecording}"/>
-            <Button Content="STOP (F2)"  Command="{Binding StopRecording}"/>
-            <Button Content="SET MARKER (F3)"  IsEnabled="False"/>
+            <Button Content="STOP (F2)" Command="{Binding StopRecording}"/>
+            <Button Content="SET MARKER (F3)" Command="{Binding SetMarker}"/>
 
             <Button Content="PROCESS (F4)" IsEnabled="False"/>
         </StackPanel>
@@ -43,29 +46,51 @@
             <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" AccentColor="{StaticResource BorderBrushSelected}" Background="{StaticResource BackgroundNormal}" Foreground="{StaticResource Foreground}" Amplitude="{Binding RightAmplitude}"/>
         </StackPanel>
 
-        <DockPanel DockPanel.Dock="Top" Margin="10,0,10,10">
+        <DockPanel DockPanel.Dock="Top" Margin="10,0,10,10" LastChildFill="True">
             <StackPanel DockPanel.Dock="Top">
                 <TextBlock Style="{StaticResource Header}" Text="Recording time"/>
-                <TextBlock Style="{StaticResource defaultTextBlock}" Text="{Binding TimeRecorded}" FontSize="30" FontWeight="Bold"/>
+                <TextBlock Style="{StaticResource defaultTextBlock}" Text="{Binding SecondsRecorded, Converter={StaticResource TenthSecondToStringConverter}}" FontSize="30" FontWeight="Bold"/>
             </StackPanel>
-         <StackPanel>
-            <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerLeft"
-                                           Height="100" 
-                                           Foreground="{StaticResource BorderBrushSelected}" 
-                                           Background="{StaticResource BackgroundNormal}"
-                                           LineColor="{StaticResource BorderBrushSelectedColor}"
-                                           BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"
-                                           Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerLeft"
+                                               Height="100" 
+                                               Foreground="{StaticResource BorderBrushSelected}" 
+                                               Background="{StaticResource BackgroundNormal}"
+                                               LineColor="{StaticResource BorderBrushSelectedColor}"
+                                               BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"
+                                               Margin="0,0,0,5"/>
+                    <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerRight"
+                                               Height="100" 
+                                               Foreground="{StaticResource BorderBrushSelected}" 
+                                               Background="{StaticResource BackgroundNormal}"
+                                               LineColor="{StaticResource BorderBrushSelectedColor}"
+                                               BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"/>
+                </StackPanel>
+                <Grid Grid.Column="2" Height="205">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource Header}" Text="Markers"/>
 
-                <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerRight"
-                                           Height="100" 
-                                           Foreground="{StaticResource BorderBrushSelected}" 
-                                           Background="{StaticResource BackgroundNormal}"
-                                           LineColor="{StaticResource BorderBrushSelectedColor}"
-                                           BorderBrush="{StaticResource BorderBrushSelected}" BorderThickness="1"/>
-            </StackPanel>
+                    <ListBox Style="{StaticResource ListBox}" Grid.Row="1" ItemsSource="{Binding Markers}"
+                             BorderBrush="{StaticResource BorderBrushNormal}"
+                             ScrollViewer.VerticalScrollBarVisibility="Visible">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource TenthSecondToStringConverter}, Mode=OneWay}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
         </DockPanel>
-
-        <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding SecondsRecorded}" Maximum="4800"/>
+        <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding SecondsRecorded}" Maximum="48000"/>
     </DockPanel>
 </UserControl>
