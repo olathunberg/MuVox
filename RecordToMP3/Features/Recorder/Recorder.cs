@@ -3,7 +3,9 @@ using NAudio.Lame;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,12 +15,11 @@ using System.Windows.Threading;
 
 namespace RecordToMP3.Features.Recorder
 {
-    internal class Recorder : ICleanup
+    internal class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup
     {
         #region Fields
         private WaveIn waveIn;
         private WaveFileWriter writer;
-        private LameMP3FileWriter mp3Writer;
         private RecordingState recordingState;
         #endregion
 
@@ -38,7 +39,11 @@ namespace RecordToMP3.Features.Recorder
         }
         #endregion
 
+        #region Properties
         public Action<float, float, float, float> NewSample { get; set; }
+
+        public RecordingState RecordingState { get { return recordingState; } }
+        #endregion
 
         #region Events
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
@@ -48,16 +53,16 @@ namespace RecordToMP3.Features.Recorder
                 Task.Run(async () =>
                     {
                         await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
-                        await mp3Writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
                     });
             }
             else if (recordingState == Features.Recorder.RecordingState.RequestedStop)
             {
                 recordingState = Features.Recorder.RecordingState.Monitoring;
-                writer.Dispose();
-                writer = null;
-                mp3Writer.Dispose();
-                mp3Writer = null;
+                if (writer != null)
+                {
+                    writer.Dispose();
+                    writer = null;
+                }
             }
 
             float maxL = 0;
@@ -82,6 +87,8 @@ namespace RecordToMP3.Features.Recorder
 
             if (NewSample != null)
                 NewSample(minL, maxL, minR, maxR);
+
+            RaisePropertyChanged(() => TenthOfSecondsRecorded);
         }
 
         private void waveIn_RecordingStopped(object sender, StoppedEventArgs e)
@@ -91,11 +98,8 @@ namespace RecordToMP3.Features.Recorder
                 writer.Dispose();
                 writer = null;
             }
-            if (mp3Writer != null)
-            {
-                mp3Writer.Dispose();
-                mp3Writer = null;
-            }
+
+            RaisePropertyChanged(() => TenthOfSecondsRecorded);
 
             if (e.Exception != null)
             {
@@ -106,12 +110,42 @@ namespace RecordToMP3.Features.Recorder
         }
         #endregion
 
-        public RecordingState RecordingState { get { return recordingState; } }
+        #region Private methods
+        private void ConvertWavStreamToMp3File(ref MemoryStream ms, string savetofilename)
+        {
+            //rewind to beginning of stream
+            ms.Seek(0, SeekOrigin.Begin);
 
-        public int GetSecondsRecorded()
+            using (var retMs = new MemoryStream())
+            using (var rdr = new WaveFileReader(ms))
+            using (var wtr = new LameMP3FileWriter(savetofilename, rdr.WaveFormat, LAMEPreset.VBR_90))
+            {
+                rdr.CopyTo(wtr);
+            }
+        }
+        #endregion
+
+        #region Properties
+        public ObservableCollection<int> Markers { get; set; }
+        #endregion
+
+        #region Public methods
+        public void SetMarker()
+        {
+            Markers.Add(GetTenthOfSecondsRecorded());
+            RaisePropertyChanged(() => Markers);
+        }
+
+        public int TenthOfSecondsRecorded
+        {
+            get { return GetTenthOfSecondsRecorded(); }
+
+        }
+
+        private int GetTenthOfSecondsRecorded()
         {
             if (writer != null)
-                return (int)(writer.Length / (writer.WaveFormat.AverageBytesPerSecond/10));
+                return (int)(writer.Length / (writer.WaveFormat.AverageBytesPerSecond / 10));
             else
                 return 0;
         }
@@ -122,9 +156,13 @@ namespace RecordToMP3.Features.Recorder
             {
                 var outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
-                var outputFilename = String.Format("RecordToMP3 {0:yyy-MM-dd HH-mm-ss}", DateTime.Now);
+                var outputFilename = String.Format("RecordToMP3 {0:yyyy-MM-dd HH-mm-ss}", DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename) + ".wav", waveIn.WaveFormat);
-                mp3Writer = new LameMP3FileWriter(Path.Combine(outputFolder, outputFilename + ".mp3"), waveIn.WaveFormat, 192000);
+
+                if (Markers == null)
+                    Markers = new ObservableCollection<int>();
+
+                Markers.Clear();
             }
             // Bryt ut till egen funktion
             if (recordingState == RecordingState.Monitoring)
@@ -140,7 +178,6 @@ namespace RecordToMP3.Features.Recorder
             recordingState = RecordingState.RequestedStop;
         }
 
-        #region Public methods
         public void Cleanup()
         {
             waveIn.StopRecording();
@@ -148,6 +185,5 @@ namespace RecordToMP3.Features.Recorder
             waveIn = null;
         }
         #endregion
-
     }
 }

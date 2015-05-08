@@ -96,6 +96,8 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         protected override void OnRender(DrawingContext drawingContext)
         {
+            if (this.Height < 0 || this.Width < 0)
+                return;
             if (this.ActualWidth <= 2 || this.ActualHeight <= 2)
                 return;
 

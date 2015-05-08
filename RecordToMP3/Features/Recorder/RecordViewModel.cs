@@ -1,7 +1,9 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Windows.Input;
 
@@ -13,11 +15,11 @@ namespace RecordToMP3.Features.Recorder
         private RecorderView owner;
         private float rightAmplitude = 0f;
         private float leftAmplitude = 0f;
-        private int secondsRecorded = 0;
-        private string timeRecorded;
+        private Recorder recorder;
+
+        // Move to volumemeter
         private Queue<float> amplitudesL = new Queue<float>();
         private Queue<float> amplitudesR = new Queue<float>();
-        private Recorder recorder;
         #endregion
 
         #region Constructors
@@ -25,7 +27,7 @@ namespace RecordToMP3.Features.Recorder
         {
             recorder = new Recorder();
             recorder.NewSample = RecorderNewSample;
-            SecondsRecorded = 0;
+            ProgressBarMaximum = Convert.ToUInt32(ConfigurationManager.AppSettings["UI_MinutesOnProgressBar"]) * 600;
         }
         #endregion
 
@@ -40,10 +42,7 @@ namespace RecordToMP3.Features.Recorder
                     {
                         if (recorder != null)
                             recorder.StartRecording();
-                        if (Markers == null)
-                            Markers = new ObservableCollection<int>();
-
-                        Markers.Clear();
+                      
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => true));
@@ -59,9 +58,7 @@ namespace RecordToMP3.Features.Recorder
                     () =>
                     {
                         recorder.StopRecording();
-
-                        SecondsRecorded = 0;
-
+                    
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
@@ -76,8 +73,7 @@ namespace RecordToMP3.Features.Recorder
                 return setMarkerCommand ?? (setMarkerCommand = new RelayCommand(
                     () =>
                     {
-                        Markers.Add(SecondsRecorded);
-                        RaisePropertyChanged(() => Markers);
+                        recorder.SetMarker();
                     },
                     () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
             }
@@ -86,7 +82,7 @@ namespace RecordToMP3.Features.Recorder
         #endregion
 
         #region Properties
-        public ObservableCollection<int> Markers { get; set; }
+        public Recorder Recorder { get { return recorder; } }
 
         public string StartButtonText
         {
@@ -113,15 +109,7 @@ namespace RecordToMP3.Features.Recorder
             set { leftAmplitude = value; RaisePropertyChanged(); }
         }
 
-        public int SecondsRecorded
-        {
-            get { return secondsRecorded; }
-            set
-            {
-                secondsRecorded = value;
-                RaisePropertyChanged();
-            }
-        }
+        public uint ProgressBarMaximum { get; set; }
 
         public RecorderView Owner
         {
@@ -132,7 +120,6 @@ namespace RecordToMP3.Features.Recorder
                     return;
 
                 owner = value;
-
                 RaisePropertyChanged();
             }
         }
@@ -150,8 +137,6 @@ namespace RecordToMP3.Features.Recorder
         #region Events
         private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
         {
-            SecondsRecorded = recorder.GetSecondsRecorded();
-
             if (owner != null && owner.WaveFormViewerLeft != null)
                 owner.WaveFormViewerLeft.AddValue(maxL, minL);
             if (owner != null && owner.WaveFormViewerRight != null)

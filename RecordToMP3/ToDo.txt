@@ -6,7 +6,7 @@ x Färgmarkering i waveform som visar var man är
 
 INSTÄLLNINGAAR
 - Inställning för genomsnittet på nivåmätaren
-- Inställning för minuter på progressbar
+x Inställning för minuter på progressbar
 
 FUNKTION
 - Spara markörer för att kunna klippa valda delar

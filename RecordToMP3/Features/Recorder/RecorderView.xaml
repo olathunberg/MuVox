@@ -49,7 +49,7 @@
         <DockPanel DockPanel.Dock="Top" Margin="10,0,10,10" LastChildFill="True">
             <StackPanel DockPanel.Dock="Top">
                 <TextBlock Style="{StaticResource Header}" Text="Recording time"/>
-                <TextBlock Style="{StaticResource defaultTextBlock}" Text="{Binding SecondsRecorded, Converter={StaticResource TenthSecondToStringConverter}}" FontSize="30" FontWeight="Bold"/>
+                <TextBlock Style="{StaticResource defaultTextBlock}" Text="{Binding Recorder.TenthOfSecondsRecorded, Converter={StaticResource TenthSecondToStringConverter}}" FontSize="30" FontWeight="Bold"/>
             </StackPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -79,7 +79,7 @@
                     </Grid.RowDefinitions>
                     <TextBlock Style="{StaticResource Header}" Text="Markers"/>
 
-                    <ListBox Style="{StaticResource ListBox}" Grid.Row="1" ItemsSource="{Binding Markers}"
+                    <ListBox Style="{StaticResource ListBox}" Grid.Row="1" ItemsSource="{Binding Recorder.Markers}"
                              BorderBrush="{StaticResource BorderBrushNormal}"
                              ScrollViewer.VerticalScrollBarVisibility="Visible">
                         <ListBox.ItemTemplate>
@@ -91,6 +91,6 @@
                 </Grid>
             </Grid>
         </DockPanel>
-        <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding SecondsRecorded}" Maximum="48000"/>
+        <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Recorder.TenthOfSecondsRecorded, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
     </DockPanel>
 </UserControl>
