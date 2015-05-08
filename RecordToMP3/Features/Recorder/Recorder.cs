@@ -21,6 +21,8 @@ namespace RecordToMP3.Features.Recorder
         private WaveIn waveIn;
         private WaveFileWriter writer;
         private RecordingState recordingState;
+        private string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
+        private string outputFilenameBase;
         #endregion
 
         #region Constructors
@@ -133,6 +135,19 @@ namespace RecordToMP3.Features.Recorder
         public void SetMarker()
         {
             Markers.Add(GetTenthOfSecondsRecorded());
+
+            var fileName = Path.Combine(outputFolder, outputFilenameBase) + ".markers";
+            if (!File.Exists(fileName))
+            {
+                using (var sw = File.CreateText(fileName))
+                    sw.WriteLine(Markers.Last().ToString());
+            }
+            else
+            {
+                using (var sw = File.AppendText(fileName))
+                    sw.WriteLine(Markers.Last().ToString());
+            }
+
             RaisePropertyChanged(() => Markers);
         }
 
@@ -154,10 +169,10 @@ namespace RecordToMP3.Features.Recorder
         {
             if (writer == null)
             {
-                var outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
+                outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
-                var outputFilename = String.Format("RecordToMP3 {0:yyyy-MM-dd HH-mm-ss}", DateTime.Now);
-                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilename) + ".wav", waveIn.WaveFormat);
+                outputFilenameBase = String.Format("RecordToMP3 {0:yyyy-MM-dd HH-mm-ss}", DateTime.Now);
+                writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
                 if (Markers == null)
                     Markers = new ObservableCollection<int>();
@@ -176,6 +191,8 @@ namespace RecordToMP3.Features.Recorder
         public void StopRecording()
         {
             recordingState = RecordingState.RequestedStop;
+            if (Markers != null)
+                Markers.Clear();
         }
 
         public void Cleanup()
