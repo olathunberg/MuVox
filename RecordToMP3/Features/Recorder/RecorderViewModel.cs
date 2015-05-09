@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using RecordToMP3.Features.Messages;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,10 +11,9 @@ using System.Windows.Input;
 
 namespace RecordToMP3.Features.Recorder
 {
-    class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase
+    public class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
         #region Fields
-        private RecorderView owner;
         private float rightAmplitude = 0f;
         private float leftAmplitude = 0f;
         private Recorder recorder;
@@ -27,7 +28,7 @@ namespace RecordToMP3.Features.Recorder
         {
             recorder = new Recorder();
             recorder.NewSample = RecorderNewSample;
-            ProgressBarMaximum = Convert.ToUInt32(ConfigurationManager.AppSettings["UI_MinutesOnProgressBar"]) * 600;
+            ProgressBarMaximum = Properties.Settings.Default.UI_MinutesOnProgressBar * 600;
         }
         #endregion
 
@@ -42,7 +43,7 @@ namespace RecordToMP3.Features.Recorder
                     {
                         if (recorder != null)
                             recorder.StartRecording();
-                      
+
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => true));
@@ -58,7 +59,7 @@ namespace RecordToMP3.Features.Recorder
                     () =>
                     {
                         recorder.StopRecording();
-                    
+
                         RaisePropertyChanged(() => StartButtonText);
                     },
                     () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
@@ -79,6 +80,21 @@ namespace RecordToMP3.Features.Recorder
             }
         }
 
+        private RelayCommand processCommand;
+        private Tuple<float, float> newLeftPoint;
+        private Tuple<float, float> newRightPoint;
+        public ICommand Process
+        {
+            get
+            {
+                return processCommand ?? (processCommand = new RelayCommand(
+                    () =>
+                    {
+                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Processor));
+                    },
+                    () => recorder.RecordingState != RecordingState.Recording || recorder.RecordingState != RecordingState.Paused));
+            }
+        }
         #endregion
 
         #region Properties
@@ -109,20 +125,19 @@ namespace RecordToMP3.Features.Recorder
             set { leftAmplitude = value; RaisePropertyChanged(); }
         }
 
-        public uint ProgressBarMaximum { get; set; }
-
-        public RecorderView Owner
+        public Tuple<float, float> NewLeftPoint
         {
-            get { return owner; }
-            set
-            {
-                if (owner == value)
-                    return;
-
-                owner = value;
-                RaisePropertyChanged();
-            }
+            get { return newLeftPoint; }
+            set { newLeftPoint = value; RaisePropertyChanged(); }
         }
+
+        public Tuple<float, float> NewRightPoint
+        {
+            get { return newRightPoint; }
+            set { newRightPoint = value; RaisePropertyChanged(); }
+        }
+        
+        public uint ProgressBarMaximum { get; set; }
         #endregion
 
         #region Overrides
@@ -137,11 +152,9 @@ namespace RecordToMP3.Features.Recorder
         #region Events
         private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
         {
-            if (owner != null && owner.WaveFormViewerLeft != null)
-                owner.WaveFormViewerLeft.AddValue(maxL, minL);
-            if (owner != null && owner.WaveFormViewerRight != null)
-                owner.WaveFormViewerRight.AddValue(maxR, minR);
-
+            NewRightPoint = new Tuple<float, float>(maxR, minR);
+            NewLeftPoint = new Tuple<float, float>(maxL, minL);
+            
             amplitudesL.Enqueue(maxL);
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
             if (amplitudesL.Count > 3) amplitudesL.Dequeue();

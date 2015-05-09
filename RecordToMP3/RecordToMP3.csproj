@@ -90,17 +90,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Features\Messages\GotoPageMessage.cs" />
+    <Compile Include="Features\Messages\Pages.cs" />
+    <Compile Include="Features\Processor\ProcessorView.xaml.cs">
+      <DependentUpon>ProcessorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Processor\ProcessorViewModel.cs" />
     <Compile Include="Features\Recorder\Recorder.cs" />
     <Compile Include="Features\Recorder\RecorderView.xaml.cs">
       <DependentUpon>RecorderView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Features\Recorder\RecordingState.cs" />
-    <Compile Include="Features\Recorder\RecordViewModel.cs" />
+    <Compile Include="Features\Recorder\RecorderViewModel.cs" />
+    <Compile Include="MainWindowModel.cs" />
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
     <Compile Include="UI Features\VolumeMeter\VolumeMeter.cs" />
     <Compile Include="UI Features\WaveFormViewer\WaveFormViewer.xaml.cs">
       <DependentUpon>WaveFormViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModelLocator.cs" />
+    <Page Include="Features\Processor\ProcessorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Features\Recorder\RecorderView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -52,6 +53,23 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
             ClearAllPoints();
         }
+        #endregion
+
+        #region Dependency properties
+        public Tuple<float, float> AddPoint
+        {
+            get { return (Tuple<float, float>)GetValue(AddPointProperty); }
+            set { SetValue(AddPointProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Point.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AddPointProperty =
+            DependencyProperty.Register("AddPoint", typeof(Tuple<float, float>), typeof(WaveFormViewer), new PropertyMetadata(new Tuple<float, float>(0f, 0f),(s, e) =>
+                {
+                    if (e.NewValue == null) return;
+                    var newValue = e.NewValue as Tuple<float, float>;
+                    (s as WaveFormViewer).AddValue(newValue.Item1, newValue.Item2);
+                }));
         #endregion
 
         #region Private methods

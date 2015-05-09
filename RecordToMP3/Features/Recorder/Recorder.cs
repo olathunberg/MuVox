@@ -15,7 +15,7 @@ using System.Windows.Threading;
 
 namespace RecordToMP3.Features.Recorder
 {
-    internal class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup
+    public class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup
     {
         #region Fields
         private WaveIn waveIn;
@@ -125,10 +125,23 @@ namespace RecordToMP3.Features.Recorder
                 rdr.CopyTo(wtr);
             }
         }
+    
+        private int GetTenthOfSecondsRecorded()
+        {
+            if (writer != null)
+                return (int)(writer.Length / (writer.WaveFormat.AverageBytesPerSecond / 10));
+            else
+                return 0;
+        }
         #endregion
 
         #region Properties
         public ObservableCollection<int> Markers { get; set; }
+        
+        public int TenthOfSecondsRecorded
+        {
+            get { return GetTenthOfSecondsRecorded(); }
+        }
         #endregion
 
         #region Public methods
@@ -151,27 +164,13 @@ namespace RecordToMP3.Features.Recorder
             RaisePropertyChanged(() => Markers);
         }
 
-        public int TenthOfSecondsRecorded
-        {
-            get { return GetTenthOfSecondsRecorded(); }
-
-        }
-
-        private int GetTenthOfSecondsRecorded()
-        {
-            if (writer != null)
-                return (int)(writer.Length / (writer.WaveFormat.AverageBytesPerSecond / 10));
-            else
-                return 0;
-        }
-
         public void StartRecording()
         {
             if (writer == null)
             {
                 outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
-                outputFilenameBase = String.Format("RecordToMP3 {0:yyyy-MM-dd HH-mm-ss}", DateTime.Now);
+                outputFilenameBase = String.Format(Properties.Settings.Default.RECORDER_Filename, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
                 if (Markers == null)
@@ -179,7 +178,7 @@ namespace RecordToMP3.Features.Recorder
 
                 Markers.Clear();
             }
-            // Bryt ut till egen funktion
+         
             if (recordingState == RecordingState.Monitoring)
                 recordingState = RecordingState.Recording;
             else if (recordingState == RecordingState.Recording)

@@ -33,7 +33,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
 
         // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AmplitudeProperty =
-            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(-3.0f, (s, e) =>
+            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(0f, (s, e) =>
                 {
                     if (e.OldValue != e.NewValue)
                         (s as FrameworkElement).InvalidateVisual();

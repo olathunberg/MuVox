@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:RecordToMP3.UI_Features.Converters"
+             x:Class="RecordToMP3.Features.Processor.ProcessorView" 
+             Focusable="True"
+             DataContext="{Binding Processor, Source={StaticResource ViewModelLocator}}"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButton}">
+                <Setter Property="MinWidth" Value="150"/>
+                <Setter Property="MinHeight" Value="50"/>
+                <Setter Property="Margin" Value="10,10"/>
+            </Style>
+            <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="F1" Command="{Binding Record}"/>
+    </UserControl.InputBindings>
+
+    <DockPanel Width="Auto" x:Name="MainGrid" LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+            <Button Content="RECORD (F1)"/>
+            <Button Content="START PROCESSING (F5)"/>
+            <Button Content="UPLOAD (F6)" IsEnabled="False"/>
+            <Button Content="BURN CD (F7)" IsEnabled="False"/>
+        </StackPanel>
+
+        <ProgressBar DockPanel.Dock="Bottom" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Recorder.TenthOfSecondsRecorded, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
+    </DockPanel>
+</UserControl>

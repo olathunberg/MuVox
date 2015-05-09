@@ -9,8 +9,10 @@ INSTÄLLNINGAAR
 x Inställning för minuter på progressbar
 
 FUNKTION
-- Spara markörer för att kunna klippa valda delar
+x Spara markörer för att kunna klippa valda delar
+- Flytta markörer, kunna spela upp från vald markör
 - Efterbehandling, normalisering
 - Efterbehandling, brusreducering
+- Efterbehandling, radera tomrum
 
 x Flytta all inspelningslogik till Recorder

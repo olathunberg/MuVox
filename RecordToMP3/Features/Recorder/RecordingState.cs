@@ -2,7 +2,7 @@
 
 namespace RecordToMP3.Features.Recorder
 {
-    internal enum RecordingState
+    public enum RecordingState
     {
         Paused,
         Stopped,
