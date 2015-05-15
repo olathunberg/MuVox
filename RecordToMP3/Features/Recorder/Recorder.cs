@@ -173,6 +173,9 @@ namespace RecordToMP3.Features.Recorder
                 outputFilenameBase = String.Format(Properties.Settings.Default.RECORDER_Filename, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
+                Properties.Settings.Default.RECORDER_LastFile = writer.Filename;
+                Properties.Settings.Default.Save();
+
                 if (Markers == null)
                     Markers = new ObservableCollection<int>();
 

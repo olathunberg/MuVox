@@ -6,7 +6,10 @@
       <Value Profile="(Default)">80</Value>
     </Setting>
     <Setting Name="RECORDER_Filename" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">RecordToMP3 {0:yyyy-MM-dd HH-mm-ss}</Value>
+      <Value Profile="(Default)">RecordToMP3 {0:yyyy-MM-dd HHmmss}</Value>
+    </Setting>
+    <Setting Name="RECORDER_LastFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

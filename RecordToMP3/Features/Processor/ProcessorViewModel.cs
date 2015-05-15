@@ -14,6 +14,7 @@ namespace RecordToMP3.Features.Processor
     public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
         #region Fields
+        private string progressText;
         #endregion
 
         #region Constructors
@@ -38,10 +39,35 @@ namespace RecordToMP3.Features.Processor
             }
         }
 
+        private RelayCommand startProcessingCommand;
+        public ICommand StartProcessing
+        {
+            get
+            {
+                return startProcessingCommand ?? (startProcessingCommand = new RelayCommand(
+                    () =>
+                    {
+                        ProgressText += "Started processing";
+                    },
+                    () => true));
+            }
+        }
         #endregion
 
         #region Properties
         public uint ProgressBarMaximum { get; set; }
+
+        public string FileName { get { return Properties.Settings.Default.RECORDER_LastFile; } }
+       
+        public string ProgressText
+        {
+            get { return progressText; }
+            set
+            {
+                progressText = value;
+                RaisePropertyChanged();
+            }
+        }
         #endregion
 
         #region Overrides
