@@ -92,6 +92,9 @@
     </ApplicationDefinition>
     <Compile Include="Features\Messages\GotoPageMessage.cs" />
     <Compile Include="Features\Messages\Pages.cs" />
+    <Compile Include="Features\Processor\Effects\FastAttckCompressor1175.cs" />
+    <Compile Include="Features\Processor\Effects\Setting.cs" />
+    <Compile Include="Features\Processor\Effects\WaveFileCutter.cs" />
     <Compile Include="Features\Processor\ProcessorView.xaml.cs">
       <DependentUpon>ProcessorView.xaml</DependentUpon>
     </Compile>
