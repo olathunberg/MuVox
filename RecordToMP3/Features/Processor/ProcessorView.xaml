@@ -32,8 +32,15 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Command="{Binding Record}">
+
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Command="{Binding Record}">
                 <StackPanel Orientation="Horizontal">
                     <Path Width="27.3125" Height="31.6667" Canvas.Left="22.1667" Canvas.Top="22.1667" Stretch="Fill" 
                           Fill="{StaticResource Foreground}" 
@@ -41,10 +48,10 @@
                     <TextBlock Text="RECORDING (F1)" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
             </Button>
-            <Button Content="START PROCESSING (F5)" Command="{Binding StartProcessing}"/>
-            <Button Content="UPLOAD (F6)" IsEnabled="False"/>
-            <Button Content="BURN CD (F7)" IsEnabled="False"/>
-        </StackPanel>
+            <Button Grid.Column="1" Content="START PROCESSING (F5)" Command="{Binding StartProcessing}"/>
+            <Button Grid.Column="2" Content="UPLOAD (F6)" IsEnabled="False"/>
+            <Button Grid.Column="3" Content="BURN TO CD (F7)" IsEnabled="False"/>
+        </Grid>
 
         <Grid Grid.Row="1" Margin="10,0,10,10">
             <Grid.RowDefinitions>
@@ -52,17 +59,18 @@
                 <RowDefinition Height="5"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            
+
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="File:" Margin="0,0,5,0" Style="{StaticResource defaultTextBlock}"/>
                 <TextBlock Text="{Binding FileName}" Style="{StaticResource defaultTextBlock}"/>
             </StackPanel>
-            
+
             <TextBox Grid.Row="2" 
                      Text="{Binding ProgressText}"
+                     IsReadOnly="True"
                      VerticalScrollBarVisibility="Visible"/>
         </Grid>
-        
+
         <ProgressBar Grid.Row="10" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Recorder.TenthOfSecondsRecorded, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
     </Grid>
 </UserControl>
