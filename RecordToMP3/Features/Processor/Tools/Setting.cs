@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordToMP3.Features.Processor.Effects
+namespace RecordToMP3.Features.Processor.Tools
 {
     public class Setting<T>
     {

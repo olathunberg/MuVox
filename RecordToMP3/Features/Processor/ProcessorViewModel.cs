@@ -3,14 +3,9 @@ using GalaSoft.MvvmLight.Messaging;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using RecordToMP3.Features.Messages;
-using RecordToMP3.Features.Processor.Effects;
+using RecordToMP3.Features.Processor.Tools;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -50,40 +45,11 @@ namespace RecordToMP3.Features.Processor
             get
             {
                 return startProcessingCommand ?? (startProcessingCommand = new RelayCommand(
-                    () =>
-                    {
-                        Task.Run(async () =>
-                            {
-                                ProgressText = "Started processing";
-                                ProgressText += Environment.NewLine + "Running compressor...";
-
-                                using (var reader = new WaveFileReader(FileName))
-                                {
-                                    var sampleReader = new Pcm16BitToSampleProvider(reader);
-                                    var compressor = new Effects.FastAttackCompressor1175(sampleReader);
-                                    WaveFileWriter.CreateWaveFile16(FileName + ".compress", compressor);
-                                }
-
-                                ProgressText += Environment.NewLine + "Splitting into tracks...";
-                                await WaveFileCutter.CutWavFileFromMarkersFile(
-                                    Path.ChangeExtension(FileName, ".markers"),
-                                    FileName,
-                                    message => ProgressText += Environment.NewLine + message);
-
-                                ProgressText += Environment.NewLine + "Running normalizer on segments...";
-
-                                // Skapa en klass som normaliserar en fil och kör den på alla filer som ovan splitter returnerat
-                                await Task.Delay(1000);
-
-                                ProgressText += Environment.NewLine + "Finished processing";
-                            });
-                    },
+                   async () => await ProcessFile(),
                     () => true));
             }
         }
         #endregion
-
-
 
         #region Properties
         public uint ProgressBarMaximum { get; set; }
@@ -105,6 +71,35 @@ namespace RecordToMP3.Features.Processor
         public override void Cleanup()
         {
             base.Cleanup();
+        }
+        #endregion
+
+        #region Private methods
+        private async Task ProcessFile()
+        {
+            ProgressText = "Started processing";
+            ProgressText += Environment.NewLine + "Running compressor...";
+
+            using (var reader = new WaveFileReader(FileName))
+            {
+                var sampleReader = new Pcm16BitToSampleProvider(reader);
+                var compressor = new FastAttackCompressor1175(sampleReader);
+                WaveFileWriter.CreateWaveFile16(FileName + ".compress", compressor);
+            }
+
+            ProgressText += Environment.NewLine + "Splitting into tracks...";
+            var waveFileCutter = new WaveFileCutter();
+            await waveFileCutter.CutWavFileFromMarkersFile(
+                Path.ChangeExtension(FileName, ".markers"),
+                FileName,
+                message => ProgressText += Environment.NewLine + message);
+
+            ProgressText += Environment.NewLine + "Running normalizer on segments...";
+
+            var normalizer = new Normalizer();
+            await normalizer.Normalize(FileName, message => ProgressText += Environment.NewLine + message);
+
+            ProgressText += Environment.NewLine + "Finished processing";
         }
         #endregion
 

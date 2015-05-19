@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordToMP3.Features.Processor.Effects
+namespace RecordToMP3.Features.Processor.Tools
 {
-    public static class WaveFileCutter
+    public class WaveFileCutter
     {
-        public static Task CutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
+        public Task CutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
         {
             return Task.Run(() => DoCutWavFileFromMarkersFile(markerFilename, baseFilename, progressCallback));
         }
 
-        public static void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom)
+        public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom)
         {
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
@@ -31,7 +31,7 @@ namespace RecordToMP3.Features.Processor.Effects
             }
         }
 
-        public static void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo)
+        public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo)
         {
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
@@ -48,7 +48,7 @@ namespace RecordToMP3.Features.Processor.Effects
             }
         }
 
-        private static void DoCutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
+        private void DoCutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
         {
             if (File.Exists(markerFilename))
             {
@@ -81,7 +81,7 @@ namespace RecordToMP3.Features.Processor.Effects
             }
         }
 
-        private static void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos)
+        private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos)
         {
             reader.Position = startPos;
             byte[] buffer = new byte[1024];
