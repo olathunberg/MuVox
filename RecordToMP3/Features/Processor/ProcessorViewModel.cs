@@ -78,26 +78,20 @@ namespace RecordToMP3.Features.Processor
         private async Task ProcessFile()
         {
             ProgressText = "Started processing";
-            ProgressText += Environment.NewLine + "Running compressor...";
-
-            using (var reader = new WaveFileReader(FileName))
-            {
-                var sampleReader = new Pcm16BitToSampleProvider(reader);
-                var compressor = new FastAttackCompressor1175(sampleReader);
-                WaveFileWriter.CreateWaveFile16(FileName + ".compress", compressor);
-            }
-
+          
             ProgressText += Environment.NewLine + "Splitting into tracks...";
             var waveFileCutter = new WaveFileCutter();
-            await waveFileCutter.CutWavFileFromMarkersFile(
-                Path.ChangeExtension(FileName, ".markers"),
-                FileName,
-                message => ProgressText += Environment.NewLine + message);
-
-            ProgressText += Environment.NewLine + "Running normalizer on segments...";
+            var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
+                 Path.ChangeExtension(FileName, ".markers"),
+                 FileName,
+                 message => ProgressText += Environment.NewLine + message);
 
             var normalizer = new Normalizer();
-            await normalizer.Normalize(FileName, message => ProgressText += Environment.NewLine + message);
+            foreach (var item in cuttedFiles)
+            {
+                ProgressText += Environment.NewLine + string.Format("Processing segment {0}...", item);
+                await normalizer.Normalize(item, message => ProgressText += Environment.NewLine + message);
+            }
 
             ProgressText += Environment.NewLine + "Finished processing";
         }

@@ -1,14 +1,10 @@
 ﻿using NAudio.Wave;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordToMP3.Features.Processor.Tools
 {
-    public class SampleAggregator : ISampleProvider
+    public class MaxSampleAggregator : ISampleProvider
     {
         // volume
         public event EventHandler<MaxSampleEventArgs> MaximumCalculated;
@@ -21,7 +17,7 @@ namespace RecordToMP3.Features.Processor.Tools
 
         private readonly int channels;
 
-        public SampleAggregator(ISampleProvider source, int fftLength = 1024)
+        public MaxSampleAggregator(ISampleProvider source, int fftLength = 1024)
         {
             channels = source.WaveFormat.Channels;
             this.source = source;
@@ -41,9 +37,8 @@ namespace RecordToMP3.Features.Processor.Tools
             if (count >= NotificationCount && NotificationCount > 0)
             {
                 if (MaximumCalculated != null)
-                {
                     MaximumCalculated(this, new MaxSampleEventArgs(minValue, maxValue));
-                }
+
                 Reset();
             }
         }

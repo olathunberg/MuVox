@@ -115,10 +115,8 @@ namespace RecordToMP3.Features.Recorder
         #region Private methods
         private void ConvertWavStreamToMp3File(ref MemoryStream ms, string savetofilename)
         {
-            //rewind to beginning of stream
             ms.Seek(0, SeekOrigin.Begin);
 
-            using (var retMs = new MemoryStream())
             using (var rdr = new WaveFileReader(ms))
             using (var wtr = new LameMP3FileWriter(savetofilename, rdr.WaveFormat, LAMEPreset.VBR_90))
             {

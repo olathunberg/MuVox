@@ -132,16 +132,16 @@ namespace RecordToMP3.Features.Processor.Tools
             cratio = 0;
             rundb = 0;
             overdb = 0;
-            ratatcoef = exp(-1 / (0.00001f * SampleRate));
-            ratrelcoef = exp(-1 / (0.5f * SampleRate));
-            atcoef = exp(-1 / (attime * SampleRate));
-            relcoef = exp(-1 / (reltime * SampleRate));
+            ratatcoef = (float)Math.Exp(-1 / (0.00001f * SampleRate));
+            ratrelcoef = (float)Math.Exp(-1 / (0.5f * SampleRate));
+            atcoef = (float)Math.Exp(-1 / (attime * SampleRate));
+            relcoef = (float)Math.Exp(-1 / (reltime * SampleRate));
             mix = 1;
             gr_meter = 1;
-            gr_meter_decay = exp(1 / (1 * SampleRate));
+            gr_meter_decay = (float)Math.Exp(1 / (1 * SampleRate));
 
             thresh = Threshold.Value;
-            threshv = exp(Threshold.Value * db2log);
+            threshv = (float)Math.Exp(Threshold.Value * db2log);
             ratio = (Ratio.Value == 0 ? 4 : (Ratio.Value == 1 ? 8 : (Ratio.Value == 2 ? 12 : (Ratio.Value == 3 ? 20 : 20))));
             if (Ratio.Value == 4)
             {
@@ -154,13 +154,13 @@ namespace RecordToMP3.Features.Processor.Tools
                 cratio = ratio;
             }
             cthresh = (softknee != 0) ? (Threshold.Value - 3) : Threshold.Value;
-            cthreshv = exp(cthresh * db2log);
+            cthreshv = (float)Math.Exp(cthresh * db2log);
             makeup = Gain.Value;
-            makeupv = exp((makeup + autogain) * db2log);
+            makeupv = (float)Math.Exp((makeup + autogain) * db2log);
             attime = Attack.Value / 1000000;
             reltime = Release.Value / 1000;
-            atcoef = exp(-1 / (attime * SampleRate));
-            relcoef = exp(-1 / (reltime * SampleRate));
+            atcoef = (float)Math.Exp(-1 / (attime * SampleRate));
+            relcoef = (float)Math.Exp(-1 / (reltime * SampleRate));
             mix = Mix.Value / 100;
         }
 
@@ -173,9 +173,9 @@ namespace RecordToMP3.Features.Processor.Tools
             float maxspl = Math.Max(aspl0, aspl1);
             maxspl = maxspl * maxspl;
             runave = maxspl + rmscoef * (runave - maxspl);
-            float det = sqrt(max(0, runave));
+            float det = (float)Math.Sqrt(Math.Max(0f, runave));
 
-            overdb = 2.08136898f * log(det / cthreshv) * log2db;
+            overdb = 2.08136898f * (float)Math.Log(det / cthreshv) * log2db;
             overdb = Math.Max(0, overdb);
 
             if (overdb - rundb > 5) averatio = 4;
@@ -199,7 +199,7 @@ namespace RecordToMP3.Features.Processor.Tools
                 cratio = ratio;
 
             float gr = -overdb * (cratio - 1) / cratio;
-            float grv = exp(gr * db2log);
+            float grv = (float)Math.Exp(gr * db2log);
 
             runmax = maxover + relcoef * (runmax - maxover);  // highest peak for setting att/rel decays in reltime
             maxover = runmax;
@@ -238,22 +238,6 @@ namespace RecordToMP3.Features.Processor.Tools
         #endregion
 
         #region Private methods
-        private float PI { get { return (float)Math.PI; } }
-
-        private float abs(float a) { return Math.Abs(a); }
-
-        private float cos(float a) { return (float)Math.Cos(a); }
-
-        private float exp(float a) { return (float)Math.Exp(a); }
-
-        private float log(float a) { return (float)Math.Log(a); }
-
-        private float max(float a, float b) { return Math.Max(a, b); }
-
-        private float min(float a, float b) { return Math.Min(a, b); }
-
-        private float pow(float a, float b) { return (float)Math.Pow(a, b); }
-
         private void Process(float[] buffer, int offset, int count)
         {
             int samples = count;
@@ -278,12 +262,6 @@ namespace RecordToMP3.Features.Processor.Tools
                 }
             }
         }
-        private float sign(float a) { return Math.Sign(a); }
-
-        private float sin(float a) { return (float)Math.Sin(a); }
-
-        private float sqrt(float a) { return (float)Math.Sqrt(a); }
-        private float tan(float a) { return (float)Math.Tan(a); }
         #endregion
     }
 }

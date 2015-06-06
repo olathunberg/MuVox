@@ -111,8 +111,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <TextBlock Style="{StaticResource Header}" Text="Markers"/>
-
+                  
                         <ListBox Style="{StaticResource ListBox}" Grid.Row="1" ItemsSource="{Binding Recorder.Markers}"
                              BorderBrush="{StaticResource BorderBrushNormal}"
                              ScrollViewer.VerticalScrollBarVisibility="Visible">

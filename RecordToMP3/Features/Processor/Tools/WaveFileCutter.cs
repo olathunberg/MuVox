@@ -10,9 +10,9 @@ namespace RecordToMP3.Features.Processor.Tools
 {
     public class WaveFileCutter
     {
-        public Task CutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
+        public Task<List<string>> CutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
         {
-            return Task.Run(() => DoCutWavFileFromMarkersFile(markerFilename, baseFilename, progressCallback));
+            return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(markerFilename, baseFilename, progressCallback));
         }
 
         public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom)
@@ -48,11 +48,12 @@ namespace RecordToMP3.Features.Processor.Tools
             }
         }
 
-        private void DoCutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
+        private List<string> DoCutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> progressCallback)
         {
             if (File.Exists(markerFilename))
             {
-                List<int> markers = new List<int>();
+                var markers = new List<int>();
+                var newFiles = new List<string>();
 
                 using (var file = File.OpenText(markerFilename))
                 {
@@ -72,13 +73,22 @@ namespace RecordToMP3.Features.Processor.Tools
                     var start = new TimeSpan(0, 0, 0, 0, marker * 100);
                     var end = new TimeSpan(0, 0, 0, 0, nextMarker * 100);
                     progressCallback("Creating segment " + (i + 1));
-                    CutWavFile(baseFilename, baseFilename + "." + i.ToString() + ".wav", start, end);
+
+                    var newFilename = Path.ChangeExtension(baseFilename, "." + i.ToString() + ".wav");
+                    CutWavFile(baseFilename, newFilename, start, end);
                     marker = nextMarker;
+                    newFiles.Add(newFilename);
                 }
                 progressCallback("Creating segment " + (markers.Count + 1));
                 var start2 = new TimeSpan(0, 0, 0, 0, marker * 100);
-                CutWavFileToEnd(baseFilename, baseFilename + "." + (markers.Count).ToString() + ".wav", start2);
+
+                var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count).ToString() + ".wav");
+                CutWavFileToEnd(baseFilename, lastFilename, start2);
+                newFiles.Add(lastFilename);
+
+                return newFiles;
             }
+            return new List<string>();
         }
 
         private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos)

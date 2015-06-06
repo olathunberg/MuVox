@@ -1,8 +1,10 @@
 ﻿GUI
-x Egen implementation av raltids GUI, tar för mycket kraft
+x Egen implementation av realtids GUI, tar för mycket kraft
 x Effetivare grafer, rita bara om den ändrade biten
 x Färgmarkering i waveform som visar var man är
 - Visa maxvärdet ur genomsnittet på nivåmätaren
+- Färgmarkera knappar, grön för start röd för stop osv
+- Se till att nedersta raden alltid är synlig i loggen
 
 INSTÄLLNINGAAR
 - Inställning för genomsnittet på nivåmätaren
@@ -11,8 +13,8 @@ x Inställning för minuter på progressbar
 FUNKTION
 x Spara markörer för att kunna klippa valda delar
 - Flytta markörer, kunna spela upp från vald markör
-- Efterbehandling, normalisering
-- Efterbehandling, brusreducering
+x Efterbehandling, normalisering
+x Efterbehandling, brusreducering
 - Efterbehandling, radera tomrum
 
 x Flytta all inspelningslogik till Recorder

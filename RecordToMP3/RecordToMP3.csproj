@@ -92,9 +92,10 @@
     </ApplicationDefinition>
     <Compile Include="Features\Messages\GotoPageMessage.cs" />
     <Compile Include="Features\Messages\Pages.cs" />
+    <Compile Include="Features\Processor\Tools\NormalizeProvider.cs" />
     <Compile Include="Features\Processor\Tools\FastAttckCompressor1175.cs" />
     <Compile Include="Features\Processor\Tools\Normalizer.cs" />
-    <Compile Include="Features\Processor\Tools\SampleProvider.cs" />
+    <Compile Include="Features\Processor\Tools\MaxSampleAggregator.cs" />
     <Compile Include="Features\Processor\Tools\Setting.cs" />
     <Compile Include="Features\Processor\Tools\WaveFileCutter.cs" />
     <Compile Include="Features\Processor\ProcessorView.xaml.cs">
