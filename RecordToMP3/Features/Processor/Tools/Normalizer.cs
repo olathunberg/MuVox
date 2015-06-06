@@ -1,4 +1,5 @@
-﻿using NAudio.Wave;
+﻿using NAudio.Lame;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
@@ -29,18 +30,20 @@ namespace RecordToMP3.Features.Processor.Tools
                 WaveFileWriter.CreateWaveFile16(tempFile, compressor);
             }
 
+            File.Delete(baseFilename);
             progressCallback("Getting max value...");
-            var maxValue = GetMaxValue(baseFilename);
+            var maxValue = GetMaxValue(tempFile);
             progressCallback("Found max: " + maxValue.ToString());
 
             progressCallback("Normalizing...");
-
             using (var reader = new WaveFileReader(tempFile))
             {
                 var sampleReader = new Pcm16BitToSampleProvider(reader);
                 var compressor = new NormalizeProvider(sampleReader, .98f / maxValue);
                 WaveFileWriter.CreateWaveFile16(baseFilename, compressor);
             }
+
+            File.Delete(tempFile);
         }
 
         private float GetMaxValue(string baseFilename)

@@ -52,5 +52,17 @@ namespace RecordToMP3.Properties {
                 this["RECORDER_LastFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("160")]
+        public int PROCESSOR_MP3Quality {
+            get {
+                return ((int)(this["PROCESSOR_MP3Quality"]));
+            }
+            set {
+                this["PROCESSOR_MP3Quality"] = value;
+            }
+        }
     }
 }

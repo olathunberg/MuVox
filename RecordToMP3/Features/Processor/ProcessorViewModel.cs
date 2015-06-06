@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using NAudio.Lame;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using RecordToMP3.Features.Messages;
@@ -91,7 +92,14 @@ namespace RecordToMP3.Features.Processor
             {
                 ProgressText += Environment.NewLine + string.Format("Processing segment {0}...", item);
                 await normalizer.Normalize(item, message => ProgressText += Environment.NewLine + message);
-            }
+
+                // Create MP3
+                using (var reader = new WaveFileReader(item))
+                using (var wtr = new LameMP3FileWriter(Path.ChangeExtension(item, ".mp3"), reader.WaveFormat, Properties.Settings.Default.PROCESSOR_MP3Quality))
+                    reader.CopyTo(wtr);
+
+                File.Delete(item);
+             }
 
             ProgressText += Environment.NewLine + "Finished processing";
         }

@@ -11,5 +11,8 @@
     <Setting Name="RECORDER_LastFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="PROCESSOR_MP3Quality" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">160</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
