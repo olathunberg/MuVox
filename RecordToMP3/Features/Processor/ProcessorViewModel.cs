@@ -16,12 +16,14 @@ namespace RecordToMP3.Features.Processor
     {
         #region Fields
         private string progressText;
+        private LogViewer.LogViewerModel logViewerModel;
         #endregion
 
         #region Constructors
         public ProcessorViewModel()
         {
             ProgressBarMaximum = Properties.Settings.Default.UI_MinutesOnProgressBar * 600;
+            LogViewerModel = new LogViewer.LogViewerModel();
         }
         #endregion
 
@@ -57,13 +59,13 @@ namespace RecordToMP3.Features.Processor
 
         public string FileName { get { return Properties.Settings.Default.RECORDER_LastFile; } }
 
-        public string ProgressText
+        public LogViewer.LogViewerModel LogViewerModel
         {
-            get { return progressText; }
+            get { return logViewerModel; }
             set
             {
-                progressText = value;
-                RaisePropertyChanged();
+                logViewerModel = value;
+                RaisePropertyChanged(() => LogViewerModel);
             }
         }
         #endregion
@@ -78,20 +80,20 @@ namespace RecordToMP3.Features.Processor
         #region Private methods
         private async Task ProcessFile()
         {
-            ProgressText = "Started processing";
+            LogViewerModel.Add("Started processing");
           
-            ProgressText += Environment.NewLine + "Splitting into tracks...";
+            LogViewerModel.Add("Splitting into tracks...");
             var waveFileCutter = new WaveFileCutter();
             var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
                  Path.ChangeExtension(FileName, ".markers"),
                  FileName,
-                 message => ProgressText += Environment.NewLine + message);
+                 message => LogViewerModel.Add(message));
 
             var normalizer = new Normalizer();
             foreach (var item in cuttedFiles)
             {
-                ProgressText += Environment.NewLine + string.Format("Processing segment {0}...", item);
-                await normalizer.Normalize(item, message => ProgressText += Environment.NewLine + message);
+               LogViewerModel.Add( string.Format("Processing segment {0}...", item));
+                await normalizer.Normalize(item, message => LogViewerModel.Add(message));
 
                 // Create MP3
                 using (var reader = new WaveFileReader(item))
@@ -101,7 +103,7 @@ namespace RecordToMP3.Features.Processor
                 File.Delete(item);
              }
 
-            ProgressText += Environment.NewLine + "Finished processing";
+            LogViewerModel.Add("Finished processing");
         }
         #endregion
 

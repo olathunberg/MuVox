@@ -90,6 +90,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Features\LogViewer\LogEntryModel.cs" />
+    <Compile Include="Features\LogViewer\LogViewerModel.cs" />
+    <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">
+      <DependentUpon>LogViewerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Features\Messages\GotoPageMessage.cs" />
     <Compile Include="Features\Messages\Pages.cs" />
     <Compile Include="Features\Processor\Tools\NormalizeProvider.cs" />
@@ -115,6 +120,10 @@
       <DependentUpon>WaveFormViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModelLocator.cs" />
+    <Page Include="Features\LogViewer\LogViewerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Features\Processor\ProcessorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
