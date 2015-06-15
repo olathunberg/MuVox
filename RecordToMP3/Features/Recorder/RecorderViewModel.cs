@@ -156,12 +156,12 @@ namespace RecordToMP3.Features.Recorder
             NewLeftPoint = new Tuple<float, float>(maxL, minL);
             
             amplitudesL.Enqueue(maxL);
+            if (amplitudesL.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
-            if (amplitudesL.Count > 3) amplitudesL.Dequeue();
 
             amplitudesR.Enqueue(maxL);
+            if (amplitudesR.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
-            if (amplitudesR.Count > 3) amplitudesR.Dequeue();
         }
         #endregion
     }

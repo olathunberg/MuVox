@@ -88,7 +88,7 @@ namespace RecordToMP3.Features.Processor.Tools
 
                 return newFiles;
             }
-            return new List<string>();
+            return new List<string>() { baseFilename };
         }
 
         private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos)

@@ -4,10 +4,10 @@ x Effetivare grafer, rita bara om den ändrade biten
 x Färgmarkering i waveform som visar var man är
 - Visa maxvärdet ur genomsnittet på nivåmätaren
 - Färgmarkera knappar, grön för start röd för stop osv
-- Se till att nedersta raden alltid är synlig i loggen
+x Se till att nedersta raden alltid är synlig i loggen
 
 INSTÄLLNINGAR
-- Inställning för genomsnittet på nivåmätaren
+x Inställning för genomsnittet på nivåmätaren
 x Inställning för minuter på progressbar
 
 FUNKTION

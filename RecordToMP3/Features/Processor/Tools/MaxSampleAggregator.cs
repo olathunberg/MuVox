@@ -6,41 +6,24 @@ namespace RecordToMP3.Features.Processor.Tools
 {
     public class MaxSampleAggregator : ISampleProvider
     {
-        // volume
         public event EventHandler<MaxSampleEventArgs> MaximumCalculated;
         private float maxValue;
         private float minValue;
-        public int NotificationCount { get; set; }
-        int count;
 
         private readonly ISampleProvider source;
 
         private readonly int channels;
 
-        public MaxSampleAggregator(ISampleProvider source, int fftLength = 1024)
+        public MaxSampleAggregator(ISampleProvider source)
         {
             channels = source.WaveFormat.Channels;
             this.source = source;
-        }
-
-        public void Reset()
-        {
-            count = 0;
-            maxValue = minValue = 0;
         }
 
         private void Add(float value)
         {
             maxValue = Math.Max(maxValue, value);
             minValue = Math.Min(minValue, value);
-            count++;
-            if (count >= NotificationCount && NotificationCount > 0)
-            {
-                if (MaximumCalculated != null)
-                    MaximumCalculated(this, new MaxSampleEventArgs(minValue, maxValue));
-
-                Reset();
-            }
         }
 
         public WaveFormat WaveFormat { get { return source.WaveFormat; } }
@@ -50,9 +33,11 @@ namespace RecordToMP3.Features.Processor.Tools
             var samplesRead = source.Read(buffer, offset, count);
 
             for (int n = 0; n < samplesRead; n += channels)
-            {
                 Add(buffer[n + offset]);
-            }
+          
+            if (MaximumCalculated != null)
+                MaximumCalculated(this, new MaxSampleEventArgs(minValue, maxValue));
+
             return samplesRead;
         }
     }

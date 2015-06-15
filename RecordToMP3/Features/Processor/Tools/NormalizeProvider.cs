@@ -10,16 +10,15 @@ namespace RecordToMP3.Features.Processor.Tools
     public class NormalizeProvider : ISampleProvider
     {
         #region Fields
-        private readonly object effectLock = new object();
         private readonly ISampleProvider sourceProvider;
 
         private float ratio;
         #endregion
 
-        public NormalizeProvider(ISampleProvider sourceProvider, float ratio)
+        public NormalizeProvider(ISampleProvider sourceProvider, float ratio, float currentMax)
         {
             this.sourceProvider = sourceProvider;
-            this.ratio = ratio;
+            this.ratio = ratio / currentMax;
             SampleRate = 44100;
         }
 
@@ -48,10 +47,8 @@ namespace RecordToMP3.Features.Processor.Tools
         {
             int read = sourceProvider.Read(buffer, offset, count);
 
-            lock (effectLock)
-            {
-                Process(buffer, offset, read);
-            }
+            Process(buffer, offset, read);
+
             return read;
         }
 
@@ -81,9 +78,7 @@ namespace RecordToMP3.Features.Processor.Tools
                 // put them back
                 buffer[offset++] = sampleLeft;
                 if (WaveFormat.Channels == 2)
-                {
                     buffer[offset++] = sampleRight;
-                }
             }
         }
         #endregion

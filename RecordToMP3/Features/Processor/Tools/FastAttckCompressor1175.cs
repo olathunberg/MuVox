@@ -40,7 +40,6 @@ namespace RecordToMP3.Features.Processor.Tools
     public class FastAttackCompressor1175 : ISampleProvider
     {
         #region Fields
-        private readonly object effectLock = new object();
         private readonly ISampleProvider sourceProvider;
 
         private float allin;
@@ -224,10 +223,8 @@ namespace RecordToMP3.Features.Processor.Tools
         {
             int read = sourceProvider.Read(buffer, offset, count);
 
-            lock (effectLock)
-            {
-                Process(buffer, offset, read);
-            }
+            Process(buffer, offset, read);
+
             return read;
         }
 

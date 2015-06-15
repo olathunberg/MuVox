@@ -53,15 +53,21 @@ namespace RecordToMP3.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("160")]
         public int PROCESSOR_MP3Quality {
             get {
                 return ((int)(this["PROCESSOR_MP3Quality"]));
             }
-            set {
-                this["PROCESSOR_MP3Quality"] = value;
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public byte UI_LEVELMETER_NO_SAMPLES {
+            get {
+                return ((byte)(this["UI_LEVELMETER_NO_SAMPLES"]));
             }
         }
     }

@@ -9,6 +9,11 @@ namespace RecordToMP3.Features.LogViewer
 {
     public class LogViewerModel : GalaSoft.MvvmLight.ViewModelBase
     {
+        public LogViewerModel()
+        {
+            Entries = new ObservableCollection<LogEntryModel>();
+        }
+
         public ObservableCollection<LogEntryModel> Entries { get; set; }
 
         public void Add(string message)
