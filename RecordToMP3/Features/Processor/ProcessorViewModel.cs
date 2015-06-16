@@ -17,12 +17,13 @@ namespace RecordToMP3.Features.Processor
         #region Fields
         private LogViewer.LogViewerModel logViewerModel;
         private bool isProcessing;
+        private long progressBarMaximum;
+        private long progress;
         #endregion
 
         #region Constructors
         public ProcessorViewModel()
         {
-            ProgressBarMaximum = Properties.Settings.Default.UI_MinutesOnProgressBar * 600;
             LogViewerModel = new LogViewer.LogViewerModel();
         }
         #endregion
@@ -61,7 +62,17 @@ namespace RecordToMP3.Features.Processor
             set { isProcessing = value; RaisePropertyChanged(); }
         }
 
-        public uint ProgressBarMaximum { get; set; }
+        public long ProgressBarMaximum
+        {
+            get { return progressBarMaximum; }
+            set { progressBarMaximum = value; RaisePropertyChanged(); }
+        }
+
+        public long Progress
+        {
+            get { return progress; }
+            set { progress = value; RaisePropertyChanged(); }
+        }
 
         public string FileName { get { return Properties.Settings.Default.RECORDER_LastFile; } }
 
@@ -92,12 +103,21 @@ namespace RecordToMP3.Features.Processor
             {
                 IsProcessing = true;
                 var baseFileName = FileName;
-                if (Path.GetExtension(baseFileName) == ".mp3")
+
+                var preConvert = Path.GetExtension(baseFileName) == ".mp3";
+                if (preConvert)
+                    using (var reader = new Mp3FileReader(baseFileName))
+                        TotalProgressMaximum = reader.Length * (preConvert ? 4 : 3);
+                else
+                    using (var reader = new WaveFileReader(baseFileName))
+                        TotalProgressMaximum = reader.Length * (preConvert ? 4 : 3);
+
+                if (preConvert)
                 {
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, message => logViewerModel.Add(message));
+                    baseFileName = await mp3ToWave.Convert(baseFileName, message => logViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
                 }
 
                 LogViewerModel.Add("Splitting into tracks...");
@@ -105,17 +125,19 @@ namespace RecordToMP3.Features.Processor
                 var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
                      Path.ChangeExtension(baseFileName, ".markers"),
                      baseFileName,
-                     message => LogViewerModel.Add(message));
+                     message => LogViewerModel.Add(message),
+                     max => SetDetailProgressBarMaximum(max),
+                     progress => UpdateDetailProgressBar(progress));
 
                 var normalizer = new Normalizer();
                 var waveToMp3Converter = new WaveToMp3Converter();
                 foreach (var item in cuttedFiles)
                 {
                     LogViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                    await normalizer.Normalize(item, message => LogViewerModel.Add(message));
+                    await normalizer.Normalize(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
 
                     LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
-                    await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message));
+                    await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
 
                     //File.Delete(item);
                 }
@@ -126,6 +148,34 @@ namespace RecordToMP3.Features.Processor
             }
 
             LogViewerModel.Add("Finished processing");
+        }
+
+        private long totalProgress;
+        public long TotalProgress
+        {
+            get { return totalProgress; }
+            set { totalProgress = value; RaisePropertyChanged(); }
+        }
+
+        private long totalProgressMaximum;
+
+        public long TotalProgressMaximum
+        {
+            get { return totalProgressMaximum; }
+            set { totalProgressMaximum = value; RaisePropertyChanged(); }
+        }
+
+
+        private void SetDetailProgressBarMaximum(long max)
+        {
+            ProgressBarMaximum = max;
+            Progress = 0;
+        }
+
+        private void UpdateDetailProgressBar(long increment)
+        {
+            TotalProgress += increment;
+            Progress += increment;
         }
         #endregion
 

@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="Features\Messages\GotoPageMessage.cs" />
     <Compile Include="Features\Messages\Pages.cs" />
+    <Compile Include="Features\Processor\Tools\FileCreator.cs" />
     <Compile Include="Features\Processor\Tools\WaveToMp3Converter.cs" />
     <Compile Include="Features\Processor\Tools\NormalizeProvider.cs" />
     <Compile Include="Features\Processor\Tools\FastAttckCompressor1175.cs" />

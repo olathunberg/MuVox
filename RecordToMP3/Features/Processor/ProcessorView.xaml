@@ -31,6 +31,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" >
@@ -68,6 +69,8 @@
             <LogViewer:LogViewerView Grid.Row="2" DataContext="{Binding LogViewerModel}" />
         </Grid>
 
-        <ProgressBar Grid.Row="10" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Recorder.TenthOfSecondsRecorded, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
+        <ProgressBar Grid.Row="2" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" Maximum="{Binding TotalProgressMaximum}"/>
+
+        <ProgressBar Grid.Row="3" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Progress, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
     </Grid>
 </UserControl>

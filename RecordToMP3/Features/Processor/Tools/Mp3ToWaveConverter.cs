@@ -1,5 +1,7 @@
 ﻿using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -7,17 +9,23 @@ namespace RecordToMP3.Features.Processor.Tools
 {
     public class Mp3ToWaveConverter
     {
-        public Task<string> Convert(string baseFilename, Action<string> progressCallback)
+        public Task<string> Convert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            return Task<string>.Run(() => DoConvert(baseFilename, progressCallback));
+            Debug.Assert(addLogMessage != null);
+            Debug.Assert(sourceLengthCallback != null);
+            Debug.Assert(progressCallback != null);
+            
+            return Task<string>.Run(() => DoConvert(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
 
-        private string DoConvert(string baseFilename, Action<string> progressCallback)
+        private string DoConvert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             var newFilename = Path.ChangeExtension(baseFilename, ".wav");
             using (var reader = new Mp3FileReader(baseFilename))
-            using (var wtr = new WaveFileWriter(newFilename, new WaveFormat(44100, 2)))
-                reader.CopyTo(wtr);
+            {
+                sourceLengthCallback(reader.Length);
+                FileCreator.CreateWaveFile(newFilename, reader, progressCallback);
+            }
 
             return newFilename;
         }
