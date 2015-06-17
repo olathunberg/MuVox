@@ -1,6 +1,5 @@
 ﻿using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Win32;
 using NAudio.Lame;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
@@ -11,25 +10,21 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace RecordToMP3.Features.Processor
+namespace RecordToMP3.Features.Marker
 {
-    public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
+    public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
         #region Fields
         private LogViewer.LogViewerModel logViewerModel;
         private bool isProcessing;
         private long progressBarMaximum;
         private long progress;
-        private long totalProgress;
-        private long totalProgressMaximum;
-        private string fileName;
         #endregion
 
         #region Constructors
-        public ProcessorViewModel()
+        public MarkerViewModel()
         {
             LogViewerModel = new LogViewer.LogViewerModel();
-            FileName = Properties.Settings.Default.RECORDER_LastFile; ;
         }
         #endregion
 
@@ -58,17 +53,6 @@ namespace RecordToMP3.Features.Processor
                     () => !IsProcessing));
             }
         }
-
-        private RelayCommand chooseFileCommand;
-        public ICommand ChooseFile
-        {
-            get
-            {
-                return chooseFileCommand ?? (chooseFileCommand = new RelayCommand(
-                    () => ShowFileDialog(),
-                    () => !IsProcessing));
-            }
-        }
         #endregion
 
         #region Properties
@@ -90,11 +74,7 @@ namespace RecordToMP3.Features.Processor
             set { progress = value; RaisePropertyChanged(); }
         }
 
-        public string FileName
-        {
-            get { return fileName; }
-            set { fileName = value; RaisePropertyChanged(); }
-        }
+        public string FileName { get { return Properties.Settings.Default.RECORDER_LastFile; } }
 
         public LogViewer.LogViewerModel LogViewerModel
         {
@@ -104,19 +84,6 @@ namespace RecordToMP3.Features.Processor
                 logViewerModel = value;
                 RaisePropertyChanged(() => LogViewerModel);
             }
-        }
-
-        public long TotalProgress
-        {
-            get { return totalProgress; }
-            set { totalProgress = value; RaisePropertyChanged(); }
-        }
-
-
-        public long TotalProgressMaximum
-        {
-            get { return totalProgressMaximum; }
-            set { totalProgressMaximum = value; RaisePropertyChanged(); }
         }
         #endregion
 
@@ -131,11 +98,6 @@ namespace RecordToMP3.Features.Processor
         private async Task ProcessFile()
         {
             LogViewerModel.Add("Started processing");
-            if (!File.Exists(FileName))
-            {
-                LogViewerModel.Add("File does not exist");
-                return;
-            }
 
             try
             {
@@ -188,6 +150,22 @@ namespace RecordToMP3.Features.Processor
             LogViewerModel.Add("Finished processing");
         }
 
+        private long totalProgress;
+        public long TotalProgress
+        {
+            get { return totalProgress; }
+            set { totalProgress = value; RaisePropertyChanged(); }
+        }
+
+        private long totalProgressMaximum;
+
+        public long TotalProgressMaximum
+        {
+            get { return totalProgressMaximum; }
+            set { totalProgressMaximum = value; RaisePropertyChanged(); }
+        }
+
+
         private void SetDetailProgressBarMaximum(long max)
         {
             ProgressBarMaximum = max;
@@ -198,24 +176,6 @@ namespace RecordToMP3.Features.Processor
         {
             TotalProgress += increment;
             Progress += increment;
-        }
-
-        private void ShowFileDialog()
-        {
-            var fileDialog = new OpenFileDialog()
-            {
-                CheckFileExists = true,
-                AddExtension = true,
-                DefaultExt = ".wav",
-                Multiselect = false,
-                Filter = "Wave|*.wav|MP3|*.mp3"
-            };
-
-            var dlgResult = fileDialog.ShowDialog();
-
-
-            if (dlgResult.HasValue && dlgResult.Value)
-                FileName = fileDialog.FileName;
         }
         #endregion
 

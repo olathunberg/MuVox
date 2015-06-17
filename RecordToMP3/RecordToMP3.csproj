@@ -95,6 +95,10 @@
     <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">
       <DependentUpon>LogViewerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Features\Marker\MarkerView.xaml.cs">
+      <DependentUpon>MarkerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Features\Marker\MarkerViewModel.cs" />
     <Compile Include="Features\Messages\GotoPageMessage.cs" />
     <Compile Include="Features\Messages\Pages.cs" />
     <Compile Include="Features\Processor\Tools\FileCreator.cs" />
@@ -126,6 +130,10 @@
     <Page Include="Features\LogViewer\LogViewerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Marker\MarkerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Features\Processor\ProcessorView.xaml">
       <Generator>MSBuild:Compile</Generator>

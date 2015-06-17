@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
+using RecordToMP3.Features.Marker;
 using RecordToMP3.Features.Messages;
 using RecordToMP3.Features.Processor;
 using RecordToMP3.Features.Recorder;
@@ -18,6 +19,7 @@ namespace RecordToMP3
 
         private RecorderViewModel _recorderViewModel = new RecorderViewModel();
         private ProcessorViewModel _processorViewModel = new ProcessorViewModel();
+        private MarkerViewModel _markerViewModel = new MarkerViewModel();
 
         public ViewModelBase CurrentViewModel
         {
@@ -45,6 +47,8 @@ namespace RecordToMP3
                         CurrentViewModel = _recorderViewModel;
                     if (action.GotoPage == Pages.Processor)
                         CurrentViewModel = _processorViewModel;
+                    if (action.GotoPage == Pages.Marker)
+                        CurrentViewModel = _markerViewModel;
                 });
         }
 
@@ -54,6 +58,7 @@ namespace RecordToMP3
 
             _recorderViewModel.Cleanup();
             _processorViewModel.Cleanup();
+            _markerViewModel.Cleanup();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace RecordToMP3.Features.Messages
     public enum Pages
     {
         Recorder,
-        Processor
+        Marker,
+        Processor,
     }
 }
