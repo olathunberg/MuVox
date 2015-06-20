@@ -180,6 +180,10 @@ namespace RecordToMP3.Features.Processor
                     //File.Delete(item);
                 }
             }
+                catch (Exception ex)
+            {
+                LogViewerModel.Add(ex.Message);
+            }
             finally
             {
                 IsProcessing = false;
