@@ -9,7 +9,7 @@
         Title="Record to MP3" 
         Width="684"
         Height="393"
-        ResizeMode="NoResize" >
+        ResizeMode="NoResize" Icon="RecordToMP3.ico" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

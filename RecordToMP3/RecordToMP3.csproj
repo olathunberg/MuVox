@@ -37,6 +37,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>RecordToMP3.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.1.1.35049, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.1.1.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -259,6 +262,7 @@
     <Content Include="libmp3lame.64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="RecordToMP3.ico" />
     <Resource Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup />
