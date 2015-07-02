@@ -3,7 +3,13 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Linq;
 using System;
+using NAudio.Wave;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Windows.Input;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -13,19 +19,55 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
     public partial class WaveFormViewer : UserControl
     {
         #region Fields
-        private int blankZone = 2;
-        private int renderPosition;
-        private double xScale = 2;
-        private double yScale = 40;
-        private double yTranslate = 40;
         private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
-        private int[] maxPoints;
-        private int[] minPoints;
+        private Point? dragStart = null;
+
+        private WaveStream waveStream;
+        private int samplesPerPixel = 0;
+
+        private short[] streamData;
 
         #endregion
 
         #region Properties
         public Color LineColor { get; set; }
+
+        /// <summary>
+        /// The zoom level, in samples per pixel
+        /// </summary>
+        public int SamplesPerPixel
+        {
+            get { return samplesPerPixel; }
+            set
+            {
+                if (value < 1)
+                    samplesPerPixel = 1;
+                else
+                    samplesPerPixel = value;
+                Draw();
+            }
+        }
+
+        /// <summary>
+        /// Start position (currently in bytes)
+        /// </summary>
+        public long StartPosition { get; set; }
+
+        private bool isLoading;
+
+        public bool IsLoading
+        {
+            get { return isLoading; }
+            set
+            {
+                isLoading = value;
+                //App.Current.Dispatcher.Invoke(() =>
+                //    {
+                //        if (value) LoadingPanel.Visibility = System.Windows.Visibility.Visible; else LoadingPanel.Visibility = System.Windows.Visibility.Collapsed;
+                //    });
+            }
+        }
+
         #endregion
 
         public WaveFormViewer()
@@ -35,113 +77,198 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         }
 
         #region Events
+        private void mouseDown(object sender, MouseEventArgs e)
+        {
+            var element = (UIElement)sender;
+            dragStart = e.GetPosition(element);
+            element.CaptureMouse();
+            e.Handled = true;
+        }
+
+        private void mouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var element = (UIElement)sender;
+            dragStart = null;
+            element.ReleaseMouseCapture();
+            if ((element as Line).X1 >= this.ActualWidth)
+                RemoveMarker(element as Line);
+        }
+
+        private void mouseMove(object sender, MouseEventArgs args)
+        {
+            if (dragStart != null && args.LeftButton == MouseButtonState.Pressed)
+            {
+                var element = (UIElement)sender;
+                var p2 = args.GetPosition(this);
+                (element as Line).X1 = (element as Line).X2 = p2.X;
+            }
+        }
+
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            renderPosition = 0;
-            maxPoints = new int[(int)((ActualWidth / xScale))];
-            minPoints = new int[(int)((ActualWidth / xScale))];
-
-            this.yTranslate = this.ActualHeight / 2;
-            this.yScale = this.ActualHeight / 2;
-
             bitmap = null;
             bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
-            bitmap.Lock();
-            bitmap.Clear();
-            bitmap.Unlock();
-            mainCanvas.Source = bitmap;
 
-            ClearAllPoints();
+            mainCanvas.Source = bitmap;
+            Draw();
+        }
+
+        protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            var x = (int)e.GetPosition(this).X;
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+                {
+                    StartPosition = StartPosition + (int)e.GetPosition(this).X * SamplesPerPixel;
+                    StartPosition -= (int)this.ActualWidth * samplesPerPixel / 2;
+                    if (StartPosition < 0)
+                        StartPosition = 0;
+                    SamplesPerPixel /= 2;
+                }
+                else
+                    AddNewMarker(x);
+            }
+            else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                StartPosition = 0;
+                SamplesPerPixel = (int)(streamData.Length / this.ActualWidth);
+                Draw();
+            }
         }
         #endregion
 
         #region Dependency properties
-        public Tuple<float, float> AddPoint
+        public WaveStream WaveStream
         {
-            get { return (Tuple<float, float>)GetValue(AddPointProperty); }
-            set { SetValue(AddPointProperty, value); }
+            get { return (WaveStream)GetValue(WaveStreamProperty); }
+            set { SetValue(WaveStreamProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Point.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AddPointProperty =
-            DependencyProperty.Register("AddPoint", typeof(Tuple<float, float>), typeof(WaveFormViewer), new PropertyMetadata(new Tuple<float, float>(0f, 0f),(s, e) =>
+        // Using a DependencyProperty as the backing store for WaveStream.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty WaveStreamProperty =
+            DependencyProperty.Register("WaveStream", typeof(WaveStream), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
+            {
+                if (e.NewValue == null) return;
+                var newValue = e.NewValue as WaveStream;
+
+                var view = (s as WaveFormViewer);
+                if (view == null) return;
+                view.IsLoading = true;
+
+                view.waveStream = newValue;
+                if (newValue != null)
                 {
-                    if (e.NewValue == null) return;
-                    var newValue = e.NewValue as Tuple<float, float>;
-                    (s as WaveFormViewer).AddValue(newValue.Item1, newValue.Item2);
-                }));
+                    view.samplesPerPixel = (int)(newValue.Length / (view.ActualWidth * 2));
+                    view.ReadStream().ContinueWith(a => view.Draw());
+                }
+                view.IsLoading = false;
+            }));
         #endregion
 
         #region Private methods
-        private int Points
+        private void enableDrag(UIElement element)
         {
-            get { return maxPoints.Length; }
+            element.MouseDown += mouseDown;
+            element.MouseMove += mouseMove;
+            element.MouseUp += mouseUp;
         }
 
-        private void ClearAllPoints()
+        private void AddNewMarker(int position)
         {
-            for (int i = 0; i < Points; i++)
+            var newLine = new Line()
             {
-                maxPoints[i] = SampleToYPosition(0);
-                minPoints[i] = SampleToYPosition(0);
-            }
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFED262")),
+                StrokeThickness = 2,
+                X1 = position,
+                Y1 = 0,
+                X2 = position,
+                Y2 = (int)this.ActualHeight,
+                Cursor = System.Windows.Input.Cursors.SizeWE
+            };
+
+            enableDrag(newLine);
+            markers.Children.Add(newLine);
         }
 
-        private void CreatePoint(float topValue, float bottomValue)
+        private void RemoveMarker(Line marker)
         {
-            var topYPos = SampleToYPosition(topValue);
-            var bottomYPos = SampleToYPosition(bottomValue);
-
-            maxPoints[renderPosition] = (int)topYPos;
-            minPoints[renderPosition] = (int)bottomYPos;
-            renderPosition++;
+            if (markers.Children.Contains(marker))
+                markers.Children.Remove(marker);
         }
 
-        private int SampleToYPosition(float value)
+        private Task ReadStream()
         {
-            return (int)(yTranslate + value * yScale);
+            return Task.Run(() =>
+                {
+                    if (waveStream != null)
+                    {
+                        streamData = new short[waveStream.Length / 2];
+                        waveStream.Position = 0;
+
+                        int bytesRead;
+                        var waveData = new byte[8192];
+                        int pos = 0;
+                        while ((bytesRead = waveStream.Read(waveData, 0, 8192)) == 8192)
+                        {
+                            for (int n = 0; n < bytesRead; n += 2)
+                                streamData[pos++] = BitConverter.ToInt16(waveData, n);
+                        }
+
+                        waveStream.Dispose();
+                        waveStream = null;
+                    }
+                });
+        }
+
+        private void Draw()
+        {
+            IsLoading = true;
+            Task.Run(() =>
+                {
+                    if (streamData == null) return;
+
+                    App.Current.Dispatcher.Invoke(() =>
+                        {
+                            bitmap.Lock();
+                            bitmap.Clear();
+                            bitmap.Unlock();
+                        });
+
+                    var points = new ConcurrentBag<Tuple<int, int, int, int>>();
+
+                    Parallel.For(0, (int)this.ActualWidth, x =>
+                    {
+                        short low = 0;
+                        short high = 0;
+
+                        if (((StartPosition / samplesPerPixel) + x + 1) * samplesPerPixel > streamData.Length)
+                            return;
+                        for (int n = 0; n < samplesPerPixel; n += 1)
+                        {
+                            short sample = streamData[StartPosition + (x * samplesPerPixel) + n];
+                            if (sample < low) low = sample;
+                            if (sample > high) high = sample;
+                        }
+                        float lowPercent = ((((float)low) - short.MinValue) / ushort.MaxValue);
+                        float highPercent = ((((float)high) - short.MinValue) / ushort.MaxValue);
+
+                        points.Add(new Tuple<int, int, int, int>((int)x, (int)(this.ActualHeight * lowPercent), (int)x, (int)(this.ActualHeight * highPercent)));
+                    });
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        using (bitmap.GetBitmapContext())
+                            foreach (var point in points)
+                                bitmap.DrawLine(point.Item1, point.Item2, point.Item3, point.Item4, LineColor);
+                    });
+                })
+                .ContinueWith(a => IsLoading = false);
         }
         #endregion
 
         #region Public methods
-        public void AddValue(float maxValue, float minValue)
-        {
-            if (bitmap == null)
-                return;
 
-            if (Points > 0)
-            {
-                if (renderPosition < Points - blankZone)
-
-                    using (bitmap.GetBitmapContext())
-                    {
-                        var i = renderPosition - 1;
-                        bitmap.FillRectangle((i) * (int)xScale, SampleToYPosition(-1), (i + blankZone + 2) * (int)xScale, SampleToYPosition(1), 0);
-                    }
-
-                CreatePoint(maxValue, minValue);
-
-                if (renderPosition > 1)
-                    using (bitmap.GetBitmapContext())
-                    {
-                        var i = renderPosition - 1;
-                        bitmap.DrawLineAa((i - 1) * (int)xScale, maxPoints[i - 1], (i) * (int)xScale, maxPoints[i], LineColor);
-                        if (maxPoints[i] != minPoints[i])
-                            bitmap.DrawLineAa((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
-                    }
-
-                if (renderPosition >= Points)
-                    renderPosition = 0;
-
-                //int erasePosition = (renderPosition + blankZone) % Points;
-                //if (erasePosition < Points)
-                //{
-                //    double yPos = SampleToYPosition(0);
-                //    maxPoints[erasePosition] = (int)yPos;
-                //    minPoints[erasePosition] = (int)yPos;
-                //}
-            }
-        }
         #endregion
     }
 }

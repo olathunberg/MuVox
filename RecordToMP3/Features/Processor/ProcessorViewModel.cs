@@ -29,7 +29,7 @@ namespace RecordToMP3.Features.Processor
         public ProcessorViewModel()
         {
             LogViewerModel = new LogViewer.LogViewerModel();
-            FileName = Properties.Settings.Default.RECORDER_LastFile; ;
+            FileName = Properties.Settings.Default.RECORDER_LastFile;
         }
         #endregion
 
@@ -72,6 +72,18 @@ namespace RecordToMP3.Features.Processor
         #endregion
 
         #region Properties
+        private WaveStream waveStream;
+
+        public  WaveStream WaveStream
+        {
+            get { return waveStream; }
+            set
+            {
+                waveStream = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public bool IsProcessing
         {
             get { return isProcessing; }
@@ -220,6 +232,8 @@ namespace RecordToMP3.Features.Processor
 
             if (dlgResult.HasValue && dlgResult.Value)
                 FileName = fileDialog.FileName;
+
+                WaveStream = new WaveFileReader(FileName);
         }
         #endregion
 

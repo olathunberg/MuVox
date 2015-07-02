@@ -125,9 +125,16 @@
     <Compile Include="Features\Recorder\RecorderViewModel.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
+    <Compile Include="UI Features\LoadingPanel\LoadingPanel.xaml.cs">
+      <DependentUpon>LoadingPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI Features\LoadingPanel\LoadingPanelModel.cs" />
     <Compile Include="UI Features\VolumeMeter\VolumeMeter.cs" />
     <Compile Include="UI Features\WaveFormViewer\WaveFormViewer.xaml.cs">
       <DependentUpon>WaveFormViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI Features\WaveFormViewer\LiveWaveFormViewer.xaml.cs">
+      <DependentUpon>LiveWaveFormViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModelLocator.cs" />
     <Page Include="Features\LogViewer\LogViewerView.xaml">
@@ -222,7 +229,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="UI Features\LoadingPanel\LoadingPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI Features\WaveFormViewer\WaveFormViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI Features\WaveFormViewer\LiveWaveFormViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -1,7 +1,18 @@
-﻿<UserControl x:Class="RecordToMP3.UI_Features.WaveFormViewer.WaveFormViewer"
+﻿<UserControl xmlns:LoadingPanel="clr-namespace:RecordToMP3.UI_Features.LoadingPanel"  x:Class="RecordToMP3.UI_Features.WaveFormViewer.WaveFormViewer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        </ResourceDictionary>
 
-    <Image x:Name="mainCanvas" />
-
+    </UserControl.Resources>
+    <Grid>
+        <Image x:Name="mainCanvas" />
+        <Canvas Name="markers" ClipToBounds="True"/>
+        <LoadingPanel:LoadingPanel />
+     </Grid>
 </UserControl>

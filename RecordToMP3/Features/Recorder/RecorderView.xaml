@@ -89,7 +89,7 @@
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
 
-                        <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerLeft"
+                        <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerLeft"
                                                        Grid.Row="0"
                                                        AddPoint="{Binding NewLeftPoint}"
                                                        Foreground="{StaticResource BorderBrushSelected}" 
@@ -97,7 +97,7 @@
                                                        LineColor="{StaticResource BorderBrushSelectedColor}"
                                                        BorderBrush="{StaticResource BorderBrushSelected}" 
                                                        BorderThickness="1"/>
-                        <WaveFormViewer:WaveFormViewer x:Name="WaveFormViewerRight"
+                        <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerRight"
                                                        Grid.Row="2"
                                                        AddPoint="{Binding NewRightPoint}"
                                                        Foreground="{StaticResource BorderBrushSelected}" 
