@@ -13,6 +13,5 @@
     <Grid>
         <Image x:Name="mainCanvas" />
         <Canvas Name="markers" ClipToBounds="True"/>
-        <LoadingPanel:LoadingPanel />
      </Grid>
 </UserControl>

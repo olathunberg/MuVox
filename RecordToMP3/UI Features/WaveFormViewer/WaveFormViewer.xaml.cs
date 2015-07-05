@@ -110,7 +110,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
 
             mainCanvas.Source = bitmap;
-            Draw();
         }
 
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)

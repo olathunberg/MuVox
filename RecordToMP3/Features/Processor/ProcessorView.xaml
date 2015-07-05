@@ -1,4 +1,4 @@
-﻿<UserControl xmlns:LogViewer="clr-namespace:RecordToMP3.Features.LogViewer"  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns:LoadingPanel="clr-namespace:RecordToMP3.UI_Features.LoadingPanel"  xmlns:LogViewer="clr-namespace:RecordToMP3.Features.LogViewer"  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -71,12 +71,12 @@
                 <Button Content="..." DockPanel.Dock="Right" Style="{StaticResource StandardButton}" Width="75" HorizontalAlignment="Right" Command="{Binding ChooseFile}"/>
             </DockPanel>
 
-            <!--<LogViewer:LogViewerView Grid.Row="2" DataContext="{Binding LogViewerModel}" />-->
-            <WaveFormViewer:WaveFormViewer Grid.Row="2" WaveStream="{Binding WaveStream}" Foreground="{StaticResource BorderBrushSelected}" 
+            <LogViewer:LogViewerView Grid.Row="2" DataContext="{Binding LogViewerModel}" />
+            <!--<WaveFormViewer:WaveFormViewer Grid.Row="2" WaveStream="{Binding WaveStream}" Foreground="{StaticResource BorderBrushSelected}" 
                                                        Background="{StaticResource BackgroundNormal}"
                                                        LineColor="{StaticResource BorderBrushSelectedColor}"
                                                        BorderBrush="{StaticResource BorderBrushSelected}" 
-                                                       BorderThickness="1"/>
+                                                       BorderThickness="1"/>-->
         </Grid>
 
         <ProgressBar Grid.Row="2" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" Maximum="{Binding TotalProgressMaximum}"/>

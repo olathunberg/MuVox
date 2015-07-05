@@ -232,8 +232,6 @@ namespace RecordToMP3.Features.Processor
 
             if (dlgResult.HasValue && dlgResult.Value)
                 FileName = fileDialog.FileName;
-
-                WaveStream = new WaveFileReader(FileName);
         }
         #endregion
 
