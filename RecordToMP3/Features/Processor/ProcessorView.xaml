@@ -1,9 +1,10 @@
-﻿<UserControl xmlns:LoadingPanel="clr-namespace:RecordToMP3.UI_Features.LoadingPanel"  xmlns:LogViewer="clr-namespace:RecordToMP3.Features.LogViewer"  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns:LoadingPanel="clr-namespace:RecordToMP3.UI_Features.LoadingPanel"  
+             xmlns:LogViewer="clr-namespace:RecordToMP3.Features.LogViewer"  
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:RecordToMP3.UI_Features.Converters"
-             xmlns:WaveFormViewer="clr-namespace:RecordToMP3.UI_Features.WaveFormViewer"
              x:Class="RecordToMP3.Features.Processor.ProcessorView" 
              Focusable="True"
              mc:Ignorable="d">
@@ -27,6 +28,7 @@
 
     <UserControl.InputBindings>
         <KeyBinding Key="F1" Command="{Binding Record}"/>
+        <KeyBinding Key="F5" Command="{Binding EditMarkers}"/>
         <KeyBinding Key="F6" Command="{Binding StartProcessing}"/>
     </UserControl.InputBindings>
 
@@ -53,7 +55,7 @@
                     <TextBlock Text="RECORDING (F1)" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Column="1" Content="EDIT MARKERS (F5)" IsEnabled="False"/>
+            <Button Grid.Column="1" Content="EDIT MARKERS (F5)" Command="{Binding EditMarkers}"/>
             <Button Grid.Column="2" Content="START PROCESSING (F6)" Command="{Binding StartProcessing}"/>
             <Button Grid.Column="3" Content="BURN TO CD (F7)" IsEnabled="False"/>
         </Grid>
@@ -72,11 +74,6 @@
             </DockPanel>
 
             <LogViewer:LogViewerView Grid.Row="2" DataContext="{Binding LogViewerModel}" />
-            <!--<WaveFormViewer:WaveFormViewer Grid.Row="2" WaveStream="{Binding WaveStream}" Foreground="{StaticResource BorderBrushSelected}" 
-                                                       Background="{StaticResource BackgroundNormal}"
-                                                       LineColor="{StaticResource BorderBrushSelectedColor}"
-                                                       BorderBrush="{StaticResource BorderBrushSelected}" 
-                                                       BorderThickness="1"/>-->
         </Grid>
 
         <ProgressBar Grid.Row="2" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" Maximum="{Binding TotalProgressMaximum}"/>

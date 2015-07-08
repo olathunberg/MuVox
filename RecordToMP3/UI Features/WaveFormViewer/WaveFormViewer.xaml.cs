@@ -10,13 +10,14 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
     /// <summary>
     /// Interaction logic for WaveFormViewer.xaml
     /// </summary>
-    public partial class WaveFormViewer : UserControl
+    public partial class WaveFormViewer : UserControl, INotifyPropertyChanged
     {
         #region Fields
         private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
@@ -26,9 +27,9 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         private int samplesPerPixel = 0;
 
         private short[] streamData;
-
+        private bool isLoading;
         #endregion
-
+        
         #region Properties
         public Color LineColor { get; set; }
 
@@ -53,18 +54,13 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         /// </summary>
         public long StartPosition { get; set; }
 
-        private bool isLoading;
-
         public bool IsLoading
         {
             get { return isLoading; }
             set
             {
                 isLoading = value;
-                //App.Current.Dispatcher.Invoke(() =>
-                //    {
-                //        if (value) LoadingPanel.Visibility = System.Windows.Visibility.Visible; else LoadingPanel.Visibility = System.Windows.Visibility.Collapsed;
-                //    });
+                NotifyPropertyChanged("IsLoading");
             }
         }
 
@@ -115,6 +111,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
+            if (streamData == null || IsLoading) return;
+
             var x = (int)e.GetPosition(this).X;
             if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
             {
@@ -134,6 +132,14 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 StartPosition = 0;
                 SamplesPerPixel = (int)(streamData.Length / this.ActualWidth);
                 Draw();
+            }
+        }
+
+        private void NotifyPropertyChanged(String info)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
         #endregion
@@ -159,10 +165,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 view.waveStream = newValue;
                 if (newValue != null)
                 {
-                    view.samplesPerPixel = (int)(newValue.Length / (view.ActualWidth * 2));
                     view.ReadStream().ContinueWith(a => view.Draw());
                 }
-                view.IsLoading = false;
             }));
         #endregion
 
@@ -228,14 +232,10 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 {
                     if (streamData == null) return;
 
-                    App.Current.Dispatcher.Invoke(() =>
-                        {
-                            bitmap.Lock();
-                            bitmap.Clear();
-                            bitmap.Unlock();
-                        });
-
                     var points = new ConcurrentBag<Tuple<int, int, int, int>>();
+
+                    if (samplesPerPixel == 0)
+                        SamplesPerPixel = (int)(streamData.Length / this.ActualWidth);
 
                     Parallel.For(0, (int)this.ActualWidth, x =>
                     {
@@ -258,16 +258,26 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         using (bitmap.GetBitmapContext())
+                        {
+                            bitmap.Clear();
                             foreach (var point in points)
                                 bitmap.DrawLine(point.Item1, point.Item2, point.Item3, point.Item4, LineColor);
+                        }
                     });
                 })
-                .ContinueWith(a => IsLoading = false);
+                .ContinueWith(a =>
+                    {
+                        IsLoading = false;
+                    });
         }
         #endregion
 
         #region Public methods
 
+        #endregion
+
+        #region Eventhandlers
+        public event PropertyChangedEventHandler PropertyChanged;
         #endregion
     }
 }

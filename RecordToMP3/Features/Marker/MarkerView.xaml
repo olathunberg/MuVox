@@ -4,8 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:RecordToMP3.UI_Features.Converters"
+             xmlns:WaveFormViewer="clr-namespace:RecordToMP3.UI_Features.WaveFormViewer"
+             xmlns:main="clr-namespace:RecordToMP3"
              x:Class="RecordToMP3.Features.Marker.MarkerView" 
              Focusable="True"
+             d:DesignHeight="200"
              DataContext="{Binding Marker, Source={StaticResource ViewModelLocator}}"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -18,21 +21,17 @@
                 <Setter Property="Height" Value="50"/>
                 <Setter Property="Margin" Value="10,10"/>
             </Style>
-            <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
     <UserControl.InputBindings>
-        <KeyBinding Key="F1" Command="{Binding Record}"/>
-        <KeyBinding Key="F5" Command="{Binding StartProcessing}"/>
+        <KeyBinding Key="F1" Command="{Binding Process}"/>
     </UserControl.InputBindings>
 
     <Grid Width="Auto" x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" >
@@ -42,36 +41,23 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding Record}">
+            <Button Grid.Column="0" Command="{Binding Process}">
                 <StackPanel Orientation="Horizontal">
                     <Path Width="27.3125" Height="31.6667" Canvas.Left="22.1667" Canvas.Top="22.1667" Stretch="Fill" 
                           Fill="{StaticResource Foreground}" 
                           Data="F1 M 33.6458,38L 49.4792,53.8333L 38.7917,53.8333L 22.1667,38L 38.7917,22.1667L 49.4792,22.1667L 33.6458,38 Z "/>
-                    <TextBlock Text="RECORDING (F1)" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    <TextBlock Text="PROCESSING (F1)" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
             </Button>
-            <Button Grid.Column="1" Content="START PROCESSING (F5)" Command="{Binding StartProcessing}"/>
-            <Button Grid.Column="2" Content="UPLOAD (F6)" IsEnabled="False"/>
-            <Button Grid.Column="3" Content="BURN TO CD (F7)" IsEnabled="False"/>
         </Grid>
 
         <Grid Grid.Row="1" Margin="10,0,10,10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="5"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="File:" Margin="0,0,5,0" Style="{StaticResource defaultTextBlock}"/>
-                <TextBlock Text="{Binding FileName}" Style="{StaticResource defaultTextBlock}"/>
-            </StackPanel>
-
-            <LogViewer:LogViewerView Grid.Row="2" DataContext="{Binding LogViewerModel}" />
+            <WaveFormViewer:WaveFormViewer WaveStream="{Binding Marker.WaveStream, Source={StaticResource ViewModelLocator}}" 
+                                           Foreground="{StaticResource BorderBrushSelected}" 
+                                           Background="{StaticResource BackgroundNormal}"
+                                           LineColor="{StaticResource BorderBrushSelectedColor}"
+                                           BorderBrush="{StaticResource BorderBrushSelected}" 
+                                           BorderThickness="1"/>
         </Grid>
-
-        <ProgressBar Grid.Row="2" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding TotalProgress, Mode=OneWay}" Maximum="{Binding TotalProgressMaximum}"/>
-
-        <ProgressBar Grid.Row="3" Height="10" Margin="10,0,10,10" IsIndeterminate="False" Value="{Binding Progress, Mode=OneWay}" Maximum="{Binding ProgressBarMaximum}"/>
     </Grid>
 </UserControl>

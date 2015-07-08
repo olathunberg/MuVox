@@ -22,14 +22,12 @@ namespace RecordToMP3.Features.Processor
         private long progress;
         private long totalProgress;
         private long totalProgressMaximum;
-        private string fileName;
         #endregion
 
         #region Constructors
         public ProcessorViewModel()
         {
             LogViewerModel = new LogViewer.LogViewerModel();
-            FileName = Properties.Settings.Default.RECORDER_LastFile;
         }
         #endregion
 
@@ -43,6 +41,20 @@ namespace RecordToMP3.Features.Processor
                     () =>
                     {
                         Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Recorder));
+                    },
+                    () => !IsProcessing));
+            }
+        }
+
+        private RelayCommand editMarkersCommand;
+        public ICommand EditMarkers
+        {
+            get
+            {
+                return editMarkersCommand ?? (editMarkersCommand = new RelayCommand(
+                    () =>
+                    {
+                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Marker));
                     },
                     () => !IsProcessing));
             }
@@ -72,18 +84,6 @@ namespace RecordToMP3.Features.Processor
         #endregion
 
         #region Properties
-        private WaveStream waveStream;
-
-        public  WaveStream WaveStream
-        {
-            get { return waveStream; }
-            set
-            {
-                waveStream = value;
-                RaisePropertyChanged();
-            }
-        }
-
         public bool IsProcessing
         {
             get { return isProcessing; }
@@ -104,8 +104,13 @@ namespace RecordToMP3.Features.Processor
 
         public string FileName
         {
-            get { return fileName; }
-            set { fileName = value; RaisePropertyChanged(); }
+            get { return Properties.Settings.Default.RECORDER_LastFile; }
+            set
+            {
+                Properties.Settings.Default.RECORDER_LastFile = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged();
+            }
         }
 
         public LogViewer.LogViewerModel LogViewerModel
@@ -179,6 +184,7 @@ namespace RecordToMP3.Features.Processor
                      max => SetDetailProgressBarMaximum(max),
                      progress => UpdateDetailProgressBar(progress));
 
+                // TODO: Performance; parallell
                 var normalizer = new Normalizer();
                 var waveToMp3Converter = new WaveToMp3Converter();
                 foreach (var item in cuttedFiles)
@@ -192,7 +198,7 @@ namespace RecordToMP3.Features.Processor
                     //File.Delete(item);
                 }
             }
-                catch (Exception ex)
+            catch (Exception ex)
             {
                 LogViewerModel.Add(ex.Message);
             }
@@ -228,7 +234,6 @@ namespace RecordToMP3.Features.Processor
             };
 
             var dlgResult = fileDialog.ShowDialog();
-
 
             if (dlgResult.HasValue && dlgResult.Value)
                 FileName = fileDialog.FileName;

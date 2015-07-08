@@ -15,18 +15,12 @@ namespace RecordToMP3
 {
     public class MainWindowModel : ViewModelBase
     {
+        private ViewModelLocator viewModelLocator = (ViewModelLocator)App.Current.Resources["ViewModelLocator"];
         private ViewModelBase _currentViewModel;
-
-        private RecorderViewModel _recorderViewModel = new RecorderViewModel();
-        private ProcessorViewModel _processorViewModel = new ProcessorViewModel();
-        private MarkerViewModel _markerViewModel = new MarkerViewModel();
 
         public ViewModelBase CurrentViewModel
         {
-            get
-            {
-                return _currentViewModel;
-            }
+            get { return _currentViewModel; }
             set
             {
                 if (_currentViewModel == value)
@@ -38,17 +32,17 @@ namespace RecordToMP3
 
         public MainWindowModel()
         {
-            CurrentViewModel = _recorderViewModel;
+            CurrentViewModel = viewModelLocator.Recorder;
 
             Messenger.Default.Register<GotoPageMessage>(
                 this, (action) =>
                 {
                     if (action.GotoPage == Pages.Recorder)
-                        CurrentViewModel = _recorderViewModel;
+                        CurrentViewModel = viewModelLocator.Recorder;
                     if (action.GotoPage == Pages.Processor)
-                        CurrentViewModel = _processorViewModel;
+                        CurrentViewModel = viewModelLocator.Processor;
                     if (action.GotoPage == Pages.Marker)
-                        CurrentViewModel = _markerViewModel;
+                        CurrentViewModel = viewModelLocator.Marker;
                 });
         }
 
@@ -56,9 +50,9 @@ namespace RecordToMP3
         {
             base.Cleanup();
 
-            _recorderViewModel.Cleanup();
-            _processorViewModel.Cleanup();
-            _markerViewModel.Cleanup();
+            viewModelLocator.Recorder.Cleanup();
+            viewModelLocator.Processor.Cleanup();
+            viewModelLocator.Marker.Cleanup();
         }
     }
 }

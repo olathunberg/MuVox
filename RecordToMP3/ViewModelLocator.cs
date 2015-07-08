@@ -8,39 +8,27 @@ namespace RecordToMP3
 {
     public class ViewModelLocator
     {
+        private RecorderViewModel _recorderViewModel = new RecorderViewModel();
+        private ProcessorViewModel _processorViewModel = new ProcessorViewModel();
+        private MarkerViewModel _markerViewModel = new MarkerViewModel();
+
         public ViewModelLocator()
         {
-            ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-
-            //if (ViewModelBase.IsInDesignModeStatic)
-            //{
-            //    SimpleIoc.Default.Register<IDataService, Design.DesignDataService>();
-            //}
-            //else
-            //{
-            //    SimpleIoc.Default.Register<IDataService, DataService>();
-            //}
-
-            SimpleIoc.Default.Register<RecorderViewModel>();
-
-            SimpleIoc.Default.Register<MarkerViewModel>();
-
-            SimpleIoc.Default.Register<ProcessorViewModel>();
         }
 
         public RecorderViewModel Recorder
         {
-            get { return SimpleIoc.Default.GetInstance<RecorderViewModel>(); }
+            get { return _recorderViewModel; }
         }
 
         public MarkerViewModel Marker
         {
-            get { return SimpleIoc.Default.GetInstance<MarkerViewModel>(); }
+            get { return _markerViewModel; }
         }
 
         public ProcessorViewModel Processor
         {
-            get { return SimpleIoc.Default.GetInstance<ProcessorViewModel>(); }
+            get { return _processorViewModel; }
         }
     }
 }
