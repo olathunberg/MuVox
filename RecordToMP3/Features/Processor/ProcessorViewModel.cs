@@ -162,10 +162,10 @@ namespace RecordToMP3.Features.Processor
                 var preConvert = Path.GetExtension(baseFileName) == ".mp3";
                 if (preConvert)
                     using (var reader = new Mp3FileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * (preConvert ? 4 : 3);
+                        TotalProgressMaximum = reader.Length * (preConvert ? 5 : 4);
                 else
                     using (var reader = new WaveFileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * (preConvert ? 4 : 3);
+                        TotalProgressMaximum = reader.Length * (preConvert ? 5 : 4);
 
                 if (preConvert)
                 {
@@ -194,7 +194,7 @@ namespace RecordToMP3.Features.Processor
                     LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
                     await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
 
-                    //File.Delete(item);
+                    File.Delete(item);
                 }
             }
             catch (Exception ex)

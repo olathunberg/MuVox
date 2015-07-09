@@ -1,5 +1,6 @@
 ﻿using NAudio.Wave;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,9 +17,8 @@ namespace RecordToMP3.Features.Processor.Tools
             return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
 
-        public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, Action<long> progressCallback)
         {
-            Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
 
             using (var reader = new WaveFileReader(inPath))
@@ -31,13 +31,12 @@ namespace RecordToMP3.Features.Processor.Tools
 
                 int endPos = (int)reader.Length;
 
-                CutWavFile(reader, writer, startPos, endPos, sourceLengthCallback, progressCallback);
+                CutWavFile(reader, writer, startPos, endPos, progressCallback);
             }
         }
 
-        public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo, Action<long> progressCallback)
         {
-            Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
 
             using (var reader = new WaveFileReader(inPath))
@@ -51,7 +50,7 @@ namespace RecordToMP3.Features.Processor.Tools
                 int endPos = (int)cutTo.TotalMilliseconds * bytesPerMillisecond;
                 endPos = endPos - endPos % reader.WaveFormat.BlockAlign;
 
-                CutWavFile(reader, writer, startPos, endPos, sourceLengthCallback, progressCallback);
+                CutWavFile(reader, writer, startPos, endPos, progressCallback);
             }
         }
 
@@ -60,41 +59,43 @@ namespace RecordToMP3.Features.Processor.Tools
             var markerClass = new Marker.Marker();
             if (markerClass.HasMarkerFile(baseFilename))
             {
+                using (var reader = new WaveFileReader(baseFilename))
+                    sourceLengthCallback(reader.Length);
+
                 var markers = markerClass.GetMarkersFromFile(baseFilename);
-                var newFiles = new List<string>();
+                var newFiles = new ConcurrentBag<string>();
 
-                addLogMessage("Found " + (markers.Count + 1) + " segments");
+                addLogMessage("Creating " + (markers.Count + 1) + " segments");
 
-                int marker = 0;
-                int nextMarker = 0;
-                for (int i = 0; i < markers.Count; i++)
+                Parallel.For(0, markers.Count + 1, i =>
                 {
-                    nextMarker = markers[i];
-                    var start = new TimeSpan(0, 0, 0, 0, marker * 100);
-                    var end = new TimeSpan(0, 0, 0, 0, nextMarker * 100);
-                    addLogMessage("Creating segment " + (i + 1));
+                    if (i == markers.Count)
+                    {
+                        var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1] * 100);
 
-                    var newFilename = Path.ChangeExtension(baseFilename, "." + i.ToString() + ".wav");
-                    CutWavFile(baseFilename, newFilename, start, end, sourceLengthCallback, progressCallback);
-                    marker = nextMarker;
-                    newFiles.Add(newFilename);
-                }
-                addLogMessage("Creating segment " + (markers.Count + 1));
-                var start2 = new TimeSpan(0, 0, 0, 0, marker * 100);
+                        var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count).ToString() + ".wav");
+                        CutWavFileToEnd(baseFilename, lastFilename, start2, progressCallback);
+                        newFiles.Add(lastFilename);
+                    }
+                    else
+                    {
+                        var marker = i == 0 ? 0 : markers[i - 1];
+                        var start = new TimeSpan(0, 0, 0, 0, marker * 100);
+                        var end = new TimeSpan(0, 0, 0, 0, markers[i] * 100);
 
-                var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count).ToString() + ".wav");
-                CutWavFileToEnd(baseFilename, lastFilename, start2, sourceLengthCallback, progressCallback);
-                newFiles.Add(lastFilename);
+                        var newFilename = Path.ChangeExtension(baseFilename, "." + i.ToString() + ".wav");
+                        CutWavFile(baseFilename, newFilename, start, end, progressCallback);
+                        newFiles.Add(newFilename);
+                    }
+                });
 
-                return newFiles;
+                return newFiles.ToList();
             }
             return new List<string>() { baseFilename };
         }
 
-        private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, Action<long> progressCallback)
         {
-            sourceLengthCallback(endPos - startPos);
-
             reader.Position = startPos;
             byte[] buffer = new byte[1024];
             while (reader.Position < endPos)
