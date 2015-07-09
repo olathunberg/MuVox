@@ -89,10 +89,12 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 {
                     StartPosition = StartPosition + (int)e.GetPosition(this).X * SamplesPerPixel;
+                    samplesPerPixel /= 2;
                     StartPosition -= (int)this.ActualWidth * samplesPerPixel / 2;
                     if (StartPosition < 0)
                         StartPosition = 0;
-                    SamplesPerPixel /= 2;
+
+                    Draw();
                 }
                 else
                 {
