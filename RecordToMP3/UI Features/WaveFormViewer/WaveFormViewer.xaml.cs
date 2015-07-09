@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -20,17 +21,32 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
     public partial class WaveFormViewer : UserControl, INotifyPropertyChanged
     {
         #region Fields
-        private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
         private Point? dragStart = null;
 
-        private WaveStream waveStream;
+        private bool isLoading;
+
         private int samplesPerPixel = 0;
 
         private short[] streamData;
-        private bool isLoading;
+
+        private WaveStream waveStream;
+
+        private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
+
+        private int averageBytesPerSecond;
         #endregion
-        
+
         #region Properties
+        public bool IsLoading
+        {
+            get { return isLoading; }
+            set
+            {
+                isLoading = value;
+                NotifyPropertyChanged("IsLoading");
+            }
+        }
+
         public Color LineColor { get; set; }
 
         /// <summary>
@@ -53,17 +69,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         /// Start position (currently in bytes)
         /// </summary>
         public long StartPosition { get; set; }
-
-        public bool IsLoading
-        {
-            get { return isLoading; }
-            set
-            {
-                isLoading = value;
-                NotifyPropertyChanged("IsLoading");
-            }
-        }
-
         #endregion
 
         public WaveFormViewer()
@@ -73,41 +78,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         }
 
         #region Events
-        private void mouseDown(object sender, MouseEventArgs e)
-        {
-            var element = (UIElement)sender;
-            dragStart = e.GetPosition(element);
-            element.CaptureMouse();
-            e.Handled = true;
-        }
-
-        private void mouseUp(object sender, MouseButtonEventArgs e)
-        {
-            var element = (UIElement)sender;
-            dragStart = null;
-            element.ReleaseMouseCapture();
-            if ((element as Line).X1 >= this.ActualWidth)
-                RemoveMarker(element as Line);
-        }
-
-        private void mouseMove(object sender, MouseEventArgs args)
-        {
-            if (dragStart != null && args.LeftButton == MouseButtonState.Pressed)
-            {
-                var element = (UIElement)sender;
-                var p2 = args.GetPosition(this);
-                (element as Line).X1 = (element as Line).X2 = p2.X;
-            }
-        }
-
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            bitmap = null;
-            bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
-
-            mainCanvas.Source = bitmap;
-        }
-
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -125,7 +95,12 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     SamplesPerPixel /= 2;
                 }
                 else
+                {
+                    var mark = PositionToTime(x);
+                    MarkersCollection.Add((int)mark);
+
                     AddNewMarker(x);
+                }
             }
             else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
             {
@@ -135,6 +110,55 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             }
         }
 
+        private void mouseDown(object sender, MouseEventArgs e)
+        {
+            var element = (UIElement)sender;
+            dragStart = e.GetPosition(element);
+            element.CaptureMouse();
+            e.Handled = true;
+        }
+
+        private void mouseMove(object sender, MouseEventArgs args)
+        {
+            if (dragStart != null && args.LeftButton == MouseButtonState.Pressed)
+            {
+                var element = (UIElement)sender;
+                var p2 = args.GetPosition(this);
+                (element as Line).X1 = (element as Line).X2 = p2.X;
+            }
+        }
+
+        private void mouseUp(object sender, MouseButtonEventArgs e)
+        {
+            var element = (UIElement)sender;
+            element.ReleaseMouseCapture();
+            if ((element as Line).X1 >= this.ActualWidth)
+            {
+                RemoveMarker(element as Line);
+                var mark = PositionToTime(dragStart.Value.X);
+                if (MarkersCollection.Contains((int)mark))
+                    MarkersCollection.Remove((int)mark);
+                else if (MarkersCollection.Contains((int)mark + 1))
+                    MarkersCollection.Remove((int)mark + 1);
+                else if (MarkersCollection.Contains((int)mark - 1))
+                    MarkersCollection.Remove((int)mark - 1);
+            }
+            else
+            {
+                var mark = PositionToTime(dragStart.Value.X);
+                if (MarkersCollection.Contains((int)mark))
+                    MarkersCollection.Remove((int)mark);
+                else if (MarkersCollection.Contains((int)mark + 1))
+                    MarkersCollection.Remove((int)mark + 1);
+                else if (MarkersCollection.Contains((int)mark - 1))
+                    MarkersCollection.Remove((int)mark - 1);
+
+                mark = PositionToTime((element as Line).X1);
+                MarkersCollection.Add((int)mark);
+            }
+            dragStart = null;
+        }
+
         private void NotifyPropertyChanged(String info)
         {
             if (PropertyChanged != null)
@@ -142,14 +166,27 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 PropertyChanged(this, new PropertyChangedEventArgs(info));
             }
         }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            bitmap = null;
+            bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
+
+            mainCanvas.Source = bitmap;
+        }
         #endregion
 
         #region Dependency properties
-        public WaveStream WaveStream
-        {
-            get { return (WaveStream)GetValue(WaveStreamProperty); }
-            set { SetValue(WaveStreamProperty, value); }
-        }
+        // Using a DependencyProperty as the backing store for MarkersCollection.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MarkersCollectionProperty =
+            DependencyProperty.Register("MarkersCollection", typeof(ObservableCollection<int>), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
+            {
+                if (e.NewValue == null) return;
+                var newValue = e.NewValue as ObservableCollection<int>;
+
+                var view = (s as WaveFormViewer);
+                if (view == null) return;
+            }));
 
         // Using a DependencyProperty as the backing store for WaveStream.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WaveStreamProperty =
@@ -164,20 +201,22 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
                 view.waveStream = newValue;
                 if (newValue != null)
-                {
                     view.ReadStream().ContinueWith(a => view.Draw());
-                }
             }));
+
+        public ObservableCollection<int> MarkersCollection
+        {
+            get { return (ObservableCollection<int>)GetValue(MarkersCollectionProperty); }
+            set { SetValue(MarkersCollectionProperty, value); }
+        }
+        public WaveStream WaveStream
+        {
+            get { return (WaveStream)GetValue(WaveStreamProperty); }
+            set { SetValue(WaveStreamProperty, value); }
+        }
         #endregion
 
         #region Private methods
-        private void enableDrag(UIElement element)
-        {
-            element.MouseDown += mouseDown;
-            element.MouseMove += mouseMove;
-            element.MouseUp += mouseUp;
-        }
-
         private void AddNewMarker(int position)
         {
             var newLine = new Line()
@@ -193,36 +232,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
             enableDrag(newLine);
             markers.Children.Add(newLine);
-        }
-
-        private void RemoveMarker(Line marker)
-        {
-            if (markers.Children.Contains(marker))
-                markers.Children.Remove(marker);
-        }
-
-        private Task ReadStream()
-        {
-            return Task.Run(() =>
-                {
-                    if (waveStream != null)
-                    {
-                        streamData = new short[waveStream.Length / 2];
-                        waveStream.Position = 0;
-
-                        int bytesRead;
-                        var waveData = new byte[8192];
-                        int pos = 0;
-                        while ((bytesRead = waveStream.Read(waveData, 0, 8192)) == 8192)
-                        {
-                            for (int n = 0; n < bytesRead; n += 2)
-                                streamData[pos++] = BitConverter.ToInt16(waveData, n);
-                        }
-
-                        waveStream.Dispose();
-                        waveStream = null;
-                    }
-                });
         }
 
         private void Draw()
@@ -267,8 +276,76 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 })
                 .ContinueWith(a =>
                     {
+                        App.Current.Dispatcher.Invoke(() => DrawMarkers());
                         IsLoading = false;
                     });
+        }
+
+        private void DrawMarkers()
+        {
+            var startTime = PositionToTime(0);
+            var endTime = PositionToTime((int)this.ActualWidth);
+
+            markers.Children.Clear();
+            foreach (var mark in MarkersCollection)
+            {
+                if (mark <= endTime && mark >= startTime)
+                    AddNewMarker(TimeToPosition(mark));
+            }
+        }
+
+        private void enableDrag(UIElement element)
+        {
+            element.MouseDown += mouseDown;
+            element.MouseMove += mouseMove;
+            element.MouseUp += mouseUp;
+        }
+
+        private int PositionToTime(double position)
+        {
+            if (averageBytesPerSecond == 0)
+                return 0;
+
+            return (int)((StartPosition + position * SamplesPerPixel) * 2) / (averageBytesPerSecond / 10);
+        }
+
+        private Task ReadStream()
+        {
+            return Task.Run(() =>
+                {
+                    if (waveStream != null)
+                    {
+                        streamData = new short[waveStream.Length / 2];
+                        waveStream.Position = 0;
+                        averageBytesPerSecond = waveStream.WaveFormat.AverageBytesPerSecond;
+
+                        int bytesRead;
+                        var waveData = new byte[8192];
+                        int pos = 0;
+                        while ((bytesRead = waveStream.Read(waveData, 0, 8192)) == 8192)
+                        {
+                            for (int n = 0; n < bytesRead; n += 2)
+                                streamData[pos++] = BitConverter.ToInt16(waveData, n);
+                        }
+
+                        waveStream.Dispose();
+                        waveStream = null;
+                    }
+                });
+        }
+
+        private void RemoveMarker(Line marker)
+        {
+            if (markers.Children.Contains(marker))
+                markers.Children.Remove(marker);
+        }
+
+        private int TimeToPosition(int mark)
+        {
+            if (SamplesPerPixel == 0)
+                return 0;
+
+            return (int)((((mark * (averageBytesPerSecond / 10)) / 2) - StartPosition) / SamplesPerPixel);
         }
         #endregion
 

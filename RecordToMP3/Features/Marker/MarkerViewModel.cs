@@ -6,6 +6,8 @@ using NAudio.Wave.SampleProviders;
 using RecordToMP3.Features.Messages;
 using RecordToMP3.Features.Processor.Tools;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,7 +17,8 @@ namespace RecordToMP3.Features.Marker
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
         #region Fields
-        private string fileName;
+        Marker marker = new Marker();
+        ObservableCollection<int> markers;
         #endregion
 
         #region Constructors
@@ -43,7 +46,37 @@ namespace RecordToMP3.Features.Marker
         #region Properties
         public string FileName { get { return Properties.Settings.Default.RECORDER_LastFile; } }
 
-        public WaveStream WaveStream { get { return new NAudio.Wave.WaveFileReader(FileName); } }
+        public WaveStream WaveStream
+        {
+            get
+            {
+                if (markers != null)
+                {
+                    markers.CollectionChanged -= markers_CollectionChanged;
+                    markers = null;
+                }
+                return new NAudio.Wave.WaveFileReader(FileName);
+            }
+        }
+
+        public ObservableCollection<int> Markers
+        {
+            get
+            {
+                if (markers == null)
+                {
+                    markers = new ObservableCollection<int>(marker.GetMarkersFromFile(FileName));
+                    markers.CollectionChanged += markers_CollectionChanged;
+                }
+                return markers;
+            }
+            set { }
+        }
+
+        void markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            marker.CreateFileFromList(FileName, Markers);
+        }
         #endregion
 
         #region Overrides

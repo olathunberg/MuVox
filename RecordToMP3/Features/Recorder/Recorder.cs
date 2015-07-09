@@ -41,12 +41,6 @@ namespace RecordToMP3.Features.Recorder
         }
         #endregion
 
-        #region Properties
-        public Action<float, float, float, float> NewSample { get; set; }
-
-        public RecordingState RecordingState { get { return recordingState; } }
-        #endregion
-
         #region Events
         private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
@@ -134,6 +128,10 @@ namespace RecordToMP3.Features.Recorder
         #endregion
 
         #region Properties
+        public Action<float, float, float, float> NewSample { get; set; }
+
+        public RecordingState RecordingState { get { return recordingState; } }
+  
         public ObservableCollection<int> Markers { get; set; }
         
         public int TenthOfSecondsRecorded
@@ -148,16 +146,7 @@ namespace RecordToMP3.Features.Recorder
             Markers.Add(GetTenthOfSecondsRecorded());
 
             var fileName = Path.Combine(outputFolder, outputFilenameBase) + ".markers";
-            if (!File.Exists(fileName))
-            {
-                using (var sw = File.CreateText(fileName))
-                    sw.WriteLine(Markers.Last().ToString());
-            }
-            else
-            {
-                using (var sw = File.AppendText(fileName))
-                    sw.WriteLine(Markers.Last().ToString());
-            }
+            new Marker.Marker().AddMarkerToFile(fileName, Markers.Last());
 
             RaisePropertyChanged(() => Markers);
         }

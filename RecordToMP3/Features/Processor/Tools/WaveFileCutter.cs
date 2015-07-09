@@ -11,16 +11,16 @@ namespace RecordToMP3.Features.Processor.Tools
 {
     public class WaveFileCutter
     {
-        public Task<List<string>> CutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(markerFilename, baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
+            return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
 
         public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
-            
+
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
             {
@@ -55,21 +55,14 @@ namespace RecordToMP3.Features.Processor.Tools
             }
         }
 
-        private List<string> DoCutWavFileFromMarkersFile(string markerFilename, string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            if (File.Exists(markerFilename))
+            var markerClass = new Marker.Marker();
+            if (markerClass.HasMarkerFile(baseFilename))
             {
-                var markers = new List<int>();
+                var markers = markerClass.GetMarkersFromFile(baseFilename);
                 var newFiles = new List<string>();
 
-                using (var file = File.OpenText(markerFilename))
-                {
-                    string line = null;
-                    while ((line = file.ReadLine()) != null)
-                    {
-                        markers.Add(int.Parse(line));
-                    }
-                }
                 addLogMessage("Found " + (markers.Count + 1) + " segments");
 
                 int marker = 0;

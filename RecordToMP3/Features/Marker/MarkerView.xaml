@@ -53,6 +53,7 @@
 
         <Grid Grid.Row="1" Margin="10,0,10,10">
             <WaveFormViewer:WaveFormViewer WaveStream="{Binding Marker.WaveStream, Source={StaticResource ViewModelLocator}}" 
+                                           MarkersCollection="{Binding Marker.Markers, Source={StaticResource ViewModelLocator}}"
                                            Foreground="{StaticResource BorderBrushSelected}" 
                                            Background="{StaticResource BackgroundNormal}"
                                            LineColor="{StaticResource BorderBrushSelectedColor}"

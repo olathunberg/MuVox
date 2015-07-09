@@ -178,7 +178,6 @@ namespace RecordToMP3.Features.Processor
                 LogViewerModel.Add("Splitting into tracks...");
                 var waveFileCutter = new WaveFileCutter();
                 var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
-                     Path.ChangeExtension(baseFileName, ".markers"),
                      baseFileName,
                      message => LogViewerModel.Add(message),
                      max => SetDetailProgressBarMaximum(max),
