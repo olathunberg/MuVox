@@ -134,29 +134,35 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         {
             var element = (UIElement)sender;
             element.ReleaseMouseCapture();
+
             if ((element as Line).X1 >= this.ActualWidth)
             {
                 RemoveMarker(element as Line);
-                var mark = PositionToTime(dragStart.Value.X);
-                if (MarkersCollection.Contains((int)mark))
-                    MarkersCollection.Remove((int)mark);
-                else if (MarkersCollection.Contains((int)mark + 1))
-                    MarkersCollection.Remove((int)mark + 1);
-                else if (MarkersCollection.Contains((int)mark - 1))
-                    MarkersCollection.Remove((int)mark - 1);
+                if (dragStart != null)
+                {
+                    var mark = PositionToTime(dragStart.Value.X);
+                    if (MarkersCollection.Contains(mark))
+                        MarkersCollection.Remove(mark);
+                    else if (MarkersCollection.Contains(mark + 1))
+                        MarkersCollection.Remove(mark + 1);
+                    else if (MarkersCollection.Contains(mark - 1))
+                        MarkersCollection.Remove(mark - 1);
+                }
             }
             else
             {
-                var mark = PositionToTime(dragStart.Value.X);
-                if (MarkersCollection.Contains((int)mark))
-                    MarkersCollection.Remove((int)mark);
-                else if (MarkersCollection.Contains((int)mark + 1))
-                    MarkersCollection.Remove((int)mark + 1);
-                else if (MarkersCollection.Contains((int)mark - 1))
-                    MarkersCollection.Remove((int)mark - 1);
-
-                mark = PositionToTime((element as Line).X1);
-                MarkersCollection.Add((int)mark);
+                if (dragStart != null)
+                {
+                    var mark = PositionToTime(dragStart.Value.X);
+                    if (MarkersCollection.Contains(mark))
+                        MarkersCollection.Remove(mark);
+                    else if (MarkersCollection.Contains(mark + 1))
+                        MarkersCollection.Remove(mark + 1);
+                    else if (MarkersCollection.Contains(mark - 1))
+                        MarkersCollection.Remove(mark - 1);
+                }
+                var newMark = PositionToTime((element as Line).X1);
+                MarkersCollection.Add(newMark);
             }
             dragStart = null;
         }
