@@ -1,16 +1,9 @@
 ﻿BUGGAR
-- MaxProgress i mål innan MP3 konvertering av andra segmentet
-x Uppdaterar inte knappstatus efter processning
-x Zoom i markerview känns inte rätt
 
 GUI
-x Egen implementation av realtids GUI, tar för mycket kraft
-x Effetivare grafer, rita bara om den ändrade biten
 x Färgmarkering i waveform som visar var man är
 - Visa maxvärdet ur genomsnittet på nivåmätaren
 - Färgmarkera knappar, grön för start röd för stop osv
-x Se till att nedersta raden alltid är synlig i loggen
-x Loadingpanel i WaveFormViewer
 - Tidsmarkeringar i WaveFormViewer
 
 INSTÄLLNINGAR
@@ -19,11 +12,9 @@ x Inställning för minuter på progressbar
 - Bättre inställningshantering som är i JSON. 
 
 FUNKTION
-x Spara markörer för att kunna klippa valda delar
-x Flytta markörer
 - Kunna spela upp från vald markör
 x Efterbehandling, normalisering
-x Efterbehandling, brusreducering
+- Efterbehandling, brusreducering
 - Efterbehandling, radera tomrum
 
 x Flytta all inspelningslogik till Recorder

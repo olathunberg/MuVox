@@ -12,6 +12,7 @@ using System.Collections.Concurrent;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -43,7 +44,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             set
             {
                 isLoading = value;
-                NotifyPropertyChanged("IsLoading");
+                NotifyPropertyChanged();
             }
         }
 
@@ -167,11 +168,12 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             dragStart = null;
         }
 
-        private void NotifyPropertyChanged(String info)
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (PropertyChanged != null)
+            var handler = PropertyChanged;
+            if (handler != null)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(info));
+                handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
