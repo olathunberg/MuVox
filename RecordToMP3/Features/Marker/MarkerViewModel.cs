@@ -22,9 +22,6 @@ namespace RecordToMP3.Features.Marker
         #endregion
 
         #region Constructors
-        public MarkerViewModel()
-        {
-        }
         #endregion
 
         #region Commands
@@ -70,7 +67,6 @@ namespace RecordToMP3.Features.Marker
                 }
                 return markers;
             }
-            set { }
         }
 
         void markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

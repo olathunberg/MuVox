@@ -12,10 +12,6 @@ namespace RecordToMP3
         private ProcessorViewModel _processorViewModel = new ProcessorViewModel();
         private MarkerViewModel _markerViewModel = new MarkerViewModel();
 
-        public ViewModelLocator()
-        {
-        }
-
         public RecorderViewModel Recorder
         {
             get { return _recorderViewModel; }
