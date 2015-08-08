@@ -21,7 +21,7 @@ namespace RecordToMP3.Features.LogViewer
             if (Entries == null)
                 Entries = new ObservableCollection<LogEntryModel>();
 
-            App.Current.Dispatcher.Invoke(() => Entries.Add(new LogEntryModel(message)));
+            System.Windows.Application.Current.Dispatcher.Invoke(() => Entries.Add(new LogEntryModel(message)));
         }
     }
 }

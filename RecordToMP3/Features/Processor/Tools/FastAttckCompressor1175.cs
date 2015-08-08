@@ -141,7 +141,7 @@ namespace RecordToMP3.Features.Processor.Tools
 
             thresh = Threshold.Value;
             threshv = (float)Math.Exp(Threshold.Value * db2log);
-            ratio = (Ratio.Value == 0 ? 4 : (Ratio.Value == 1 ? 8 : (Ratio.Value == 2 ? 12 : (Ratio.Value == 3 ? 20 : 20))));
+            ratio = (Ratio.Value == 0 ? 4 : (Ratio.Value == 1 ? 8 : (Ratio.Value == 2 ? 12 : 20)));
             if (Ratio.Value == 4)
             {
                 allin = 1;
@@ -152,7 +152,7 @@ namespace RecordToMP3.Features.Processor.Tools
                 allin = 0;
                 cratio = ratio;
             }
-            cthresh = (softknee != 0) ? (Threshold.Value - 3) : Threshold.Value;
+            cthresh = (Math.Abs(softknee) > double.Epsilon) ? (Threshold.Value - 3) : Threshold.Value;
             cthreshv = (float)Math.Exp(cthresh * db2log);
             makeup = Gain.Value;
             makeupv = (float)Math.Exp((makeup + autogain) * db2log);
@@ -192,7 +192,7 @@ namespace RecordToMP3.Features.Processor.Tools
             overdb = rundb;
             averatio = runratio;
 
-            if (allin != 0)
+            if (Math.Abs(allin) > double.Epsilon)
                 cratio = 12 + averatio;
             else
                 cratio = ratio;

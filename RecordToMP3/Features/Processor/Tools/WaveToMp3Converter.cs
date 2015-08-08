@@ -15,7 +15,7 @@ namespace RecordToMP3.Features.Processor.Tools
             Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
             
-            return Task<string>.Run(() => DoConvert(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
+            return Task.Run(() => DoConvert(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
 
         private string DoConvert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)

@@ -1,21 +1,12 @@
 ﻿using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using RecordToMP3.Features.Marker;
 using RecordToMP3.Features.Messages;
-using RecordToMP3.Features.Processor;
-using RecordToMP3.Features.Recorder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecordToMP3
 {
     public class MainWindowModel : ViewModelBase
     {
-        private ViewModelLocator viewModelLocator = (ViewModelLocator)App.Current.Resources["ViewModelLocator"];
+        private ViewModelLocator viewModelLocator = (ViewModelLocator)System.Windows.Application.Current.Resources["ViewModelLocator"];
         private ViewModelBase _currentViewModel;
 
         public ViewModelBase CurrentViewModel

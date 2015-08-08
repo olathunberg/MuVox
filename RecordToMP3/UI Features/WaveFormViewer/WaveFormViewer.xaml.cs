@@ -274,7 +274,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
                         points.Add(new Tuple<int, int, int, int>((int)x, (int)(this.ActualHeight * lowPercent), (int)x, (int)(this.ActualHeight * highPercent)));
                     });
-                    App.Current.Dispatcher.Invoke(() =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         using (bitmap.GetBitmapContext())
                         {
@@ -286,7 +286,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 })
                 .ContinueWith(a =>
                     {
-                        App.Current.Dispatcher.Invoke(() => DrawMarkers());
+                        Application.Current.Dispatcher.Invoke(() => DrawMarkers());
                         IsLoading = false;
                     });
         }
