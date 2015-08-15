@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace RecordToMP3.Features.Recorder
 {
-    public class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase
+    public class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
         #region Fields
         private float rightAmplitude = 0f;
@@ -163,6 +163,35 @@ namespace RecordToMP3.Features.Recorder
             if (amplitudesR.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (recorder != null)
+                        recorder.Dispose();
+                }
+
+                // TODO: set large fields to null.
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
         #endregion
     }
 }

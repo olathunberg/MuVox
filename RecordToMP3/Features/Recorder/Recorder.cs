@@ -15,7 +15,7 @@ using System.Windows.Threading;
 
 namespace RecordToMP3.Features.Recorder
 {
-    public class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup
+    public class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup, IDisposable
     {
         #region Fields
         private WaveIn waveIn;
@@ -117,7 +117,7 @@ namespace RecordToMP3.Features.Recorder
                 rdr.CopyTo(wtr);
             }
         }
-    
+
         private int GetTenthOfSecondsRecorded()
         {
             if (writer != null)
@@ -131,9 +131,9 @@ namespace RecordToMP3.Features.Recorder
         public Action<float, float, float, float> NewSample { get; set; }
 
         public RecordingState RecordingState { get { return recordingState; } }
-  
+
         public ObservableCollection<int> Markers { get; set; }
-        
+
         public int TenthOfSecondsRecorded
         {
             get { return GetTenthOfSecondsRecorded(); }
@@ -168,7 +168,7 @@ namespace RecordToMP3.Features.Recorder
 
                 Markers.Clear();
             }
-         
+
             if (recordingState == RecordingState.Monitoring)
                 recordingState = RecordingState.Recording;
             else if (recordingState == RecordingState.Recording)
@@ -190,6 +190,33 @@ namespace RecordToMP3.Features.Recorder
             waveIn.Dispose();
             waveIn = null;
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (waveIn != null)
+                        waveIn.Dispose();
+                    if (writer != null)
+                        writer.Dispose();
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
         #endregion
     }
 }

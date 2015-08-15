@@ -40,7 +40,7 @@ namespace RecordToMP3.Features.Processor
                 return recordCommand ?? (recordCommand = new RelayCommand(
                     () =>
                     {
-                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Recorder));
+                        Messenger.Default.Send(new GotoPageMessage(Pages.Recorder));
                     },
                     () => !IsProcessing));
             }
