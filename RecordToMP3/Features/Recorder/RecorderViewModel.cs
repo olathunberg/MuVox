@@ -29,6 +29,12 @@ namespace RecordToMP3.Features.Recorder
             recorder = new Recorder();
             recorder.NewSample = RecorderNewSample;
             ProgressBarMaximum = Properties.Settings.Default.UI_MinutesOnProgressBar * 600;
+            Messenger.Default.Register<SetMarkerMessage>(
+               this, (action) =>
+               {
+                   if (SetMarker.CanExecute(null))
+                       SetMarker.Execute(null);
+               });
         }
         #endregion
 

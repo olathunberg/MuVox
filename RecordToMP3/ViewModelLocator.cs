@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
-using Microsoft.Practices.ServiceLocation;
-using RecordToMP3.Features.Marker;
+﻿using RecordToMP3.Features.Marker;
 using RecordToMP3.Features.Processor;
 using RecordToMP3.Features.Recorder;
 

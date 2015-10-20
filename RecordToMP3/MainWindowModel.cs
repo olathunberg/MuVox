@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using RecordToMP3.Features.Messages;
+using System.Windows;
 
 namespace RecordToMP3
 {
@@ -23,6 +24,9 @@ namespace RecordToMP3
 
         public MainWindowModel()
         {
+            Helpers.HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.F3, Helpers.KeyModifiers.Alt);
+            Helpers.HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
+
             CurrentViewModel = viewModelLocator.Recorder;
 
             Messenger.Default.Register<GotoPageMessage>(
@@ -35,6 +39,11 @@ namespace RecordToMP3
                     if (action.GotoPage == Pages.Marker)
                         CurrentViewModel = viewModelLocator.Marker;
                 });
+        }
+
+        private void HotKeyManager_HotKeyPressed(object sender, Helpers.HotKeyEventArgs e)
+        {
+            Messenger.Default.Send<SetMarkerMessage>(new SetMarkerMessage());
         }
 
         public override void Cleanup()
