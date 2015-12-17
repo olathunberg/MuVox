@@ -36,7 +36,7 @@ namespace RecordToMP3.Helpers
             {
                 if (m.Msg == WM_HOTKEY)
                 {
-                    HotKeyEventArgs e = new HotKeyEventArgs(m.LParam);
+                    var e = new HotKeyEventArgs(m.LParam);
                     HotKeyManager.OnHotKeyPressed(e);
                 }
 

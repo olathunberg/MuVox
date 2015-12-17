@@ -172,7 +172,7 @@ namespace RecordToMP3.Features.Processor
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, message => logViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
+                    baseFileName = await mp3ToWave.Convert(baseFileName, message => logViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
                 }
 
                 LogViewerModel.Add("Splitting into tracks...");
@@ -189,10 +189,10 @@ namespace RecordToMP3.Features.Processor
                 foreach (var item in cuttedFiles)
                 {
                     LogViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                    await normalizer.Normalize(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
+                    await normalizer.Normalize(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
 
                     LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
-                    await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), progress => UpdateDetailProgressBar(progress));
+                    await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
 
                     File.Delete(item);
                 }

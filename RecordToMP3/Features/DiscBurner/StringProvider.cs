@@ -64,7 +64,7 @@ namespace RecordToMP3.Features.DiscBurner
         {
             switch (mediaType)
             {
-                case IMAPI_MEDIA_PHYSICAL_TYPE.IMAPI_MEDIA_TYPE_UNKNOWN:
+                //case IMAPI_MEDIA_PHYSICAL_TYPE.IMAPI_MEDIA_TYPE_UNKNOWN:
                 default:
                     return "Unknown Media Type";
 

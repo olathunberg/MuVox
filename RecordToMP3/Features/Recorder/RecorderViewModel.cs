@@ -78,10 +78,7 @@ namespace RecordToMP3.Features.Recorder
             get
             {
                 return setMarkerCommand ?? (setMarkerCommand = new RelayCommand(
-                    () =>
-                    {
-                        recorder.SetMarker();
-                    },
+                    recorder.SetMarker,
                     () => recorder.RecordingState == RecordingState.Recording || recorder.RecordingState == RecordingState.Paused));
             }
         }
@@ -142,7 +139,7 @@ namespace RecordToMP3.Features.Recorder
             get { return newRightPoint; }
             set { newRightPoint = value; RaisePropertyChanged(); }
         }
-        
+
         public uint ProgressBarMaximum { get; set; }
         #endregion
 
@@ -160,7 +157,7 @@ namespace RecordToMP3.Features.Recorder
         {
             NewRightPoint = new Tuple<float, float>(maxR, minR);
             NewLeftPoint = new Tuple<float, float>(maxL, minL);
-            
+
             amplitudesL.Enqueue(maxL);
             if (amplitudesL.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;

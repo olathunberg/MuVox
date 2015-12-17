@@ -12,8 +12,6 @@ namespace RecordToMP3.Features.DiscBurner
     // http://www.codeproject.com/Articles/25241/Creating-Audio-CDs-using-IMAPI
     public class DiscBurner
     {
-        private bool isBurning;
-        private bool isFormatting;
         private Int64 totalDiscSize;
 
         public string labelMediaTypeText { get; private set; }
@@ -121,8 +119,8 @@ namespace RecordToMP3.Features.DiscBurner
 
         private string GetDisplayString(IDiscRecorder2 discRecorder2)
         {
-            string devicePaths = string.Empty;
-            string volumePath = (string)discRecorder2.VolumePathNames.GetValue(0);
+            var devicePaths = string.Empty;
+            var volumePath = (string)discRecorder2.VolumePathNames.GetValue(0);
             foreach (string volPath in discRecorder2.VolumePathNames)
             {
                 if (!string.IsNullOrEmpty(devicePaths))
@@ -147,7 +145,7 @@ namespace RecordToMP3.Features.DiscBurner
                 if (!discFormatData.IsRecorderSupported(discRecorder))
                     return "Recorder not supported";
 
-                StringBuilder supportedMediaTypes = new StringBuilder();
+                var supportedMediaTypes = new StringBuilder();
                 foreach (IMAPI_PROFILE_TYPE profileType in discRecorder.SupportedProfiles)
                 {
                     string profileName = StringProvider.GetProfileTypeString(profileType);

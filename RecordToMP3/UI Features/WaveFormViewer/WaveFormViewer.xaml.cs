@@ -229,7 +229,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         #region Private methods
         private void AddNewMarker(int position)
         {
-            var newLine = new Line()
+            var newLine = new Line
             {
                 Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFED262")),
                 StrokeThickness = 2,

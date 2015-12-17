@@ -33,6 +33,7 @@ namespace RecordToMP3.Features.DiscBurner
             this.mediaItems = mediaItems;
             this.cancellationToken = cancellationToken;
 
+            burnData = new BurnData();
             burnData.uniqueRecorderId = discRecorder.ActiveDiscRecorder;
 
             var burnResult = await Task.Run(() => DoBurn(burnData.uniqueRecorderId, verificationLevel));

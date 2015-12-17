@@ -68,8 +68,8 @@ namespace RecordToMP3.Features.Recorder
 
             for (int index = 0; index < e.BytesRecorded; index += 4)
             {
-                short sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
-                float sample32 = sample / 32768f;
+                var sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
+                var sample32 = sample / 32768f;
 
                 maxL = Math.Max(sample32, maxL);
                 minL = Math.Min(sample32, minL);
@@ -169,12 +169,18 @@ namespace RecordToMP3.Features.Recorder
                 Markers.Clear();
             }
 
-            if (recordingState == RecordingState.Monitoring)
-                recordingState = RecordingState.Recording;
-            else if (recordingState == RecordingState.Recording)
-                recordingState = RecordingState.Paused;
-            else if (recordingState == RecordingState.Paused)
-                recordingState = RecordingState.Recording;
+            switch (recordingState)
+            {
+                case RecordingState.Monitoring:
+                    recordingState = RecordingState.Recording;
+                    break;
+                case RecordingState.Recording:
+                    recordingState = RecordingState.Paused;
+                    break;
+                case RecordingState.Paused:
+                    recordingState = RecordingState.Recording;
+                    break;
+            }
         }
 
         public void StopRecording()
