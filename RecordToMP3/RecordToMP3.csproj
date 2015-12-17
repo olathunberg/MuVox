@@ -81,6 +81,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -107,6 +108,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Features\DiscBurner\AudioProject\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Features\DiscBurner\AudioProject\MediaFile.cs" />
+    <Compile Include="Features\DiscBurner\BurnTask.cs" />
+    <Compile Include="Features\DiscBurner\DiscBurner.cs" />
+    <Compile Include="Features\DiscBurner\FormatTask.cs" />
+    <Compile Include="Features\DiscBurner\Interop\BurnData.cs" />
+    <Compile Include="Features\DiscBurner\Interop\Imapi2Interop.cs" />
+    <Compile Include="Features\DiscBurner\MediaItem\DirectoryItem.cs" />
+    <Compile Include="Features\DiscBurner\MediaItem\FileItem.cs" />
+    <Compile Include="Features\DiscBurner\MediaItem\IMediaItem.cs" />
+    <Compile Include="Features\DiscBurner\MediaItem\Win32.cs" />
+    <Compile Include="Features\DiscBurner\StringProvider.cs" />
     <Compile Include="Features\LogViewer\LogEntryModel.cs" />
     <Compile Include="Features\LogViewer\LogViewerModel.cs" />
     <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">
@@ -293,9 +308,6 @@
     <Resource Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -315,6 +327,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
