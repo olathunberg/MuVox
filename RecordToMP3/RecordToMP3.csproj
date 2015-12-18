@@ -109,7 +109,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Features\DiscBurner\AudioBurnTask.cs" />
-    <Compile Include="Features\DiscBurner\AudioProject\MainForm.cs" />
     <Compile Include="Features\DiscBurner\MediaItem\MediaFile.cs" />
     <Compile Include="Features\DiscBurner\DataBurnTask.cs" />
     <Compile Include="Features\DiscBurner\DiscBurner.cs" />
