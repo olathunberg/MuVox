@@ -29,7 +29,7 @@ namespace RecordToMP3.Features.Processor.Tools
                 int startPos = (int)cutFrom.TotalMilliseconds * bytesPerMillisecond;
                 startPos = startPos - startPos % reader.WaveFormat.BlockAlign;
 
-                int endPos = (int)reader.Length;
+                var endPos = (int)reader.Length;
 
                 CutWavFile(reader, writer, startPos, endPos, progressCallback);
             }
@@ -91,7 +91,7 @@ namespace RecordToMP3.Features.Processor.Tools
 
                 return newFiles.ToList();
             }
-            return new List<string>() { baseFilename };
+            return new List<string> { baseFilename };
         }
 
         private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, Action<long> progressCallback)
@@ -100,7 +100,7 @@ namespace RecordToMP3.Features.Processor.Tools
             byte[] buffer = new byte[1024];
             while (reader.Position < endPos)
             {
-                int bytesRequired = (int)(endPos - reader.Position);
+                var bytesRequired = (int)(endPos - reader.Position);
                 if (bytesRequired > 0)
                 {
                     int bytesToRead = Math.Min(bytesRequired, buffer.Length);

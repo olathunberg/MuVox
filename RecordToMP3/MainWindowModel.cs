@@ -7,7 +7,7 @@ namespace RecordToMP3
 {
     public class MainWindowModel : ViewModelBase
     {
-        private ViewModelLocator viewModelLocator = (ViewModelLocator)System.Windows.Application.Current.Resources["ViewModelLocator"];
+        private readonly ViewModelLocator viewModelLocator = (ViewModelLocator)System.Windows.Application.Current.Resources["ViewModelLocator"];
         private ViewModelBase _currentViewModel;
 
         public ViewModelBase CurrentViewModel

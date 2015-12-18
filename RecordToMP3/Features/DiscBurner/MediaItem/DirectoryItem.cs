@@ -14,6 +14,9 @@ namespace IMAPI2.MediaItem
 {
     class DirectoryItem : IMediaItem
     {
+        private readonly string m_directoryPath;
+        private string displayName;
+        private System.Drawing.Image fileIconImage = null;
         private List<IMediaItem> mediaItems = new List<IMediaItem>();
 
         public DirectoryItem(string directoryPath)
@@ -24,8 +27,8 @@ namespace IMAPI2.MediaItem
             }
 
             m_directoryPath = directoryPath;
-            FileInfo fileInfo = new FileInfo(m_directoryPath);
-            displayName = fileInfo.Name;
+            var fileInfo = new FileInfo(m_directoryPath);
+            DisplayName = fileInfo.Name;
 
             string[] files = Directory.GetFiles(m_directoryPath);
             foreach (string file in files)
@@ -35,13 +38,13 @@ namespace IMAPI2.MediaItem
             foreach (string directory in directories)
                 mediaItems.Add(new DirectoryItem(directory));
 
-            SHFILEINFO shinfo = new SHFILEINFO();
+            var shinfo = new SHFILEINFO();
             IntPtr hImg = Win32.SHGetFileInfo(m_directoryPath, 0, ref shinfo,
                 (uint)Marshal.SizeOf(shinfo), Win32.SHGFI_ICON | Win32.SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
-            System.Drawing.IconConverter imageConverter = new System.Drawing.IconConverter();
-            System.Drawing.Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
+            var imageConverter = new System.Drawing.IconConverter();
+            var icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
             try
             {
                 fileIconImage = (System.Drawing.Image)
@@ -54,20 +57,21 @@ namespace IMAPI2.MediaItem
             Win32.DestroyIcon(shinfo.hIcon);
         }
 
+        public string DisplayName
+        {
+            get { return displayName; }
+            set { displayName = value; }
+        }
+
+        public System.Drawing.Image FileIconImage
+        {
+            get { return fileIconImage; }
+        }
+
         public string Path
         {
-            get
-            {
-                return m_directoryPath;
-            }
+            get { return m_directoryPath; }
         }
-        private string m_directoryPath;
-
-        public override string ToString()
-        {
-            return displayName;
-        }
-        private string displayName;
 
         public Int64 SizeOnDisc
         {
@@ -81,15 +85,6 @@ namespace IMAPI2.MediaItem
                 return totalSize;
             }
         }
-
-        public System.Drawing.Image FileIconImage
-        {
-            get
-            {
-                return fileIconImage;
-            }
-        }
-        private System.Drawing.Image fileIconImage = null;
 
         public bool AddToFileSystem(IFsiDirectoryItem rootItem)
         {
@@ -105,6 +100,11 @@ namespace IMAPI2.MediaItem
                     MessageBoxIcon.Error);
                 return false;
             }
+        }
+
+        public override string ToString()
+        {
+            return DisplayName;
         }
     }
 }

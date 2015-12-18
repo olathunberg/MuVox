@@ -12,13 +12,13 @@ using IMAPI2.Interop;
 
 namespace IMAPI2.MediaItem
 {
-    /// <summary>
-    ///
-    /// </summary>
     class FileItem : IMediaItem
     {
         private const Int64 SECTOR_SIZE = 2048;
 
+        private readonly string displayName;
+        private readonly string filePath;
+        private System.Drawing.Image fileIconImage = null;
         private Int64 m_fileLength = 0;
 
         public FileItem(string path)
@@ -30,20 +30,18 @@ namespace IMAPI2.MediaItem
 
             filePath = path;
 
-            FileInfo fileInfo = new FileInfo(filePath);
+            var fileInfo = new FileInfo(filePath);
             displayName = fileInfo.Name;
             m_fileLength = fileInfo.Length;
 
-            //
             // Get the File icon
-            //
-            SHFILEINFO shinfo = new SHFILEINFO();
+            var shinfo = new SHFILEINFO();
             IntPtr hImg = Win32.SHGetFileInfo(filePath, 0, ref shinfo,
                 (uint)Marshal.SizeOf(shinfo), Win32.SHGFI_ICON | Win32.SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
-            System.Drawing.IconConverter imageConverter = new System.Drawing.IconConverter();
-            System.Drawing.Icon icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
+            var imageConverter = new System.Drawing.IconConverter();
+            var icon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
             try
             {
                 fileIconImage = (System.Drawing.Image)
@@ -56,55 +54,26 @@ namespace IMAPI2.MediaItem
             Win32.DestroyIcon(shinfo.hIcon);
         }
 
-        /// <summary>
-        ///
-        /// </summary>
+        public System.Drawing.Image FileIconImage
+        {
+            get { return fileIconImage; }
+        }
+
+        public string Path
+        {
+            get { return filePath; }
+        }
+
         public Int64 SizeOnDisc
         {
             get
             {
                 if (m_fileLength > 0)
-                {
                     return ((m_fileLength / SECTOR_SIZE) + 1) * SECTOR_SIZE;
-                }
 
                 return 0;
             }
         }
-
-        /// <summary>
-        ///
-        /// </summary>
-        public string Path
-        {
-            get
-            {
-                return filePath;
-            }
-        }
-        private string filePath;
-
-        /// <summary>
-        ///
-        /// </summary>
-        public System.Drawing.Image FileIconImage
-        {
-            get
-            {
-                return fileIconImage;
-            }
-        }
-        private System.Drawing.Image fileIconImage = null;
-
-
-        /// <summary>
-        ///
-        /// </summary>
-        public override string ToString()
-        {
-            return displayName;
-        }
-        private string displayName;
 
         public bool AddToFileSystem(IFsiDirectoryItem rootItem)
         {
@@ -128,12 +97,15 @@ namespace IMAPI2.MediaItem
             finally
             {
                 if (stream != null)
-                {
                     Marshal.FinalReleaseComObject(stream);
-                }
             }
 
             return false;
+        }
+
+        public override string ToString()
+        {
+            return displayName;
         }
     }
 }

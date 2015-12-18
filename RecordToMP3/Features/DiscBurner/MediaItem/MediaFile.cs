@@ -1,26 +1,11 @@
 ﻿using System;
-//using System.Collections.Generic;
-//using System.Linq;
 using System.IO;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 
-namespace MusicCD
+namespace IMAPI2.MediaItem
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct SHFILEINFO
-    {
-        public IntPtr hIcon;
-        public IntPtr iIcon;
-        public uint dwAttributes;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string szDisplayName;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-        public string szTypeName;
-    };
-
     [StructLayout(LayoutKind.Sequential)]
     public struct WAV_HEADER
     {
@@ -58,53 +43,39 @@ namespace MusicCD
         private const uint STGM_SHARE_DENY_NONE = 0x00000040;
         private const uint STGM_READ = 0x00000000;
 
-        
         private long SECTOR_SIZE = 2352;
         private Int64 m_fileLength = 0;
 
         public MediaFile(string path)
         {
             if (!File.Exists(path))
-            {
                 throw new FileNotFoundException("The file added to FileItem was not found!",path);
-            }
 
             filePath = path;
 
-            FileInfo fileInfo = new FileInfo(filePath);
+            var fileInfo = new FileInfo(filePath);
             displayName = fileInfo.Name;
             m_fileLength = fileInfo.Length;
 
-            //
-            // Get the File icon
-            //
-            SHFILEINFO shinfo = new SHFILEINFO();
-            IntPtr hImg = SHGetFileInfo(filePath, 0, ref shinfo, 
+            var shinfo = new SHFILEINFO();
+            IntPtr hImg = SHGetFileInfo(filePath, 0, ref shinfo,
                 (uint)Marshal.SizeOf(shinfo), SHGFI_ICON|SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
             fileIcon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public Int64 SizeOnDisc
         {
             get
             {
                 if (m_fileLength > 0)
-                {
                     return ((m_fileLength / SECTOR_SIZE) + 1) * SECTOR_SIZE;
-                }
 
                 return 0;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public string Path
         {
             get
@@ -114,9 +85,6 @@ namespace MusicCD
         }
         private string filePath;
 
-        /// <summary>
-        /// 
-        /// </summary>
         public System.Drawing.Icon FileIcon
         {
             get
@@ -127,9 +95,6 @@ namespace MusicCD
         private System.Drawing.Icon fileIcon = null;
 
 
-        /// <summary>
-        /// 
-        /// </summary>
         public override string ToString()
         {
             return displayName;
@@ -181,23 +146,17 @@ namespace MusicCD
             {
                 fileStream = File.OpenRead(wavFile);
 
-                //
                 // Read the header data
-                //
-                BinaryReader binaryReader = new BinaryReader(fileStream);
+                var binaryReader = new BinaryReader(fileStream);
                 byte[] byteData = binaryReader.ReadBytes(Marshal.SizeOf(typeof(WAV_HEADER)));
                 GCHandle handle = GCHandle.Alloc(byteData, GCHandleType.Pinned);
                 binaryReader.Close();
                 fileStream.Close();
 
-                //
                 // Convert to the wav header structure
-                //
-                WAV_HEADER wavHeader = (WAV_HEADER)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(WAV_HEADER));
+                var wavHeader = (WAV_HEADER)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(WAV_HEADER));
 
-                //
                 // Verify the WAV file is a 44.1KHz, Stereo, Uncompressed Wav file.
-                //
                 if ((wavHeader.chunkID == 0x46464952) &&        // "RIFF"
                     (wavHeader.format == 0x45564157) &&         // "WAVE"
                     (wavHeader.formatChunkId == 0x20746d66) &&  // "fmt "

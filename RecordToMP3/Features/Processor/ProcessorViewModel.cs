@@ -77,7 +77,7 @@ namespace RecordToMP3.Features.Processor
             get
             {
                 return chooseFileCommand ?? (chooseFileCommand = new RelayCommand(
-                    () => ShowFileDialog(),
+                    ShowFileDialog,
                     () => !IsProcessing));
             }
         }
@@ -172,7 +172,7 @@ namespace RecordToMP3.Features.Processor
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, message => logViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
+                    baseFileName = await mp3ToWave.Convert(baseFileName, logViewerModel.Add, max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
                 }
 
                 LogViewerModel.Add("Splitting into tracks...");
@@ -223,7 +223,7 @@ namespace RecordToMP3.Features.Processor
 
         private void ShowFileDialog()
         {
-            var fileDialog = new OpenFileDialog()
+            var fileDialog = new OpenFileDialog
             {
                 CheckFileExists = true,
                 AddExtension = true,

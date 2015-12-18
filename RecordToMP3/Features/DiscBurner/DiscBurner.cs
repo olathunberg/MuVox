@@ -59,6 +59,23 @@ namespace RecordToMP3.Features.DiscBurner
             return result;
         }
 
+        public IList<MsftDiscRecorder2> GetDiscRecorders()
+        {
+            var result = new List<MsftDiscRecorder2>();
+            var discMaster = new MsftDiscMaster2();
+            if (!discMaster.IsSupportedEnvironment)
+                return result;
+            foreach (string uniqueRecorderID in discMaster)
+            {
+                var discRecorder2 = new MsftDiscRecorder2();
+                discRecorder2.InitializeDiscRecorder(uniqueRecorderID);
+
+                result.Add(discRecorder2);
+            }
+
+            return result;
+        }
+
         private void Cleanup()
         {
             if (discRecorder != null)

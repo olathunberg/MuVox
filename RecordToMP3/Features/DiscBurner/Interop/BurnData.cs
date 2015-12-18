@@ -8,6 +8,7 @@ namespace IMAPI2.Interop
     public enum BURN_MEDIA_TASK
     {
         BURN_MEDIA_TASK_FILE_SYSTEM,
+        BURN_MEDIA_TASK_PREPARING,
         BURN_MEDIA_TASK_WRITING
     }
 
@@ -15,14 +16,20 @@ namespace IMAPI2.Interop
     {
         public string uniqueRecorderId;
         public string statusMessage;
+
+        public int totalTracks;
+        public string filename;
+
         public BURN_MEDIA_TASK task;
 
         // IDiscFormat2DataEventArgs Interface
         public long elapsedTime;		// Elapsed time in seconds
         public long remainingTime;		// Remaining time in seconds
         public long totalTime;			// total estimated time in seconds
-        // IWriteEngine2EventArgs Interface
-        public IMAPI_FORMAT2_DATA_WRITE_ACTION currentAction;
+        public long currentTrackNumber; // current track
+                                        // IWriteEngine2EventArgs Interface
+        public IMAPI_FORMAT2_TAO_WRITE_ACTION currentTaoAction;
+        public IMAPI_FORMAT2_DATA_WRITE_ACTION currentDataAction;
         public long startLba;			// the starting lba of the current operation
         public long sectorCount;		// the total sectors to write in the current operation
         public long lastReadLba;		// the last read lba address

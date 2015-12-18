@@ -4,7 +4,7 @@ namespace RecordToMP3.Features.DiscBurner
 {
     public static class StringProvider
     {
-        public static string GetBurnDataText(BurnData burnData)
+        public static string GetDataBurnDataText(BurnData burnData)
         {
             if (burnData.task == BURN_MEDIA_TASK.BURN_MEDIA_TASK_FILE_SYSTEM)
             {
@@ -12,7 +12,7 @@ namespace RecordToMP3.Features.DiscBurner
             }
             else if (burnData.task == BURN_MEDIA_TASK.BURN_MEDIA_TASK_WRITING)
             {
-                switch (burnData.currentAction)
+                switch (burnData.currentDataAction)
                 {
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_VALIDATING_MEDIA:
                         return "Validating current media...";
@@ -32,14 +32,10 @@ namespace RecordToMP3.Features.DiscBurner
                         if (writtenSectors > 0 && burnData.sectorCount > 0)
                         {
                             var percent = (int)((100 * writtenSectors) / burnData.sectorCount);
-                            //statusProgressBar.Value = percent;
                             return string.Format("Progress: {0}%", percent);
                         }
                         else
-                        {
-                            //statusProgressBar.Value = 0;
                             return "Progress 0%";
-                        }
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_FINALIZATION:
                         return "Finalizing writing...";
@@ -49,6 +45,39 @@ namespace RecordToMP3.Features.DiscBurner
 
                     case IMAPI_FORMAT2_DATA_WRITE_ACTION.IMAPI_FORMAT2_DATA_WRITE_ACTION_VERIFYING:
                         return "Verifying";
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetTaoBurnDataText(BurnData burnData)
+        {
+            if (burnData.task == BURN_MEDIA_TASK.BURN_MEDIA_TASK_PREPARING)
+            {
+                return string.Format("Preparing stream for {0}", burnData.filename);
+            }
+            else if (burnData.task == BURN_MEDIA_TASK.BURN_MEDIA_TASK_WRITING)
+            {
+                switch (burnData.currentTaoAction)
+                {
+                    case IMAPI_FORMAT2_TAO_WRITE_ACTION.IMAPI_FORMAT2_TAO_WRITE_ACTION_PREPARING:
+                        return string.Format("Writing Track {0} - {1} of {2}",
+                            burnData.filename, burnData.currentTrackNumber, burnData.totalTracks);
+
+                    case IMAPI_FORMAT2_TAO_WRITE_ACTION.IMAPI_FORMAT2_TAO_WRITE_ACTION_WRITING:
+                        long writtenSectors = burnData.lastWrittenLba - burnData.startLba;
+
+                        if (writtenSectors > 0 && burnData.sectorCount > 0)
+                        {
+                            var percent = (int)((100 * writtenSectors) / burnData.sectorCount);
+                            return string.Format("Progress: {0}%", percent);
+                        }
+                        else
+                            return "Track Progress 0%";
+
+                    case IMAPI_FORMAT2_TAO_WRITE_ACTION.IMAPI_FORMAT2_TAO_WRITE_ACTION_FINISHING:
+                        return "Finishing...";
                 }
             }
 

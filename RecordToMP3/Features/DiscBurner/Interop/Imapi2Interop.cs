@@ -367,7 +367,7 @@ namespace IMAPI2.Interop
     internal sealed class DiscFormat2Data_EventProvider : DiscFormat2Data_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
 
@@ -377,7 +377,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DDiscFormat2DataEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -389,7 +389,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2Data_SinkHelper helper =
+                    var helper =
                         new DiscFormat2Data_SinkHelper(value);
                     int cookie;
 
@@ -403,7 +403,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2Data_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscFormat2Data_SinkHelper;
                     if (helper != null)
                     {
@@ -529,7 +529,7 @@ namespace IMAPI2.Interop
     internal sealed class DiscFormat2Erase_EventProvider : DiscFormat2Erase_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
         // Methods
@@ -538,7 +538,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DDiscFormat2EraseEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -550,7 +550,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2Erase_SinkHelper helper =
+                    var helper =
                         new DiscFormat2Erase_SinkHelper(value);
                     int cookie = -1;
 
@@ -564,7 +564,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2Erase_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscFormat2Erase_SinkHelper;
                     if (helper != null)
                     {
@@ -689,7 +689,7 @@ namespace IMAPI2.Interop
     internal sealed class DiscFormat2RawCD_EventProvider : DiscFormat2RawCD_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
         // Methods
@@ -698,7 +698,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DDiscFormat2RawCDEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -710,7 +710,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2RawCD_SinkHelper helper =
+                    var helper =
                         new DiscFormat2RawCD_SinkHelper(value);
                     int cookie;
 
@@ -724,7 +724,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2RawCD_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscFormat2RawCD_SinkHelper;
                     if (helper != null)
                     {
@@ -849,7 +849,7 @@ namespace IMAPI2.Interop
     internal sealed class DiscFormat2TrackAtOnce_EventProvider : DiscFormat2TrackAtOnce_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
         // Methods
@@ -858,7 +858,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DDiscFormat2TrackAtOnceEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -870,7 +870,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2TrackAtOnce_SinkHelper helper =
+                    var helper =
                         new DiscFormat2TrackAtOnce_SinkHelper(value);
                     int cookie;
 
@@ -884,7 +884,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscFormat2TrackAtOnce_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscFormat2TrackAtOnce_SinkHelper;
                     if (helper != null)
                     {
@@ -1016,7 +1016,7 @@ namespace IMAPI2.Interop
     internal sealed class DiscMaster2_EventProvider : DiscMaster2_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
         // Methods
@@ -1025,7 +1025,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DDiscMaster2Events).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -1037,7 +1037,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscMaster2_SinkHelper helper =
+                    var helper =
                         new DiscMaster2_SinkHelper(value);
                     int cookie;
 
@@ -1051,7 +1051,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscMaster2_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscMaster2_SinkHelper;
                     if (helper != null)
                     {
@@ -1068,7 +1068,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscMaster2_SinkHelper helper =
+                    var helper =
                         new DiscMaster2_SinkHelper(value);
                     int cookie;
 
@@ -1082,7 +1082,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DiscMaster2_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DiscMaster2_SinkHelper;
                     if (helper != null)
                     {
@@ -1236,7 +1236,7 @@ namespace IMAPI2.Interop
     internal sealed class DFileSystemImage_EventProvider : DFileSystemImage_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
 
@@ -1246,7 +1246,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DFileSystemImageEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -1258,7 +1258,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DFileSystemImage_SinkHelper helper = new DFileSystemImage_SinkHelper(value);
+                    var helper = new DFileSystemImage_SinkHelper(value);
                     int cookie;
 
                     m_connectionPoint.Advise(helper, out cookie);
@@ -1271,7 +1271,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DFileSystemImage_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DFileSystemImage_SinkHelper;
                     if (helper != null)
                     {
@@ -1395,7 +1395,7 @@ namespace IMAPI2.Interop
     internal sealed class DFileSystemImageImport_EventProvider : DFileSystemImageImport_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
 
@@ -1405,7 +1405,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DFileSystemImageImportEvents).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -1417,7 +1417,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DFileSystemImageImport_SinkHelper helper = new DFileSystemImageImport_SinkHelper(value);
+                    var helper = new DFileSystemImageImport_SinkHelper(value);
                     int cookie;
 
                     m_connectionPoint.Advise(helper, out cookie);
@@ -1430,7 +1430,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DFileSystemImageImport_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DFileSystemImageImport_SinkHelper;
                     if (helper != null)
                     {
@@ -1558,7 +1558,7 @@ namespace IMAPI2.Interop
     internal sealed class DWriteEngine2_EventProvider : DWriteEngine2_Event, IDisposable
     {
         // Fields
-        private Hashtable m_aEventSinkHelpers = new Hashtable();
+        private readonly Hashtable m_aEventSinkHelpers = new Hashtable();
         private IConnectionPoint m_connectionPoint = null;
 
         // Methods
@@ -1567,7 +1567,7 @@ namespace IMAPI2.Interop
             lock (this)
             {
                 Guid eventsGuid = typeof(DWriteEngine2Events).GUID;
-                IConnectionPointContainer connectionPointContainer = pointContainer as IConnectionPointContainer;
+                var connectionPointContainer = pointContainer as IConnectionPointContainer;
 
                 connectionPointContainer.FindConnectionPoint(ref eventsGuid, out m_connectionPoint);
             }
@@ -1579,7 +1579,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DWriteEngine2_SinkHelper helper =
+                    var helper =
                         new DWriteEngine2_SinkHelper(value);
                     int cookie;
 
@@ -1593,7 +1593,7 @@ namespace IMAPI2.Interop
             {
                 lock (this)
                 {
-                    DWriteEngine2_SinkHelper helper =
+                    var helper =
                         m_aEventSinkHelpers[value] as DWriteEngine2_SinkHelper;
                     if (helper != null)
                     {

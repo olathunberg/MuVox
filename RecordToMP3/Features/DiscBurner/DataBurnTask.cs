@@ -11,7 +11,7 @@ using IMAPI2.MediaItem;
 
 namespace RecordToMP3.Features.DiscBurner
 {
-    internal class BurnTask
+    internal class DataBurnTask
     {
         private bool closeMedia;
         private bool ejectMedia;
@@ -188,7 +188,7 @@ namespace RecordToMP3.Features.DiscBurner
             burnData.remainingTime = eventArgs.RemainingTime;
             burnData.totalTime = eventArgs.TotalTime;
 
-            burnData.currentAction = eventArgs.CurrentAction;
+            burnData.currentDataAction = eventArgs.CurrentAction;
             burnData.startLba = eventArgs.StartLba;
             burnData.sectorCount = eventArgs.SectorCount;
             burnData.lastReadLba = eventArgs.LastReadLba;
