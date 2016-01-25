@@ -21,6 +21,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
     /// </summary>
     public partial class WaveFormViewer : UserControl, INotifyPropertyChanged
     {
+        private const string markerColor = "#FFFED262";
+
         #region Fields
         private Point? dragStart = null;
 
@@ -32,9 +34,11 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
         private WaveStream waveStream;
 
-        private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
+        private WriteableBitmap bitmap { get; set; }
 
         private int averageBytesPerSecond;
+
+        private int selectedMarker = 0;
         #endregion
 
         #region Properties
@@ -85,7 +89,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             if (streamData == null || IsLoading) return;
 
             var x = (int)e.GetPosition(this).X;
-            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 {
@@ -103,9 +107,11 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     MarkersCollection.Add((int)mark);
 
                     AddNewMarker(x);
+
+
                 }
             }
-            else if (e.RightButton == System.Windows.Input.MouseButtonState.Pressed)
+            else if (e.RightButton == MouseButtonState.Pressed)
             {
                 StartPosition = 0;
                 SamplesPerPixel = (int)(streamData.Length / this.ActualWidth);
@@ -118,6 +124,11 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             var element = (UIElement)sender;
             dragStart = e.GetPosition(element);
             element.CaptureMouse();
+
+            foreach (var item in markers.Children.OfType<Line>())
+                item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
+
+            (element as Line).Stroke = Brushes.Red;
             e.Handled = true;
         }
 
@@ -231,14 +242,17 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         {
             var newLine = new Line
             {
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFFED262")),
+                Stroke = Brushes.Red,
                 StrokeThickness = 2,
                 X1 = position,
                 Y1 = 0,
                 X2 = position,
                 Y2 = (int)this.ActualHeight,
-                Cursor = System.Windows.Input.Cursors.SizeWE
+                Cursor = Cursors.SizeWE
             };
+
+            foreach (var item in markers.Children.OfType<Line>())
+                item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
             enableDrag(newLine);
             markers.Children.Add(newLine);

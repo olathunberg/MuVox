@@ -14,11 +14,11 @@ namespace RecordToMP3.Features.DiscBurner
     {
         private Int64 totalDiscSize;
 
-        public string labelMediaTypeText { get; private set; }
+        public string MediaTypeText { get; private set; }
 
-        public string labelTotalSizeText { get; private set; }
+        public string TotalSizeText { get; private set; }
 
-        public int progressBarCapacityValue { get; private set; }
+        public int ProgressBarCapacityValue { get; private set; }
 
         private MsftDiscRecorder2 discRecorder { get; set; }
 
@@ -46,7 +46,7 @@ namespace RecordToMP3.Features.DiscBurner
             catch (COMException ex)
             {
                 MessageBox.Show(ex.Message,
-                    string.Format("Error:{0} - Please install IMAPI2", ex.ErrorCode),
+                    string.Format("Error: {0} - Please install IMAPI2", ex.ErrorCode),
                     MessageBoxButtons.OK, MessageBoxIcon.Stop);
                 return result;
             }
@@ -92,7 +92,7 @@ namespace RecordToMP3.Features.DiscBurner
                 discFormatData = new MsftDiscFormat2Data();
                 if (!discFormatData.IsCurrentMediaSupported(discRecorder))
                 {
-                    labelMediaTypeText = "Media not supported!";
+                    MediaTypeText = "Media not supported!";
                     totalDiscSize = 0;
                     return;
                 }
@@ -101,7 +101,7 @@ namespace RecordToMP3.Features.DiscBurner
                     // Get the media type in the recorder
                     discFormatData.Recorder = discRecorder;
                     IMAPI_MEDIA_PHYSICAL_TYPE mediaType = discFormatData.CurrentPhysicalMediaType;
-                    labelMediaTypeText = StringProvider.GetMediaTypeString(mediaType);
+                    MediaTypeText = StringProvider.GetMediaTypeString(mediaType);
 
                     fileSystemImage = new MsftFileSystemImage();
                     fileSystemImage.ChooseImageDefaultsForMediaType(mediaType);
@@ -198,13 +198,13 @@ namespace RecordToMP3.Features.DiscBurner
         {
             if (totalDiscSize == 0)
             {
-                labelTotalSizeText = "0MB";
+                TotalSizeText = "0MB";
                 return;
             }
 
-            labelTotalSizeText = totalDiscSize < 1000000000 ?
-                string.Format("{0}MB", totalDiscSize / 1000000) :
-                string.Format("{0:F2}GB", (float)totalDiscSize / 1000000000.0);
+            TotalSizeText = totalDiscSize < 1000000000
+                ? string.Format("{0}MB", totalDiscSize / 1000000)
+                : string.Format("{0:F2}GB", (float)totalDiscSize / 1000000000.0);
 
             // Calculate the size of the files
             Int64 totalMediaSize = 0;
@@ -212,14 +212,14 @@ namespace RecordToMP3.Features.DiscBurner
                 totalMediaSize += mediaItem.SizeOnDisc;
 
             if (totalMediaSize == 0)
-                progressBarCapacityValue = 0;
+                ProgressBarCapacityValue = 0;
             else
             {
                 var percent = (int)((totalMediaSize * 100) / totalDiscSize);
                 if (percent > 100)
-                    progressBarCapacityValue = 100;
+                    ProgressBarCapacityValue = 100;
                 else
-                    progressBarCapacityValue = percent;
+                    ProgressBarCapacityValue = percent;
             }
         }
     }
