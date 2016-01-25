@@ -172,16 +172,16 @@ namespace RecordToMP3.Features.Processor
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, logViewerModel.Add, max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
+                    baseFileName = await mp3ToWave.Convert(baseFileName, logViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
                 }
 
                 LogViewerModel.Add("Splitting into tracks...");
                 var waveFileCutter = new WaveFileCutter();
                 var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
                      baseFileName,
-                     message => LogViewerModel.Add(message),
-                     max => SetDetailProgressBarMaximum(max),
-                     progress => UpdateDetailProgressBar(progress));
+                     LogViewerModel.Add,
+                     SetDetailProgressBarMaximum,
+                     UpdateDetailProgressBar);
 
                 // TODO: Performance; parallell
                 var normalizer = new Normalizer();
@@ -189,10 +189,10 @@ namespace RecordToMP3.Features.Processor
                 foreach (var item in cuttedFiles)
                 {
                     LogViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                    await normalizer.Normalize(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
+                    await normalizer.Normalize(item, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
 
                     LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
-                    await waveToMp3Converter.Convert(item, message => LogViewerModel.Add(message), max => SetDetailProgressBarMaximum(max), UpdateDetailProgressBar);
+                    await waveToMp3Converter.Convert(item, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
 
                     File.Delete(item);
                 }

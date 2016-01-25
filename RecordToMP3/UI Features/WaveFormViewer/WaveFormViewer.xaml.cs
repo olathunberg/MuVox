@@ -37,8 +37,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         private WriteableBitmap bitmap { get; set; }
 
         private int averageBytesPerSecond;
-
-        private int selectedMarker = 0;
         #endregion
 
         #region Properties
