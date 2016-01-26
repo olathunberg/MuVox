@@ -1,19 +1,18 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Linq;
-using System;
+using GalaSoft.MvvmLight.Command;
 using NAudio.Wave;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Windows.Input;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.IO;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -78,10 +77,44 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         public WaveFormViewer()
         {
             this.SizeChanged += OnSizeChanged;
+            this.Loaded += WaveFormViewer_Loaded;
             InitializeComponent();
         }
 
+        #region Commands
+        private RelayCommand deleteSelectedMarkerCommand;
+        public ICommand DeleteSelectedMarker
+        {
+            get
+            {
+                return deleteSelectedMarkerCommand ?? (deleteSelectedMarkerCommand = new RelayCommand(
+                    () =>
+                    {
+                        var selectedLine = markers.Children.OfType<Line>().Where(x => x.Stroke == Brushes.Red).FirstOrDefault();
+                        if (selectedLine != null)
+                        {
+                            RemoveMarker(selectedLine);
+                            var mark = (int)SelectedPosition;
+                            if (MarkersCollection.Contains(mark))
+                                MarkersCollection.Remove(mark);
+                            else if (MarkersCollection.Contains(mark + 1))
+                                MarkersCollection.Remove(mark + 1);
+                            else if (MarkersCollection.Contains(mark - 1))
+                                MarkersCollection.Remove(mark - 1);
+                        }
+                    },
+                    () => true));
+            }
+        }
+        #endregion
+
         #region Events
+        private void WaveFormViewer_Loaded(object sender, RoutedEventArgs e)
+        {
+            var window = FindVisualAncestorOfType<UserControl>(this);
+            window.InputBindings.Add(new KeyBinding(DeleteSelectedMarker, Key.Delete, ModifierKeys.None));
+        }
+
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
@@ -247,6 +280,17 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         #endregion
 
         #region Private methods
+        private T FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
+        {
+            for (var parent = VisualTreeHelper.GetParent(d); parent != null; parent = VisualTreeHelper.GetParent(parent))
+            {
+                var result = parent as T;
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+
         private void AddNewMarker(int position)
         {
             var newLine = new Line

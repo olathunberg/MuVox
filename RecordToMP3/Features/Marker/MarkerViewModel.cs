@@ -1,16 +1,10 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using NAudio.Lame;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
-using RecordToMP3.Features.Messages;
-using RecordToMP3.Features.Processor.Tools;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using NAudio.Wave;
+using RecordToMP3.Features.Messages;
 
 namespace RecordToMP3.Features.Marker
 {
@@ -19,6 +13,7 @@ namespace RecordToMP3.Features.Marker
         #region Fields
         Marker marker = new Marker();
         ObservableCollection<int> markers;
+        private WaveOut waveOut = null;
         #endregion
 
         #region Constructors
@@ -38,7 +33,7 @@ namespace RecordToMP3.Features.Marker
                     () => true));
             }
         }
-        private WaveOut waveOut = null;
+
         private RelayCommand playFromCurrentCommand;
         public ICommand PlayFromCurrent
         {
@@ -66,13 +61,6 @@ namespace RecordToMP3.Features.Marker
                     },
                     () => true));
             }
-        }
-
-        private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
-        {
-            waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
-            waveOut.Dispose();
-            waveOut = null;
         }
         #endregion
 
@@ -127,6 +115,12 @@ namespace RecordToMP3.Features.Marker
         #endregion
 
         #region Events
+        private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
+            waveOut.Dispose();
+            waveOut = null;
+        }
         #endregion
     }
 }
