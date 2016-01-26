@@ -38,6 +38,42 @@ namespace RecordToMP3.Features.Marker
                     () => true));
             }
         }
+        private WaveOut waveOut = null;
+        private RelayCommand playFromCurrentCommand;
+        public ICommand PlayFromCurrent
+        {
+            get
+            {
+                return playFromCurrentCommand ?? (playFromCurrentCommand = new RelayCommand(
+                    () =>
+                    {
+                        if (waveOut == null)
+                        {
+                            waveOut = new WaveOut();
+
+                            var reader = new NAudio.Wave.WaveFileReader(FileName);
+                            reader.CurrentTime = TimeSpan.FromSeconds(SelectedPosition / 10.0);
+                            waveOut.Init(reader);
+                            waveOut.Play();
+                            waveOut.PlaybackStopped += WaveOut_PlaybackStopped;
+                        }
+                        else
+                        {
+                            waveOut.Stop();
+                            waveOut.Dispose();
+                            waveOut = null;
+                        }
+                    },
+                    () => true));
+            }
+        }
+
+        private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
+        {
+            waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
+            waveOut.Dispose();
+            waveOut = null;
+        }
         #endregion
 
         #region Properties
@@ -55,6 +91,8 @@ namespace RecordToMP3.Features.Marker
                 return new NAudio.Wave.WaveFileReader(FileName);
             }
         }
+
+        public long SelectedPosition { get; set; }
 
         public ObservableCollection<int> Markers
         {

@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.IO;
 
 namespace RecordToMP3.UI_Features.WaveFormViewer
 {
@@ -81,7 +82,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         }
 
         #region Events
-        protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
+        protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
             if (streamData == null || IsLoading) return;
@@ -105,8 +106,6 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     MarkersCollection.Add((int)mark);
 
                     AddNewMarker(x);
-
-
                 }
             }
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -127,6 +126,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
             (element as Line).Stroke = Brushes.Red;
+            if (dragStart != null)
+                SelectedPosition = PositionToTime(dragStart.Value.X);
             e.Handled = true;
         }
 
@@ -150,7 +151,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 RemoveMarker(element as Line);
                 if (dragStart != null)
                 {
-                    var mark = PositionToTime(dragStart.Value.X);
+                    var mark = (int)PositionToTime(dragStart.Value.X);
                     if (MarkersCollection.Contains(mark))
                         MarkersCollection.Remove(mark);
                     else if (MarkersCollection.Contains(mark + 1))
@@ -163,7 +164,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             {
                 if (dragStart != null)
                 {
-                    var mark = PositionToTime(dragStart.Value.X);
+                    var mark = (int)PositionToTime(dragStart.Value.X);
                     if (MarkersCollection.Contains(mark))
                         MarkersCollection.Remove(mark);
                     else if (MarkersCollection.Contains(mark + 1))
@@ -171,7 +172,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     else if (MarkersCollection.Contains(mark - 1))
                         MarkersCollection.Remove(mark - 1);
                 }
-                var newMark = PositionToTime((element as Line).X1);
+                var newMark = (int)PositionToTime((element as Line).X1);
                 MarkersCollection.Add(newMark);
             }
             dragStart = null;
@@ -196,6 +197,16 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         #endregion
 
         #region Dependency properties
+        public double SelectedPosition
+        {
+            get { return (double)GetValue(SelectedPositionProperty); }
+            set { SetValue(SelectedPositionProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedPosition.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedPositionProperty =
+            DependencyProperty.Register("SelectedPosition", typeof(double), typeof(WaveFormViewer), new PropertyMetadata(0.0));
+
         // Using a DependencyProperty as the backing store for MarkersCollection.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MarkersCollectionProperty =
             DependencyProperty.Register("MarkersCollection", typeof(ObservableCollection<int>), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
@@ -252,6 +263,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
+            SelectedPosition = PositionToTime(position);
+
             enableDrag(newLine);
             markers.Children.Add(newLine);
         }
@@ -305,8 +318,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
         private void DrawMarkers()
         {
-            var startTime = PositionToTime(0);
-            var endTime = PositionToTime((int)this.ActualWidth);
+            var startTime = (int)PositionToTime(0);
+            var endTime = (int)PositionToTime((int)this.ActualWidth);
 
             markers.Children.Clear();
             foreach (var mark in MarkersCollection)
@@ -314,6 +327,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 if (mark <= endTime && mark >= startTime)
                     AddNewMarker(TimeToPosition(mark));
             }
+            foreach (var item in markers.Children.OfType<Line>())
+                item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
         }
 
         private void enableDrag(UIElement element)
@@ -323,12 +338,12 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             element.MouseUp += mouseUp;
         }
 
-        private int PositionToTime(double position)
+        private double PositionToTime(double position)
         {
             if (averageBytesPerSecond == 0)
                 return 0;
 
-            return (int)((StartPosition + position * SamplesPerPixel) * 2) / (averageBytesPerSecond / 10);
+            return ((StartPosition + position * SamplesPerPixel) * 2) / (averageBytesPerSecond / 10);
         }
 
         private Task ReadStream()
