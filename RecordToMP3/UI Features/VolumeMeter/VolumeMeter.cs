@@ -12,6 +12,8 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         private Brush accentColor;
         private Brush foreground;
         private Brush background;
+        private double maxMark = 0.0;
+        private DateTime maxTime = DateTime.Now;
         #endregion
 
         /// <summary>
@@ -89,9 +91,25 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         [DefaultValue(Orientation.Vertical)]
         public Orientation Orientation { get; set; }
+
+        /// <summary>
+        /// Peakmark fallback speed
+        /// </summary>
+        [DefaultValue(2)]
+        public int PeakMarkFallBackSpeed { get; set; }
+
+        /// <summary>
+        /// Color of peak mark
+        /// </summary>
+        public Brush PeakMarkColor { get; set; }
+
+        /// <summary>
+        /// Number of milliseconds befor peak starts to fall
+        /// </summary>
+        public int PeakMarkHoldTime { get; set; }
         #endregion
 
-        // <summary>
+        /// <summary>
         /// Paints the volume meter
         /// </summary>
         protected override void OnRender(DrawingContext drawingContext)
@@ -117,11 +135,22 @@ namespace RecordToMP3.UI_Features.VolumeMeter
                 width = (int)(width * percent);
 
                 drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, 1, width, height));
-                // TODO: Draw top mark
+                // TODO: Draw "top" mark
             }
             else
             {
                 height = (int)(height * percent);
+                if (height > maxMark)
+                {
+                    maxMark = height;
+                    maxTime = DateTime.Now;
+                }
+                if ((DateTime.Now - maxTime).TotalMilliseconds > PeakMarkHoldTime)
+                    maxMark -= PeakMarkFallBackSpeed;
+
+                if (this.ActualHeight - 1 - maxMark > 0)
+                    drawingContext.DrawLine(new Pen(PeakMarkColor, 2), new Point(1, this.ActualHeight - 1 - maxMark), new Point(width + 1, this.ActualHeight - 1 - maxMark));
+
                 if (this.ActualHeight - 1 - height > 0)
                 {
                     drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, this.ActualHeight - 1 - height, width, height));

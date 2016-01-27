@@ -2,7 +2,7 @@
 
 GUI
 x Färgmarkering i waveform som visar var man är
-- Visa maxvärdet ur genomsnittet på nivåmätaren
+x Visa maxvärdet ur genomsnittet på nivåmätaren
 - Färgmarkera knappar, grön för start röd för stop osv
 - Tidsmarkeringar i WaveFormViewer
 
