@@ -95,12 +95,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                         {
                             RemoveMarker(selectedLine);
                             var mark = (int)SelectedPosition;
-                            if (MarkersCollection.Contains(mark))
-                                MarkersCollection.Remove(mark);
-                            else if (MarkersCollection.Contains(mark + 1))
-                                MarkersCollection.Remove(mark + 1);
-                            else if (MarkersCollection.Contains(mark - 1))
-                                MarkersCollection.Remove(mark - 1);
+                            RemoveFromMarkersCollection(mark);
                         }
                     },
                     () => true));
@@ -185,12 +180,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 if (dragStart != null)
                 {
                     var mark = (int)PositionToTime(dragStart.Value.X);
-                    if (MarkersCollection.Contains(mark))
-                        MarkersCollection.Remove(mark);
-                    else if (MarkersCollection.Contains(mark + 1))
-                        MarkersCollection.Remove(mark + 1);
-                    else if (MarkersCollection.Contains(mark - 1))
-                        MarkersCollection.Remove(mark - 1);
+                    RemoveFromMarkersCollection(mark);
                 }
             }
             else
@@ -198,12 +188,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 if (dragStart != null)
                 {
                     var mark = (int)PositionToTime(dragStart.Value.X);
-                    if (MarkersCollection.Contains(mark))
-                        MarkersCollection.Remove(mark);
-                    else if (MarkersCollection.Contains(mark + 1))
-                        MarkersCollection.Remove(mark + 1);
-                    else if (MarkersCollection.Contains(mark - 1))
-                        MarkersCollection.Remove(mark - 1);
+                    RemoveFromMarkersCollection(mark);
                 }
                 var newMark = (int)PositionToTime((element as Line).X1);
                 MarkersCollection.Add(newMark);
@@ -419,6 +404,16 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
         {
             if (markers.Children.Contains(marker))
                 markers.Children.Remove(marker);
+        }
+
+        private void RemoveFromMarkersCollection(int mark)
+        {
+            if (MarkersCollection.Contains(mark))
+                MarkersCollection.Remove(mark);
+            else if (MarkersCollection.Contains(mark + 1))
+                MarkersCollection.Remove(mark + 1);
+            else if (MarkersCollection.Contains(mark - 1))
+                MarkersCollection.Remove(mark - 1);
         }
 
         private int TimeToPosition(int mark)
