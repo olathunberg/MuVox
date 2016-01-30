@@ -18,6 +18,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 {
     /// <summary>
     /// Interaction logic for WaveFormViewer.xaml
+    ///
+    /// All time in 1/10 s
     /// </summary>
     public partial class WaveFormViewer : UserControl, INotifyPropertyChanged
     {
@@ -131,6 +133,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 else
                 {
                     var mark = PositionToTime(x);
+
                     MarkersCollection.Add((int)mark);
 
                     AddNewMarker(x);
@@ -190,8 +193,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     var mark = (int)PositionToTime(dragStart.Value.X);
                     RemoveFromMarkersCollection(mark);
                 }
-                var newMark = (int)PositionToTime((element as Line).X1);
-                MarkersCollection.Add(newMark);
+                //var newMark = (int)PositionToTime((element as Line).X1);
+                //MarkersCollection.Add(newMark);
             }
             dragStart = null;
         }
@@ -308,7 +311,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     var points = new ConcurrentBag<Tuple<int, int, int, int>>();
 
                     if (samplesPerPixel == 0)
-                        SamplesPerPixel = (int)(streamData.Length / this.ActualWidth);
+                        samplesPerPixel = (int)(streamData.Length / this.ActualWidth);
 
                     Parallel.For(0, (int)this.ActualWidth, x =>
                     {
@@ -317,16 +320,17 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
 
                         if (((StartPosition / samplesPerPixel) + x + 1) * samplesPerPixel > streamData.Length)
                             return;
+                        short sample = 0;
                         for (int n = 0; n < samplesPerPixel; n += 1)
                         {
-                            short sample = streamData[StartPosition + (x * samplesPerPixel) + n];
+                            sample = streamData[StartPosition + (x * samplesPerPixel) + n];
                             if (sample < low) low = sample;
                             if (sample > high) high = sample;
                         }
                         float lowPercent = ((((float)low) - short.MinValue) / ushort.MaxValue);
                         float highPercent = ((((float)high) - short.MinValue) / ushort.MaxValue);
 
-                        points.Add(new Tuple<int, int, int, int>((int)x, (int)(this.ActualHeight * lowPercent), (int)x, (int)(this.ActualHeight * highPercent)));
+                        points.Add(new Tuple<int, int, int, int>(x, (int)(this.ActualHeight * lowPercent), x, (int)(this.ActualHeight * highPercent)));
                     });
                     Application.Current.Dispatcher.Invoke(() =>
                     {
@@ -358,8 +362,41 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             }
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
+            SelectedPosition = 0;
+
+            // Draw timemarkers at bottom
+            var scale = (int)Math.Round((endTime - startTime) * 100 / this.ActualWidth, MidpointRounding.AwayFromZero) / 5;
+            scale = scale - scale % 10;
+
+            if (scale == 0)
+                scale += 1;
+
+            var firstMark = scale - (startTime % scale);
+            for (int i = 0; i < (endTime - startTime) / scale; i++)
+            {
+                var x = TimeToPosition(firstMark + i * scale);
+                bitmap.DrawLine(x, (int)(this.ActualHeight - 5), x, (int)(this.ActualHeight), LineColor);
+                //g.DrawString(i.ToString(), new System.Drawing.Font("Tahoma", 14), System.Drawing.Brushes.White, new System.Drawing.PointF(x, 15));
+            }
+
+            scale *= 10;
+            firstMark = scale - (startTime % scale);
+            for (int i = 0; i < (endTime - startTime) / scale; i++)
+                bitmap.DrawLine(TimeToPosition(firstMark + i * scale), (int)(this.ActualHeight - 10), TimeToPosition(firstMark + i * scale), (int)(this.ActualHeight), LineColor);
         }
 
+        private System.Drawing.Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
+        {
+            System.Drawing.Bitmap bmp;
+            using (var outStream = new System.IO.MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
+                enc.Save(outStream);
+                bmp = new System.Drawing.Bitmap(outStream);
+            }
+            return bmp;
+        }
         private void enableDrag(UIElement element)
         {
             element.MouseDown += mouseDown;
