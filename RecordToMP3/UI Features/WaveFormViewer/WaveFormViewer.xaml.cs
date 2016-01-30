@@ -193,9 +193,8 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                     var mark = (int)PositionToTime(dragStart.Value.X);
                     RemoveFromMarkersCollection(mark);
                 }
-                //var newMark = (int)PositionToTime((element as Line).X1);
-                //MarkersCollection.Add(newMark);
             }
+
             dragStart = null;
         }
 
@@ -260,6 +259,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             get { return (ObservableCollection<int>)GetValue(MarkersCollectionProperty); }
             set { SetValue(MarkersCollectionProperty, value); }
         }
+
         public WaveStream WaveStream
         {
             get { return (WaveStream)GetValue(WaveStreamProperty); }
@@ -284,6 +284,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             var newLine = new Line
             {
                 Stroke = Brushes.Red,
+                SnapsToDevicePixels = true,
                 StrokeThickness = 2,
                 X1 = position,
                 Y1 = 0,
@@ -344,7 +345,11 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 })
                 .ContinueWith(a =>
                     {
-                        Application.Current.Dispatcher.Invoke(() => DrawMarkers());
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            DrawMarkers();
+                            DrawTimeMarkers();
+                        });
                         IsLoading = false;
                     });
         }
@@ -363,26 +368,67 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
             SelectedPosition = 0;
+        }
 
-            // Draw timemarkers at bottom
+        private void DrawTimeMarkers()
+        {
+            var startTime = (int)PositionToTime(0);
+            var endTime = (int)PositionToTime((int)this.ActualWidth);
+
             var scale = (int)Math.Round((endTime - startTime) * 100 / this.ActualWidth, MidpointRounding.AwayFromZero) / 5;
             scale = scale - scale % 10;
 
             if (scale == 0)
                 scale += 1;
 
+            timeMarks.Children.Clear();
             var firstMark = scale - (startTime % scale);
             for (int i = 0; i < (endTime - startTime) / scale; i++)
-            {
-                var x = TimeToPosition(firstMark + i * scale);
-                bitmap.DrawLine(x, (int)(this.ActualHeight - 5), x, (int)(this.ActualHeight), LineColor);
-                //g.DrawString(i.ToString(), new System.Drawing.Font("Tahoma", 14), System.Drawing.Brushes.White, new System.Drawing.PointF(x, 15));
-            }
+                timeMarks.Children.Add(NewTimeMark(TimeToPosition(firstMark + i * scale), 5));
 
             scale *= 10;
             firstMark = scale - (startTime % scale);
             for (int i = 0; i < (endTime - startTime) / scale; i++)
-                bitmap.DrawLine(TimeToPosition(firstMark + i * scale), (int)(this.ActualHeight - 10), TimeToPosition(firstMark + i * scale), (int)(this.ActualHeight), LineColor);
+            {
+                var x = TimeToPosition(firstMark + i * scale);
+                timeMarks.Children.Add(NewTimeLabel(x, GetTimeText((firstMark + i * scale) / scale)));
+                timeMarks.Children.Add(NewTimeMark(x, 10));
+            }
+        }
+
+        private string GetTimeText(int tenthsOfSecond)
+        {
+            if (tenthsOfSecond > 600)
+                return $"{tenthsOfSecond / 600}m";
+
+            return $"{tenthsOfSecond * 10}s";
+        }
+
+        private Label NewTimeLabel(int x, string content)
+        {
+            return new Label
+            {
+                Foreground = new SolidColorBrush(LineColor),
+                SnapsToDevicePixels = true,
+                Content = content,
+                Margin = new Thickness(x - 7, this.ActualHeight - 30, 0, 0),
+                Cursor = Cursors.None
+            };
+        }
+
+        private Line NewTimeMark(int x, int height)
+        {
+            return new Line
+            {
+                Stroke = new SolidColorBrush(LineColor),
+                SnapsToDevicePixels = true,
+                StrokeThickness = 1,
+                X1 = x,
+                Y1 = (int)this.ActualHeight - height,
+                X2 = x,
+                Y2 = (int)this.ActualHeight,
+                Cursor = Cursors.None
+            };
         }
 
         private System.Drawing.Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)

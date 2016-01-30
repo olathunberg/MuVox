@@ -15,6 +15,7 @@
 
     <Grid>
         <Image x:Name="mainCanvas" />
+        <Canvas x:Name="timeMarks" ClipToBounds="True"/>
         <Canvas Name="markers" ClipToBounds="True"/>
         <LoadingPanel:LoadingPanel DeferredShow="{Binding IsLoading}" />
      </Grid>
