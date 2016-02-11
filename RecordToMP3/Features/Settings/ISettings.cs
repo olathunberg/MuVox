@@ -4,6 +4,8 @@
     {
         string FILE_PATH { get; }
 
+        bool AutoSave { get; }
+
         bool Verify();
     }
 }

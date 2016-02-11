@@ -7,7 +7,7 @@ namespace RecordToMP3
 {
     public class MainWindowModel : ViewModelBase
     {
-        private readonly ViewModelLocator viewModelLocator = (ViewModelLocator)System.Windows.Application.Current.Resources["ViewModelLocator"];
+        private readonly ViewModelLocator viewModelLocator = (ViewModelLocator)Application.Current.Resources["ViewModelLocator"];
         private ViewModelBase _currentViewModel;
 
         public ViewModelBase CurrentViewModel
@@ -38,6 +38,8 @@ namespace RecordToMP3
                         CurrentViewModel = viewModelLocator.Processor;
                     if (action.GotoPage == Pages.Marker)
                         CurrentViewModel = viewModelLocator.Marker;
+                    if (action.GotoPage == Pages.Settings)
+                        CurrentViewModel = viewModelLocator.Settings;
                 });
         }
 

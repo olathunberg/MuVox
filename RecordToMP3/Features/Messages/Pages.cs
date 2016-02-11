@@ -11,5 +11,6 @@ namespace RecordToMP3.Features.Messages
         Recorder,
         Marker,
         Processor,
+        Settings
     }
 }

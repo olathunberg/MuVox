@@ -4,6 +4,7 @@
              xmlns:recorder="clr-namespace:RecordToMP3.Features.Recorder"
              xmlns:processor="clr-namespace:RecordToMP3.Features.Processor"
              xmlns:marker="clr-namespace:RecordToMP3.Features.Marker"
+             xmlns:settings="clr-namespace:RecordToMP3.Features.Settings"
              xmlns:vm="clr-namespace:RecordToMP3"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -17,6 +18,9 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type marker:MarkerViewModel}">
             <marker:MarkerView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type settings:SettingsViewModel}">
+            <settings:SettingsView />
         </DataTemplate>
     </Application.Resources>
 </Application>

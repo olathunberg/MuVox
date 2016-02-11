@@ -57,6 +57,9 @@
   <PropertyGroup>
     <ApplicationIcon>RecordToMP3.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>RecordToMP3.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -83,9 +86,13 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Core.Presentation" />
+    <Reference Include="System.Activities.Presentation" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
@@ -106,12 +113,19 @@
       <HintPath>..\packages\WriteableBitmapEx.1.5.0.0\lib\net40\WriteableBitmapEx.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="Features\DiscBurner\AudioBurnTask.cs" />
     <Compile Include="Features\DiscBurner\MediaItem\MediaFile.cs" />
     <Compile Include="Features\DiscBurner\DataBurnTask.cs" />
@@ -157,9 +171,14 @@
     <Compile Include="Features\Recorder\RecordingState.cs" />
     <Compile Include="Features\Recorder\RecorderViewModel.cs" />
     <Compile Include="Features\Settings\ISettings.cs" />
+    <Compile Include="Features\Settings\SettingsViewModel.cs" />
     <Compile Include="Features\Settings\Settings.cs" />
     <Compile Include="Features\Settings\SettingsBase.cs" />
+    <Compile Include="Features\Settings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\HotKeyManager.cs" />
+    <Compile Include="Helpers\SingleInsance.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
     <Compile Include="UI Features\LoadingPanel\LoadingPanel.xaml.cs">
@@ -187,6 +206,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Features\Recorder\RecorderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Features\Settings\SettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -28,6 +28,9 @@ namespace RecordToMP3.Features.Settings
 
         public static void Save(T current)
         {
+            if (!current.AutoSave)
+                return;
+
             var serializerSettings = new JsonSerializerSettings()
             {
                 Formatting = Formatting.Indented,
@@ -37,7 +40,12 @@ namespace RecordToMP3.Features.Settings
 
         private static T LoadCurrent()
         {
-            var newSettings = JsonConvert.DeserializeObject<T>(File.ReadAllText(new T().FILE_PATH));
+            T newSettings;
+
+            if (File.Exists(new T().FILE_PATH))
+                newSettings = JsonConvert.DeserializeObject<T>(File.ReadAllText(new T().FILE_PATH));
+            else
+                newSettings = new T();
 
             newSettings.PropertyChanged += (s, e) => Save(newSettings);
 

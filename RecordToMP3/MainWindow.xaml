@@ -18,16 +18,8 @@
             <local:MainWindowModel x:Key="MainWindowModel" />
         </ResourceDictionary>
     </Window.Resources>
+   
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <!--<Menu Grid.Row="0" Background="{StaticResource BackgroundNormal}" Foreground="{StaticResource Foreground}">
-            <MenuItem Header="Arkiv">
-                <MenuItem Header="Inställningar..."/>
-            </MenuItem>
-        </Menu>-->
         <ContentControl x:Name="CurrentView" Content="{Binding CurrentViewModel}"/>
-        <!--<Recorder:RecorderView x:Name="RecorderView" Grid.Row="1"/>-->
     </Grid>
 </Window>
