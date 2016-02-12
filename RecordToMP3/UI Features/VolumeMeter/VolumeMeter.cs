@@ -145,17 +145,14 @@ namespace RecordToMP3.UI_Features.VolumeMeter
                     maxMark = height;
                     maxTime = DateTime.Now;
                 }
-                if ((DateTime.Now - maxTime).TotalMilliseconds > PeakMarkHoldTime)
+                if ((DateTime.Now - maxTime).TotalMilliseconds > PeakMarkHoldTime && maxMark > 1)
                     maxMark -= PeakMarkFallBackSpeed;
 
-                if (this.ActualHeight - 1 - maxMark > 0)
+                if (this.ActualHeight - 1 - maxMark > 1)
                     drawingContext.DrawLine(new Pen(PeakMarkColor, 2), new Point(1, this.ActualHeight - 1 - maxMark), new Point(width + 1, this.ActualHeight - 1 - maxMark));
 
                 if (this.ActualHeight - 1 - height > 0)
-                {
                     drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, this.ActualHeight - 1 - height, width, height));
-                    drawingContext.DrawLine(new Pen(accentColor, 2), new Point(1, this.ActualHeight - 1 - height), new Point(width + 1, this.ActualHeight - 1 - height));
-                }
             }
         }
     }

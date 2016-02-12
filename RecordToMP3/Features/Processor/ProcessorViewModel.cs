@@ -1,15 +1,13 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Win32;
-using NAudio.Lame;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
-using RecordToMP3.Features.Messages;
-using RecordToMP3.Features.Processor.Tools;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Win32;
+using NAudio.Wave;
+using RecordToMP3.Features.Messages;
+using RecordToMP3.Features.Processor.Tools;
 
 namespace RecordToMP3.Features.Processor
 {
