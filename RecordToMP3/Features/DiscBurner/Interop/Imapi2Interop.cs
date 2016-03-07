@@ -360,6 +360,7 @@ namespace IMAPI2.Interop
     public interface DiscFormat2Data_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscFormat2Data_EventHandler Update;
     }
 
@@ -522,6 +523,7 @@ namespace IMAPI2.Interop
     public interface DiscFormat2Erase_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscFormat2Erase_EventHandler Update;
     }
 
@@ -682,6 +684,7 @@ namespace IMAPI2.Interop
     public interface DiscFormat2RawCD_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscFormat2RawCD_EventHandler Update;
     }
 
@@ -842,6 +845,7 @@ namespace IMAPI2.Interop
     public interface DiscFormat2TrackAtOnce_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscFormat2TrackAtOnce_EventHandler Update;
     }
 
@@ -1008,7 +1012,9 @@ namespace IMAPI2.Interop
     public interface DiscMaster2_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscMaster2_NotifyDeviceAddedEventHandler NotifyDeviceAdded;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DiscMaster2_NotifyDeviceRemovedEventHandler NotifyDeviceRemoved;
     }
 
@@ -1229,6 +1235,7 @@ namespace IMAPI2.Interop
     public interface DFileSystemImage_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DFileSystemImage_EventHandler Update;
     }
 
@@ -1387,6 +1394,7 @@ namespace IMAPI2.Interop
     public interface DFileSystemImageImport_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DFileSystemImageImport_EventHandler UpdateImport;
     }
 
@@ -1551,6 +1559,7 @@ namespace IMAPI2.Interop
     public interface DWriteEngine2_Event
     {
         // Events
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         event DWriteEngine2_EventHandler Update;
     }
 

@@ -114,11 +114,7 @@ namespace RecordToMP3.Features.Processor
         public LogViewer.LogViewerModel LogViewerModel
         {
             get { return logViewerModel; }
-            set
-            {
-                logViewerModel = value;
-                RaisePropertyChanged(() => LogViewerModel);
-            }
+            set { logViewerModel = value; }
         }
 
         public long TotalProgress

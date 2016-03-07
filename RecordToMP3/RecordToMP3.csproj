@@ -178,7 +178,7 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HotKeyManager.cs" />
-    <Compile Include="Helpers\SingleInsance.cs" />
+    <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
     <Compile Include="UI Features\LoadingPanel\LoadingPanel.xaml.cs">

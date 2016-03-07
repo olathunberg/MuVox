@@ -172,7 +172,7 @@ namespace RecordToMP3.Features.Processor.Tools
             float maxspl = Math.Max(aspl0, aspl1);
             maxspl = maxspl * maxspl;
             runave = maxspl + rmscoef * (runave - maxspl);
-            float det = (float)Math.Sqrt(Math.Max(0f, runave));
+            var det = (float)Math.Sqrt(Math.Max(0f, runave));
 
             overdb = 2.08136898f * (float)Math.Log(det / cthreshv) * log2db;
             overdb = Math.Max(0, overdb);
@@ -197,8 +197,8 @@ namespace RecordToMP3.Features.Processor.Tools
             else
                 cratio = ratio;
 
-            float gr = -overdb * (cratio - 1) / cratio;
-            float grv = (float)Math.Exp(gr * db2log);
+            var gr = -overdb * (cratio - 1) / cratio;
+            var grv = (float)Math.Exp(gr * db2log);
 
             runmax = maxover + relcoef * (runmax - maxover);  // highest peak for setting att/rel decays in reltime
             maxover = runmax;

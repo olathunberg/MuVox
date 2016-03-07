@@ -26,15 +26,9 @@ namespace IMAPI2.MediaItem
 
     class MediaFile
     {
-        [DllImport("shell32.dll")]
-        public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
-
         public const uint SHGFI_ICON = 0x100;
         public const uint SHGFI_LARGEICON = 0x0;
         public const uint SHGFI_SMALLICON = 0x1;
-
-        [DllImport("ole32.dll")]
-        static extern int CreateStreamOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease, out IStream ppstm);
 
         private const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
 
@@ -49,7 +43,7 @@ namespace IMAPI2.MediaItem
         public MediaFile(string path)
         {
             if (!File.Exists(path))
-                throw new FileNotFoundException("The file added to FileItem was not found!",path);
+                throw new FileNotFoundException("The file added to FileItem was not found!", path);
 
             filePath = path;
 
@@ -58,8 +52,8 @@ namespace IMAPI2.MediaItem
             m_fileLength = fileInfo.Length;
 
             var shinfo = new SHFILEINFO();
-            IntPtr hImg = SHGetFileInfo(filePath, 0, ref shinfo,
-                (uint)Marshal.SizeOf(shinfo), SHGFI_ICON|SHGFI_SMALLICON);
+            IntPtr hImg = NativeMethods.SHGetFileInfo(filePath, 0, ref shinfo,
+                (uint)Marshal.SizeOf(shinfo), SHGFI_ICON | SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
             fileIcon = System.Drawing.Icon.FromHandle(shinfo.hIcon);
@@ -124,7 +118,7 @@ namespace IMAPI2.MediaItem
 
             Marshal.Copy(waveData, 0, fileData, (int)m_fileLength - sizeOfHeader);
 
-            CreateStreamOnHGlobal(fileData, true, out wavStream);
+            NativeMethods.CreateStreamOnHGlobal(fileData, true, out wavStream);
         }
 
         private IStream wavStream = null;
@@ -150,8 +144,7 @@ namespace IMAPI2.MediaItem
                 var binaryReader = new BinaryReader(fileStream);
                 byte[] byteData = binaryReader.ReadBytes(Marshal.SizeOf(typeof(WAV_HEADER)));
                 GCHandle handle = GCHandle.Alloc(byteData, GCHandleType.Pinned);
-                binaryReader.Close();
-                fileStream.Close();
+                binaryReader.Dispose();
 
                 // Convert to the wav header structure
                 var wavHeader = (WAV_HEADER)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(WAV_HEADER));
@@ -176,6 +169,15 @@ namespace IMAPI2.MediaItem
                 MessageBox.Show(ex.Message);
                 return false;
             }
+        }
+
+        private static class NativeMethods
+        {
+            [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+            public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
+
+            [DllImport("ole32.dll")]
+            public static extern int CreateStreamOnHGlobal(IntPtr hGlobal, bool fDeleteOnRelease, out IStream ppstm);
         }
     }
 }

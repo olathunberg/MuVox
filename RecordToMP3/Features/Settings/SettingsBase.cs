@@ -12,7 +12,7 @@ namespace RecordToMP3.Features.Settings
     /// Observes PropertyChange on T and saves entire object
     /// </summary>
     /// <typeparam name="T">Class containing settings</typeparam>
-    public class SettingsBase<T> where T : GalaSoft.MvvmLight.ObservableObject, ISettings, new()
+    public static class SettingsBase<T> where T : GalaSoft.MvvmLight.ObservableObject, ISettings, new()
     {
         private static T current;
 
@@ -31,9 +31,9 @@ namespace RecordToMP3.Features.Settings
             if (!current.AutoSave)
                 return;
 
-            var serializerSettings = new JsonSerializerSettings()
+            var serializerSettings = new JsonSerializerSettings
             {
-                Formatting = Formatting.Indented,
+                Formatting = Formatting.Indented
             };
             File.WriteAllText(current.FILE_PATH, JsonConvert.SerializeObject(current, serializerSettings));
         }

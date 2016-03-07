@@ -4,23 +4,23 @@ using System.Windows.Forms;
 
 namespace RecordToMP3.Helpers
 {
-    public class HotKeyManager
+    public static class HotKeyManager
     {
         public static event EventHandler<HotKeyEventArgs> HotKeyPressed;
 
         public static int RegisterHotKey(Keys key, KeyModifiers modifiers)
         {
             int id = System.Threading.Interlocked.Increment(ref _id);
-            RegisterHotKey(_wnd.Handle, id, (uint)modifiers, (uint)key);
+            NativeMethods.RegisterHotKey(_wnd.Handle, id, (uint)modifiers, (uint)key);
             return id;
         }
 
         public static bool UnregisterHotKey(int id)
         {
-            return UnregisterHotKey(_wnd.Handle, id);
+            return NativeMethods.UnregisterHotKey(_wnd.Handle, id);
         }
 
-        protected static void OnHotKeyPressed(HotKeyEventArgs e)
+        public static void OnHotKeyPressed(HotKeyEventArgs e)
         {
             if (HotKeyManager.HotKeyPressed != null)
             {
@@ -46,13 +46,16 @@ namespace RecordToMP3.Helpers
             private const int WM_HOTKEY = 0x312;
         }
 
-        [DllImport("user32")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        [DllImport("user32")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
         private static int _id = 0;
+
+        private static class NativeMethods
+        {
+            [DllImport("user32")]
+            internal static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+            [DllImport("user32")]
+            internal static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        }
     }
 
     public class HotKeyEventArgs : EventArgs

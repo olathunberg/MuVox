@@ -8,7 +8,7 @@ using RecordToMP3.Features.Messages;
 
 namespace RecordToMP3.Features.Marker
 {
-    public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase
+    public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
         #region Fields
         Marker marker = new Marker();
@@ -120,6 +120,29 @@ namespace RecordToMP3.Features.Marker
             waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
             waveOut.Dispose();
             waveOut = null;
+        }
+        #endregion
+
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if(waveOut != null)
+                        waveOut.Dispose();
+                }
+
+                // TODO: set large fields to null.
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
         #endregion
     }

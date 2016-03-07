@@ -7,8 +7,8 @@ namespace IMAPI2.MediaItem
     [StructLayout(LayoutKind.Sequential)]
     public struct SHFILEINFO
     {
-        public IntPtr hIcon;
-        public IntPtr iIcon;
+        internal IntPtr hIcon;
+        internal IntPtr iIcon;
         public uint dwAttributes;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
         public string szDisplayName;
@@ -16,13 +16,13 @@ namespace IMAPI2.MediaItem
         public string szTypeName;
     };
 
-    class Win32
+    class NativeMethods
     {
         public const uint SHGFI_ICON = 0x100;
         public const uint SHGFI_LARGEICON = 0x0; // Large icon
         public const uint SHGFI_SMALLICON = 0x1; // Small icon
 
-        [DllImport("shell32.dll")]
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbSizeFileInfo, uint uFlags);
 
         [DllImport("user32.dll")]

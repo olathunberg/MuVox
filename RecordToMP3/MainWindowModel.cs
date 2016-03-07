@@ -17,8 +17,7 @@ namespace RecordToMP3
             {
                 if (_currentViewModel == value)
                     return;
-                _currentViewModel = value;
-                RaisePropertyChanged(() => CurrentViewModel);
+                Set(() => CurrentViewModel, ref _currentViewModel, value);
             }
         }
 

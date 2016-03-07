@@ -92,7 +92,7 @@ namespace RecordToMP3.UI_Features.WaveFormViewer
                 return deleteSelectedMarkerCommand ?? (deleteSelectedMarkerCommand = new RelayCommand(
                     () =>
                     {
-                        var selectedLine = markers.Children.OfType<Line>().Where(x => x.Stroke == Brushes.Red).FirstOrDefault();
+                        var selectedLine = markers.Children.OfType<Line>().FirstOrDefault(x => x.Stroke == Brushes.Red);
                         if (selectedLine != null)
                         {
                             RemoveMarker(selectedLine);

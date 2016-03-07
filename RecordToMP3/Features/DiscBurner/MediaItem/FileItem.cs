@@ -36,8 +36,8 @@ namespace IMAPI2.MediaItem
 
             // Get the File icon
             var shinfo = new SHFILEINFO();
-            IntPtr hImg = Win32.SHGetFileInfo(filePath, 0, ref shinfo,
-                (uint)Marshal.SizeOf(shinfo), Win32.SHGFI_ICON | Win32.SHGFI_SMALLICON);
+            IntPtr hImg = NativeMethods.SHGetFileInfo(filePath, 0, ref shinfo,
+                (uint)Marshal.SizeOf(shinfo), NativeMethods.SHGFI_ICON | NativeMethods.SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
             var imageConverter = new System.Drawing.IconConverter();
@@ -51,7 +51,7 @@ namespace IMAPI2.MediaItem
             {
             }
 
-            Win32.DestroyIcon(shinfo.hIcon);
+            NativeMethods.DestroyIcon(shinfo.hIcon);
         }
 
         public System.Drawing.Image FileIconImage
@@ -81,7 +81,7 @@ namespace IMAPI2.MediaItem
 
             try
             {
-                Win32.SHCreateStreamOnFile(filePath, Win32.STGM_READ | Win32.STGM_SHARE_DENY_WRITE, ref stream);
+                NativeMethods.SHCreateStreamOnFile(filePath, NativeMethods.STGM_READ | NativeMethods.STGM_SHARE_DENY_WRITE, ref stream);
 
                 if (stream != null)
                 {

@@ -39,8 +39,8 @@ namespace IMAPI2.MediaItem
                 mediaItems.Add(new DirectoryItem(directory));
 
             var shinfo = new SHFILEINFO();
-            IntPtr hImg = Win32.SHGetFileInfo(m_directoryPath, 0, ref shinfo,
-                (uint)Marshal.SizeOf(shinfo), Win32.SHGFI_ICON | Win32.SHGFI_SMALLICON);
+            IntPtr hImg = NativeMethods.SHGetFileInfo(m_directoryPath, 0, ref shinfo,
+                (uint)Marshal.SizeOf(shinfo), NativeMethods.SHGFI_ICON | NativeMethods.SHGFI_SMALLICON);
 
             //The icon is returned in the hIcon member of the shinfo struct
             var imageConverter = new System.Drawing.IconConverter();
@@ -54,7 +54,7 @@ namespace IMAPI2.MediaItem
             {
             }
 
-            Win32.DestroyIcon(shinfo.hIcon);
+            NativeMethods.DestroyIcon(shinfo.hIcon);
         }
 
         public string DisplayName

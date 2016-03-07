@@ -60,7 +60,7 @@ namespace RecordToMP3
                 ApplicationPath = Assembly.GetEntryAssembly().CodeBase
             };
 
-            JumpList jumpList = new JumpList();
+            var jumpList = new JumpList();
             jumpList.JumpItems.Add(task);
             jumpList.ShowFrequentCategory = false;
             jumpList.ShowRecentCategory = false;
