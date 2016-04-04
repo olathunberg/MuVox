@@ -85,7 +85,7 @@ namespace RecordToMP3.Features.Processor
         public bool IsProcessing
         {
             get { return isProcessing; }
-            set { isProcessing = value; RaisePropertyChanged(); }
+            set { isProcessing = value; RaisePropertyChanged(); RaiseCanExecuteChanged(); }
         }
 
         public long ProgressBarMaximum
@@ -120,9 +120,16 @@ namespace RecordToMP3.Features.Processor
         public long TotalProgress
         {
             get { return totalProgress; }
-            set { totalProgress = value; RaisePropertyChanged(); }
+            set { totalProgress = value; RaisePropertyChanged(); RaiseCanExecuteChanged(); }
         }
 
+        private void RaiseCanExecuteChanged()
+        {
+            recordCommand.RaiseCanExecuteChanged();
+            editMarkersCommand.RaiseCanExecuteChanged();
+            startProcessingCommand.RaiseCanExecuteChanged();
+            chooseFileCommand.RaiseCanExecuteChanged();
+        }
 
         public long TotalProgressMaximum
         {
@@ -150,16 +157,18 @@ namespace RecordToMP3.Features.Processor
 
             try
             {
+                TotalProgress = 0;
+
                 IsProcessing = true;
                 var baseFileName = FileName;
 
                 var preConvert = Path.GetExtension(baseFileName) == ".mp3";
                 if (preConvert)
                     using (var reader = new Mp3FileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * (preConvert ? 5 : 4);
+                        TotalProgressMaximum = reader.Length * 5;
                 else
                     using (var reader = new WaveFileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * (preConvert ? 5 : 4);
+                        TotalProgressMaximum = reader.Length * 4;
 
                 if (preConvert)
                 {
@@ -177,7 +186,6 @@ namespace RecordToMP3.Features.Processor
                      SetDetailProgressBarMaximum,
                      UpdateDetailProgressBar);
 
-                // TODO: Performance; parallell
                 var normalizer = new Normalizer();
                 var waveToMp3Converter = new WaveToMp3Converter();
                 foreach (var item in cuttedFiles)

@@ -24,7 +24,6 @@ namespace RecordToMP3.Features.Processor.Tools
             Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
 
-
             addLogMessage("Running compressor...");
 
             float maxValue = 0f;

@@ -73,7 +73,7 @@ namespace RecordToMP3.Features.Processor.Tools
                     {
                         var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1] * 100);
 
-                        var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count).ToString() + ".wav");
+                        var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count) + ".wav");
                         CutWavFileToEnd(baseFilename, lastFilename, start2, progressCallback);
                         newFiles.Add(lastFilename);
                     }
@@ -83,7 +83,7 @@ namespace RecordToMP3.Features.Processor.Tools
                         var start = new TimeSpan(0, 0, 0, 0, marker * 100);
                         var end = new TimeSpan(0, 0, 0, 0, markers[i] * 100);
 
-                        var newFilename = Path.ChangeExtension(baseFilename, "." + i.ToString() + ".wav");
+                        var newFilename = Path.ChangeExtension(baseFilename, "." + i + ".wav");
                         CutWavFile(baseFilename, newFilename, start, end, progressCallback);
                         newFiles.Add(newFilename);
                     }
@@ -91,6 +91,9 @@ namespace RecordToMP3.Features.Processor.Tools
 
                 return newFiles.ToList();
             }
+            using (var reader = new WaveFileReader(baseFilename))
+                progressCallback(reader.Length);
+
             return new List<string> { baseFilename };
         }
 
