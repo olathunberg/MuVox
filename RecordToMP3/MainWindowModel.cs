@@ -2,6 +2,8 @@
 using GalaSoft.MvvmLight.Messaging;
 using RecordToMP3.Features.Messages;
 using System.Windows;
+using GalaSoft.MvvmLight.Command;
+using System.Windows.Input;
 
 namespace RecordToMP3
 {
@@ -40,6 +42,20 @@ namespace RecordToMP3
                     if (action.GotoPage == Pages.Settings)
                         CurrentViewModel = viewModelLocator.Settings;
                 });
+        }
+
+        private RelayCommand showSettingsCommand;
+        public ICommand ShowSettingsCommand
+        {
+            get
+            {
+                return showSettingsCommand ?? (showSettingsCommand = new RelayCommand(
+                    () =>
+                    {
+                        Messenger.Default.Send(new GotoPageMessage(Pages.Settings));
+                    },
+                    () => true));
+            }
         }
 
         private void HotKeyManager_HotKeyPressed(object sender, Helpers.HotKeyEventArgs e)
