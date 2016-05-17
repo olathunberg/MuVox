@@ -77,13 +77,11 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// <summary>
         /// Minimum decibels
         /// </summary>
-        [DefaultValue(-60.0)]
         public float MinDb { get; set; }
 
         /// <summary>
         /// Maximum decibels
         /// </summary>
-        [DefaultValue(18.0)]
         public float MaxDb { get; set; }
 
         /// <summary>
@@ -121,7 +119,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
 
             drawingContext.DrawRectangle(Background, new Pen(Background, 0), new Rect(0, 0, this.ActualWidth, this.ActualHeight));
 
-            double db = 20 * Math.Log10(Amplitude);
+            double db = NAudio.Utils.Decibels.LinearToDecibels(Amplitude);
             if (db < MinDb)
                 db = MinDb;
             if (db > MaxDb)
@@ -139,6 +137,9 @@ namespace RecordToMP3.UI_Features.VolumeMeter
             }
             else
             {
+                double zeroDb = (-MinDb) / (MaxDb - MinDb);
+                var zeroHeight = (int)(height * zeroDb);
+
                 height = (int)(height * percent);
                 if (height > maxMark)
                 {
@@ -153,6 +154,9 @@ namespace RecordToMP3.UI_Features.VolumeMeter
 
                 if (this.ActualHeight - 1 - height > 0)
                     drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, this.ActualHeight - 1 - height, width, height));
+
+                // 0db mark
+                drawingContext.DrawLine(new Pen(Brushes.Red, 1), new Point(1, this.ActualHeight - 1 - zeroHeight), new Point(width + 1, this.ActualHeight - 1 - zeroHeight));
             }
         }
     }
