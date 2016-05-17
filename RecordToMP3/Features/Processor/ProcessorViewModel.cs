@@ -64,7 +64,9 @@ namespace RecordToMP3.Features.Processor
             get
             {
                 return startProcessingCommand ?? (startProcessingCommand = new RelayCommand(
+#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
                     async () => await ProcessFile(),
+#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
                     () => !IsProcessing));
             }
         }

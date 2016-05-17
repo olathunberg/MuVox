@@ -4,7 +4,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:VolumeMeter="clr-namespace:RecordToMP3.UI_Features.VolumeMeter"
              xmlns:WaveFormViewer="clr-namespace:RecordToMP3.UI_Features.WaveFormViewer"
-             xmlns:WaveViewer="clr-namespace:RecordToMP3.UI_Features"
              xmlns:converters="clr-namespace:RecordToMP3.UI_Features.Converters"
              x:Class="RecordToMP3.Features.Recorder.RecorderView"
              Focusable="True"

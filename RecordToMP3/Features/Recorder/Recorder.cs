@@ -1,17 +1,13 @@
-﻿using GalaSoft.MvvmLight;
-using NAudio.Lame;
-using NAudio.Wave;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
+using GalaSoft.MvvmLight;
+using NAudio.Lame;
+using NAudio.Wave;
 
 namespace RecordToMP3.Features.Recorder
 {
@@ -51,9 +47,9 @@ namespace RecordToMP3.Features.Recorder
                         await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
                     });
             }
-            else if (recordingState == Features.Recorder.RecordingState.RequestedStop)
+            else if (recordingState == RecordingState.RequestedStop)
             {
-                recordingState = Features.Recorder.RecordingState.Monitoring;
+                recordingState = RecordingState.Monitoring;
                 if (writer != null)
                 {
                     writer.Dispose();
