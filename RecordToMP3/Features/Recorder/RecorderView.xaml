@@ -67,16 +67,12 @@
                                          Background="{StaticResource BackgroundNormal}"
                                          Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding LeftAmplitude}"
-                                         PeakMarkFallBackSpeed="2"
-                                         PeakMarkHoldTime="200"
                                          PeakMarkColor="{StaticResource BorderBrushSelected}"/>
                 <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch"
                                          AccentColor="{StaticResource BorderBrushSelected}"
                                          Background="{StaticResource BackgroundNormal}"
                                          Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding RightAmplitude}"
-                                         PeakMarkFallBackSpeed="2"
-                                         PeakMarkHoldTime="200"
                                          PeakMarkColor="{StaticResource BorderBrushSelected}"/>
             </StackPanel>
             <Grid Grid.Column="1" Margin="10,0,10,10">

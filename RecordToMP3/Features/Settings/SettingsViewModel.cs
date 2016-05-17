@@ -12,10 +12,17 @@ namespace RecordToMP3.Features.Settings
         #endregion
 
         #region Constructors
+        public SettingsViewModel()
+        {
+        }
         #endregion
 
         #region Properties
         public Settings Settings { get { return SettingsBase<Settings>.Current; } }
+        #endregion
+
+        #region Private methods
+
         #endregion
 
         #region Commands

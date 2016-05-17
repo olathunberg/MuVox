@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using RecordToMP3.Features.Settings;
 
 namespace RecordToMP3.UI_Features.VolumeMeter
 {
@@ -14,6 +15,8 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         private Brush background;
         private double maxMark = 0.0;
         private DateTime maxTime = DateTime.Now;
+
+        private Settings Settings { get { return SettingsBase<Settings>.Current; } }
         #endregion
 
         /// <summary>
@@ -94,7 +97,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// Peakmark fallback speed
         /// </summary>
         [DefaultValue(2)]
-        public int PeakMarkFallBackSpeed { get; set; }
+        public int PeakMarkFallBackSpeed { get { return Settings.PeakMarkFallBackSpeed; } }
 
         /// <summary>
         /// Color of peak mark
@@ -104,7 +107,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// <summary>
         /// Number of milliseconds befor peak starts to fall
         /// </summary>
-        public int PeakMarkHoldTime { get; set; }
+        public int PeakMarkHoldTime { get { return Settings.PeakMarkHoldTime; } }
         #endregion
 
         /// <summary>
