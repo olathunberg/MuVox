@@ -19,6 +19,7 @@ namespace RecordToMP3.Features.Recorder
         private RecordingState recordingState;
         private string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
         private string outputFilenameBase;
+        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
         #endregion
 
         #region Constructors
@@ -153,7 +154,7 @@ namespace RecordToMP3.Features.Recorder
             {
                 outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "RecordToMP3");
                 Directory.CreateDirectory(outputFolder);
-                outputFilenameBase = String.Format(Properties.Settings.Default.RECORDER_Filename, DateTime.Now);
+                outputFilenameBase = String.Format(Settings.Recorder_FileName, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
                 Properties.Settings.Default.RECORDER_LastFile = writer.Filename;
@@ -194,7 +195,7 @@ namespace RecordToMP3.Features.Recorder
         }
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {

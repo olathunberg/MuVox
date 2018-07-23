@@ -126,18 +126,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Features\DiscBurner\AudioBurnTask.cs" />
-    <Compile Include="Features\DiscBurner\MediaItem\MediaFile.cs" />
-    <Compile Include="Features\DiscBurner\DataBurnTask.cs" />
-    <Compile Include="Features\DiscBurner\DiscBurner.cs" />
-    <Compile Include="Features\DiscBurner\FormatTask.cs" />
-    <Compile Include="Features\DiscBurner\Interop\BurnData.cs" />
-    <Compile Include="Features\DiscBurner\Interop\Imapi2Interop.cs" />
-    <Compile Include="Features\DiscBurner\MediaItem\DirectoryItem.cs" />
-    <Compile Include="Features\DiscBurner\MediaItem\FileItem.cs" />
-    <Compile Include="Features\DiscBurner\MediaItem\IMediaItem.cs" />
-    <Compile Include="Features\DiscBurner\MediaItem\Win32.cs" />
-    <Compile Include="Features\DiscBurner\StringProvider.cs" />
     <Compile Include="Features\LogViewer\LogEntryModel.cs" />
     <Compile Include="Features\LogViewer\LogViewerModel.cs" />
     <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">

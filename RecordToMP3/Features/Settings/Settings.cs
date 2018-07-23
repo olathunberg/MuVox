@@ -13,12 +13,12 @@ namespace RecordToMP3.Features.Settings
 
         public string FILE_PATH
         {
-            get { return @"\Settings\Settings.json"; }
+            get { return @"Settings.json"; }
         }
 
         public bool AutoSave
         {
-            get { return true; }
+            get { return false; }
         }
 
         public bool Verify()
@@ -26,22 +26,52 @@ namespace RecordToMP3.Features.Settings
             return true;
         }
 
-        [DisplayName("Output path")]
+        #region Processor
         [Category(PROCESSOR)]
-        public string OutputPath { get; set; } = string.Empty;
+        [DisplayName("Output path")]
+        public string Processor_OutputPath { get; set; } = string.Empty;
 
-        [DisplayName("Peekmark fallbackspeed")]
-        [Category(UX)]
-        public int PeakMarkFallBackSpeed { get; set; } = 2;
+        [Category(PROCESSOR)]
+        [DisplayName("Output path")]
+        public int Processor_Mp3Quality { get; set; } = 160;
+        #endregion
 
-        [DisplayName("Peekmark holdtime (ms)")]
-        [Category(UX)]
-        public int PeakMarkHoldTime { get; set; } = 200;
+        #region Recorder
+        [Category(RECORDER)]
+        [DisplayName("Volumemeter, Peekmark holdtime (ms)")]
+        public uint Recorder_MinutesOnProgressbar { get; set; } = 200;
 
         [Category(RECORDER)]
         [DisplayName("WaveInDevice")]
         [ItemsSource(typeof(WaveInDeviceItemsSource))]
-        public int WaveInDevice { get; set; } = 1;
+        public int Recorder_WaveInDevice { get; set; } = 1;
+
+        [Category(RECORDER)]
+        [DisplayName("Output path")]
+        public string Recorder_FileName { get; set; } = "RecordToMP3 {0:yyyy-MM-dd HHmmss}";
+        #endregion
+
+        #region UX
+        [Category(UX)]
+        [DisplayName("Volumemeter, Peekmark fallbackspeed")]
+        public int UX_VolumeMeter_PeakMarkFallBackSpeed { get; set; } = 2;
+
+        [Category(UX)]
+        [DisplayName("Volumemeter, Peekmark holdtime (ms)")]
+        public int UX_VolumeMeter_PeakMarkHoldTime { get; set; } = 200;
+
+        [Category(UX)]
+        [DisplayName("Volumemeter, MinDb")]
+        public float UX_VolumeMeter_MinDb { get; set; } = -24;
+
+        [Category(UX)]
+        [DisplayName("Volumemeter, MaxDb")]
+        public float UX_VolumeMeter_MaxDb { get; set; } = 8;
+
+        [Category(UX)]
+        [DisplayName("Volumemeter, No samples")]
+        public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
+        #endregion
     }
 
     public class WaveInDeviceItemsSource : IItemsSource

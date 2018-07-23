@@ -26,16 +26,29 @@ namespace RecordToMP3.Features.Settings
             }
         }
 
-        public static void Save(T current)
+        public static void Save()
         {
-            if (!current.AutoSave)
+            if (current == null)
                 return;
 
             var serializerSettings = new JsonSerializerSettings
             {
                 Formatting = Formatting.Indented
             };
+
+            var dir = Path.GetDirectoryName(current.FILE_PATH);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
             File.WriteAllText(current.FILE_PATH, JsonConvert.SerializeObject(current, serializerSettings));
+        }
+
+        private static void AutoSave()
+        {
+            if (current == null || !current.AutoSave)
+                return;
+
+            Save();
         }
 
         private static T LoadCurrent()
@@ -47,7 +60,7 @@ namespace RecordToMP3.Features.Settings
             else
                 newSettings = new T();
 
-            newSettings.PropertyChanged += (s, e) => Save(newSettings);
+            newSettings.PropertyChanged += (s, e) => AutoSave();
 
             return newSettings;
         }

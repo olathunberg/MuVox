@@ -12,9 +12,6 @@ namespace RecordToMP3.Features.Settings
         #endregion
 
         #region Constructors
-        public SettingsViewModel()
-        {
-        }
         #endregion
 
         #region Properties
@@ -34,6 +31,7 @@ namespace RecordToMP3.Features.Settings
                 return recordCommand ?? (recordCommand = new RelayCommand(
                     () =>
                     {
+                        SettingsBase<Settings>.Save();
                         Messenger.Default.Send(new GotoPageMessage(Pages.Recorder));
                     },
                     () => true));
@@ -49,7 +47,7 @@ namespace RecordToMP3.Features.Settings
         #endregion
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {

@@ -13,7 +13,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         private Brush accentColor;
         private Brush foreground;
         private Brush background;
-        private double maxMark = 0.0;
+        private double maxMark;
         private DateTime maxTime = DateTime.Now;
 
         private Settings Settings { get { return SettingsBase<Settings>.Current; } }
@@ -24,8 +24,6 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// </summary>
         public VolumeMeter()
         {
-            MinDb = -24;
-            MaxDb = 12;
             Orientation = Orientation.Vertical;
         }
 
@@ -80,12 +78,12 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// <summary>
         /// Minimum decibels
         /// </summary>
-        public float MinDb { get; set; }
+        public float MinDb { get { return Settings.UX_VolumeMeter_MinDb; } }
 
         /// <summary>
         /// Maximum decibels
         /// </summary>
-        public float MaxDb { get; set; }
+        public float MaxDb { get { return Settings.UX_VolumeMeter_MaxDb; } }
 
         /// <summary>
         /// Meter orientation
@@ -97,7 +95,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// Peakmark fallback speed
         /// </summary>
         [DefaultValue(2)]
-        public int PeakMarkFallBackSpeed { get { return Settings.PeakMarkFallBackSpeed; } }
+        public int PeakMarkFallBackSpeed { get { return Settings.UX_VolumeMeter_PeakMarkFallBackSpeed; } }
 
         /// <summary>
         /// Color of peak mark
@@ -107,7 +105,7 @@ namespace RecordToMP3.UI_Features.VolumeMeter
         /// <summary>
         /// Number of milliseconds befor peak starts to fall
         /// </summary>
-        public int PeakMarkHoldTime { get { return Settings.PeakMarkHoldTime; } }
+        public int PeakMarkHoldTime { get { return Settings.UX_VolumeMeter_PeakMarkHoldTime; } }
         #endregion
 
         /// <summary>

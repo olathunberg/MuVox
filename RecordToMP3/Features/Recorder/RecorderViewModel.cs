@@ -1,22 +1,21 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using GalaSoft.MvvmLight.Messaging;
-using RecordToMP3.Features.Messages;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Configuration;
 using System.Linq;
 using System.Windows.Input;
+using GalaSoft.MvvmLight.CommandWpf;
+using GalaSoft.MvvmLight.Messaging;
+using RecordToMP3.Features.Messages;
 
 namespace RecordToMP3.Features.Recorder
 {
     public class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
         #region Fields
-        private float rightAmplitude = 0f;
-        private float leftAmplitude = 0f;
+        private float rightAmplitude;
+        private float leftAmplitude;
         private Recorder recorder;
+
+        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
 
         // Move to volumemeter
         private Queue<float> amplitudesL = new Queue<float>();
@@ -28,7 +27,7 @@ namespace RecordToMP3.Features.Recorder
         {
             recorder = new Recorder();
             recorder.NewSample = RecorderNewSample;
-            ProgressBarMaximum = Properties.Settings.Default.UI_MinutesOnProgressBar * 600;
+            ProgressBarMaximum = Settings.Recorder_MinutesOnProgressbar * 600;
             Messenger.Default.Register<SetMarkerMessage>(
                this, (action) =>
                {
@@ -159,16 +158,17 @@ namespace RecordToMP3.Features.Recorder
             NewLeftPoint = new Tuple<float, float>(maxL, minL);
 
             amplitudesL.Enqueue(maxL);
-            if (amplitudesL.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesL.Dequeue();
+            if (amplitudesL.Count > Settings.UX_VolumeMeter_NoSamples) amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
 
             amplitudesR.Enqueue(maxL);
-            if (amplitudesR.Count > Properties.Settings.Default.UI_LEVELMETER_NO_SAMPLES) amplitudesR.Dequeue();
+            if (amplitudesR.Count > Settings.UX_VolumeMeter_NoSamples) amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
         }
+        #endregion
 
         #region IDisposable Support
-        private bool disposedValue = false; // To detect redundant calls
+        private bool disposedValue; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
         {
@@ -194,7 +194,6 @@ namespace RecordToMP3.Features.Recorder
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
         #endregion
     }
 }
