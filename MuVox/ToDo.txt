@@ -1,0 +1,23 @@
+﻿BUGGAR
+
+GUI
+x Färgmarkering i waveform som visar var man är
+x Visa maxvärdet ur genomsnittet på nivåmätaren
+- Färgmarkera knappar, grön för start röd för stop osv?
+x Tidsmarkeringar i WaveFormViewer
+
+INSTÄLLNINGAR
+x Inställning för genomsnittet på nivåmätaren
+x Inställning för minuter på progressbar
+- Bättre inställningshantering som är i JSON.
+
+FUNKTION
+x Kunna spela upp från vald markör
+x Efterbehandling, normalisering
+- Efterbehandling, brusreducering
+- Efterbehandling, radera tomrum
+
+x Flytta all inspelningslogik till Recorder
+
+ÖVRIGT
+- Byt namn
