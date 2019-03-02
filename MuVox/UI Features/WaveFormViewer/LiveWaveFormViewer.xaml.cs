@@ -2,14 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System;
 
 namespace TTech.Muvox.UI_Features.WaveFormViewer
 {
-    /// <summary>
-    /// Interaction logic for LiveWaveFormViewer.xaml
-    /// </summary>
     public partial class LiveWaveFormViewer : UserControl
     {
         #region Fields
@@ -38,8 +33,8 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             renderPosition = 0;
-            maxPoints = new int[(int)((ActualWidth / xScale))];
-            minPoints = new int[(int)((ActualWidth / xScale))];
+            maxPoints = new int[(int)(ActualWidth / xScale)];
+            minPoints = new int[(int)(ActualWidth / xScale)];
 
             this.yTranslate = this.ActualHeight / 2;
             this.yScale = this.ActualHeight / 2;
@@ -56,18 +51,17 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         #endregion
 
         #region Dependency properties
-        public Tuple<float, float> AddPoint
+        public (float, float) AddPoint
         {
-            get { return (Tuple<float, float>)GetValue(AddPointProperty); }
+            get { return ((float, float))GetValue(AddPointProperty); }
             set { SetValue(AddPointProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for Point.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AddPointProperty =
-            DependencyProperty.Register("AddPoint", typeof(Tuple<float, float>), typeof(LiveWaveFormViewer), new PropertyMetadata(new Tuple<float, float>(0f, 0f),(s, e) =>
+            DependencyProperty.Register("AddPoint", typeof((float, float)), typeof(LiveWaveFormViewer), new PropertyMetadata((0f, 0f), (s, e) =>
                 {
                     if (e.NewValue == null) return;
-                    var newValue = e.NewValue as Tuple<float, float>;
+                    (float, float) newValue = ((float, float))e.NewValue;
                     (s as LiveWaveFormViewer).AddValue(newValue.Item1, newValue.Item2);
                 }));
         #endregion
@@ -92,8 +86,8 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             var topYPos = SampleToYPosition(topValue);
             var bottomYPos = SampleToYPosition(bottomValue);
 
-            maxPoints[renderPosition] = (int)topYPos;
-            minPoints[renderPosition] = (int)bottomYPos;
+            maxPoints[renderPosition] = topYPos;
+            minPoints[renderPosition] = bottomYPos;
             renderPosition++;
         }
 
@@ -112,16 +106,18 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             if (Points > 0)
             {
                 if (renderPosition < Points - blankZone)
-
+                {
                     using (bitmap.GetBitmapContext())
                     {
                         var i = renderPosition - 1;
                         bitmap.FillRectangle((i) * (int)xScale, SampleToYPosition(-1), (i + blankZone + 2) * (int)xScale, SampleToYPosition(1), 0);
                     }
+                }
 
                 CreatePoint(maxValue, minValue);
 
                 if (renderPosition > 1)
+                {
                     using (bitmap.GetBitmapContext())
                     {
                         var i = renderPosition - 1;
@@ -129,17 +125,10 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                         if (maxPoints[i] != minPoints[i])
                             bitmap.DrawLine((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
                     }
+                }
 
                 if (renderPosition >= Points)
                     renderPosition = 0;
-
-                //int erasePosition = (renderPosition + blankZone) % Points;
-                //if (erasePosition < Points)
-                //{
-                //    double yPos = SampleToYPosition(0);
-                //    maxPoints[erasePosition] = (int)yPos;
-                //    minPoints[erasePosition] = (int)yPos;
-                //}
             }
         }
         #endregion

@@ -232,7 +232,6 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             DependencyProperty.Register("MarkersCollection", typeof(ObservableCollection<int>), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
             {
                 if (e.NewValue == null) return;
-                var newValue = e.NewValue as ObservableCollection<int>;
 
                 var view = (s as WaveFormViewer);
                 if (view == null) return;
@@ -309,7 +308,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                 {
                     if (streamData == null) return;
 
-                    var points = new ConcurrentBag<Tuple<int, int, int, int>>();
+                    var points = new ConcurrentBag<(int, int, int, int)>();
 
                     if (samplesPerPixel == 0)
                         samplesPerPixel = (int)(streamData.Length / this.ActualWidth);
@@ -331,7 +330,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                         float lowPercent = ((((float)low) - short.MinValue) / ushort.MaxValue);
                         float highPercent = ((((float)high) - short.MinValue) / ushort.MaxValue);
 
-                        points.Add(new Tuple<int, int, int, int>(x, (int)(this.ActualHeight * lowPercent), x, (int)(this.ActualHeight * highPercent)));
+                        points.Add((x, (int)(this.ActualHeight * lowPercent), x, (int)(this.ActualHeight * highPercent)));
                     });
                     Application.Current.Dispatcher.Invoke(() =>
                     {

@@ -83,8 +83,8 @@ namespace TTech.Muvox.Features.Recorder
         }
 
         private RelayCommand processCommand;
-        private Tuple<float, float> newLeftPoint;
-        private Tuple<float, float> newRightPoint;
+        private (float, float) newLeftPoint;
+        private (float, float) newRightPoint;
         public ICommand Process
         {
             get
@@ -127,13 +127,13 @@ namespace TTech.Muvox.Features.Recorder
             set { leftAmplitude = value; RaisePropertyChanged(); }
         }
 
-        public Tuple<float, float> NewLeftPoint
+        public (float, float) NewLeftPoint
         {
             get { return newLeftPoint; }
             set { newLeftPoint = value; RaisePropertyChanged(); }
         }
 
-        public Tuple<float, float> NewRightPoint
+        public (float, float) NewRightPoint
         {
             get { return newRightPoint; }
             set { newRightPoint = value; RaisePropertyChanged(); }
@@ -154,15 +154,17 @@ namespace TTech.Muvox.Features.Recorder
         #region Events
         private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
         {
-            NewRightPoint = new Tuple<float, float>(maxR, minR);
-            NewLeftPoint = new Tuple<float, float>(maxL, minL);
+            NewRightPoint = (maxR, minR);
+            NewLeftPoint = (maxL, minL);
 
             amplitudesL.Enqueue(maxL);
-            if (amplitudesL.Count > Settings.UX_VolumeMeter_NoSamples) amplitudesL.Dequeue();
+            if (amplitudesL.Count > Settings.UX_VolumeMeter_NoSamples)
+                amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
 
             amplitudesR.Enqueue(maxL);
-            if (amplitudesR.Count > Settings.UX_VolumeMeter_NoSamples) amplitudesR.Dequeue();
+            if (amplitudesR.Count > Settings.UX_VolumeMeter_NoSamples)
+                amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
         }
         #endregion
