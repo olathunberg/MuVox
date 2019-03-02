@@ -68,7 +68,7 @@
             </Grid.RowDefinitions>
             <Border Grid.RowSpan="3"
                     CornerRadius="0" 
-                    Background="{StaticResource BackgroundNormal}" />
+                    Background="{TemplateBinding Background}" />
             <RepeatButton Grid.Row="0"                           
                           Style="{StaticResource ScrollBarLineButton}"
                           Height="18"
@@ -84,7 +84,7 @@
                 <Track.Thumb>
                     <Thumb Style="{StaticResource ScrollBarThumb}" 
                            Margin="1,0,1,0"  
-                           Background="{StaticResource BackgroundHighlighted}"
+                           Background="{TemplateBinding Background}"
                            BorderBrush="{StaticResource BorderBrushNormal}" />
                 </Track.Thumb>
                 <Track.IncreaseRepeatButton>
@@ -145,7 +145,7 @@
            TargetType="{x:Type ScrollBar}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="{StaticResource BackgroundNormal}"/>
+        <!--<Setter Property="Background" Value="{TemplateBinding Background}"/>-->
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Horizontal">
                 <Setter Property="Width" Value="Auto"/>

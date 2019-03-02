@@ -44,8 +44,7 @@
                                    Minimum="0"
                                    Maximum="{TemplateBinding ScrollableHeight}"
                                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                   ViewportSize="{TemplateBinding ViewportHeight}"
-                                   />
+                                   ViewportSize="{TemplateBinding ViewportHeight}" />
                         <ScrollBar x:Name="PART_HorizontalScrollBar"
                                    Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
                                    AutomationProperties.AutomationId="HorizontalScrollBar"

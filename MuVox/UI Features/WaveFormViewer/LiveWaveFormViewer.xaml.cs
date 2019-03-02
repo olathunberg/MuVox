@@ -21,6 +21,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
         #region Properties
         public Color LineColor { get; set; }
+        public Color AccentColor { get; set; } = Colors.Red;
         #endregion
 
         public LiveWaveFormViewer()
@@ -110,7 +111,8 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                     using (bitmap.GetBitmapContext())
                     {
                         var i = renderPosition - 1;
-                        bitmap.FillRectangle((i) * (int)xScale, SampleToYPosition(-1), (i + blankZone + 2) * (int)xScale, SampleToYPosition(1), 0);
+                        bitmap.FillRectangle(i * (int)xScale, SampleToYPosition(-1), (i + blankZone + 2) * (int)xScale, SampleToYPosition(1), 0);
+                        //bitmap.DrawLine(i * (int)xScale +2, SampleToYPosition(0), (i + blankZone ) * (int)xScale, SampleToYPosition(0), AccentColor);
                     }
                 }
 
