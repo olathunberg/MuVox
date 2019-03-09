@@ -6,34 +6,30 @@
 // Copyright 2006, Thomas Scott Stillwell
 // All rights reserved.
 //
-//Redistribution and use in source and binary forms, with or without modification, are permitted
-//provided that the following conditions are met:
-//
-//Redistributions of source code must retain the above copyright notice, this list of conditions
-//and the following disclaimer.
-//
-//Redistributions in binary form must reproduce the above copyright notice, this list of conditions
-//and the following disclaimer in the documentation and/or other materials provided with the distribution.
-//
-//The name of Thomas Scott Stillwell may not be used to endorse or
-//promote products derived from this software without specific prior written permission.
-//
-//THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
-//IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-//FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
-//BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-//(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-//PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-//STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-//THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//adapted to .NET by Mark Heath
+// Redistribution and use in source and binary forms, with or without modification, are permitted
+// provided that the following conditions are met:
+// 
+// Redistributions of source code must retain the above copyright notice, this list of conditions
+// and the following disclaimer.
+// 
+// Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+// and the following disclaimer in the documentation and/or other materials provided with the distribution.
+// 
+// The name of Thomas Scott Stillwell may not be used to endorse or
+// promote products derived from this software without specific prior written permission.
+// 
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR
+// IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+// FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS
+// BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+// PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+// THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// adapted to .NET by Mark Heath
 
 using NAudio.Wave;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TTech.Muvox.Features.Processor.Tools
 {
@@ -42,10 +38,13 @@ namespace TTech.Muvox.Features.Processor.Tools
         #region Fields
         private readonly ISampleProvider sourceProvider;
 
+        private readonly float autogain = 0;
+        private readonly float rmscoef = 0;
+        private readonly float softknee = 0;
+
         private float allin;
         private float atcoef;
         private float attime;
-        private float autogain = 0;
         private float averatio;
         private float cratio;
         private float cthresh;
@@ -64,12 +63,10 @@ namespace TTech.Muvox.Features.Processor.Tools
         private float ratrelcoef;
         private float relcoef;
         private float reltime;
-        private float rmscoef = 0;
         private float runave;
         private float rundb;
         private float runmax;
         private float runratio;
-        private float softknee = 0;
         private float thresh;
         private float threshv;
         #endregion
@@ -85,11 +82,6 @@ namespace TTech.Muvox.Features.Processor.Tools
             Attack = new Setting<int>(20, 20, 2000, 10, "Attack time (usec.)");
             Release = new Setting<int>(250, 20, 1000, 1, "Release time (msec.)");
             Mix = new Setting<float>(100, 0, 100, 0.1f, "Mix%");
-            //ratioSlider.DiscreteValueText.Add("4");
-            //ratioSlider.DiscreteValueText.Add("8");
-            //ratioSlider.DiscreteValueText.Add("12");
-            //ratioSlider.DiscreteValueText.Add("20");
-            //ratioSlider.DiscreteValueText.Add("All");
 
             Init();
         }
@@ -141,23 +133,30 @@ namespace TTech.Muvox.Features.Processor.Tools
 
             thresh = Threshold.Value;
             threshv = (float)Math.Exp(Threshold.Value * db2log);
-            ratio = (Ratio.Value == 0 ? 4 : (Ratio.Value == 1 ? 8 : (Ratio.Value == 2 ? 12 : 20)));
-            if (Ratio.Value == 4)
+
+            switch (Ratio.Value)
             {
-                allin = 1;
-                cratio = 20;
+                case 0: ratio = 4; break;
+                case 1: ratio = 8; break;
+                case 2: ratio = 12; break;
+                case 3: ratio = 20; break;
+                case 4:
+                    allin = 1;
+                    cratio = 20;
+                    ratio = 20;
+                    break;
+                default:
+                    allin = 0;
+                    cratio = ratio;
+                    break;
             }
-            else
-            {
-                allin = 0;
-                cratio = ratio;
-            }
+
             cthresh = (Math.Abs(softknee) > double.Epsilon) ? (Threshold.Value - 3) : Threshold.Value;
             cthreshv = (float)Math.Exp(cthresh * db2log);
             makeup = Gain.Value;
             makeupv = (float)Math.Exp((makeup + autogain) * db2log);
-            attime = Attack.Value / 1000000;
-            reltime = Release.Value / 1000;
+            attime = Attack.Value / 1000000f;
+            reltime = Release.Value / 1000f;
             atcoef = (float)Math.Exp(-1 / (attime * SampleRate));
             relcoef = (float)Math.Exp(-1 / (reltime * SampleRate));
             mix = Mix.Value / 100;

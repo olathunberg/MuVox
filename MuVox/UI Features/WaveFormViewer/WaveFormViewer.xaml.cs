@@ -147,7 +147,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             }
         }
 
-        private void mouseDown(object sender, MouseEventArgs e)
+        private new void MouseDown(object sender, MouseEventArgs e)
         {
             var element = (UIElement)sender;
             dragStart = e.GetPosition(element);
@@ -162,7 +162,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             e.Handled = true;
         }
 
-        private void mouseMove(object sender, MouseEventArgs args)
+        private new void MouseMove(object sender, MouseEventArgs args)
         {
             if (dragStart != null && args.LeftButton == MouseButtonState.Pressed)
             {
@@ -172,7 +172,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             }
         }
 
-        private void mouseUp(object sender, MouseButtonEventArgs e)
+        private new void MouseUp(object sender, MouseButtonEventArgs e)
         {
             var element = (UIElement)sender;
             element.ReleaseMouseCapture();
@@ -200,11 +200,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            var handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -271,8 +267,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         {
             for (var parent = VisualTreeHelper.GetParent(d); parent != null; parent = VisualTreeHelper.GetParent(parent))
             {
-                var result = parent as T;
-                if (result != null)
+                if (parent is T result)
                     return result;
             }
             return null;
@@ -297,7 +292,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
             SelectedPosition = PositionToTime(position);
 
-            enableDrag(newLine);
+            EnableDrag(newLine);
             markers.Children.Add(newLine);
         }
 
@@ -430,23 +425,11 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             };
         }
 
-        private System.Drawing.Bitmap BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
+        private void EnableDrag(UIElement element)
         {
-            System.Drawing.Bitmap bmp;
-            using (var outStream = new System.IO.MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
-                enc.Save(outStream);
-                bmp = new System.Drawing.Bitmap(outStream);
-            }
-            return bmp;
-        }
-        private void enableDrag(UIElement element)
-        {
-            element.MouseDown += mouseDown;
-            element.MouseMove += mouseMove;
-            element.MouseUp += mouseUp;
+            element.MouseDown += MouseDown;
+            element.MouseMove += MouseMove;
+            element.MouseUp += MouseUp;
         }
 
         private double PositionToTime(double position)

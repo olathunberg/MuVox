@@ -8,30 +8,13 @@ namespace TTech.Muvox
 {
     public class ViewModelLocator : IDisposable
     {
-        private readonly RecorderViewModel _recorderViewModel = new RecorderViewModel();
-        private readonly ProcessorViewModel _processorViewModel = new ProcessorViewModel();
-        private readonly MarkerViewModel _markerViewModel = new MarkerViewModel();
-        private readonly SettingsViewModel _settings = new SettingsViewModel();
+        public RecorderViewModel Recorder { get; } = new RecorderViewModel();
 
-        public RecorderViewModel Recorder
-        {
-            get { return _recorderViewModel; }
-        }
+        public MarkerViewModel Marker { get; } = new MarkerViewModel();
 
-        public MarkerViewModel Marker
-        {
-            get { return _markerViewModel; }
-        }
+        public ProcessorViewModel Processor { get; } = new ProcessorViewModel();
 
-        public ProcessorViewModel Processor
-        {
-            get { return _processorViewModel; }
-        }
-
-        public SettingsViewModel Settings
-        {
-            get { return _settings; }
-        }
+        public SettingsViewModel Settings { get; } = new SettingsViewModel();
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -42,12 +25,12 @@ namespace TTech.Muvox
             {
                 if (disposing)
                 {
-                    if (_markerViewModel != null)
-                        _markerViewModel.Dispose();
-                    if (_recorderViewModel != null)
-                        _recorderViewModel.Dispose();
-                    if (_settings != null)
-                        _settings.Dispose();
+                    if (Marker != null)
+                        Marker.Dispose();
+                    if (Recorder != null)
+                        Recorder.Dispose();
+                    if (Settings != null)
+                        Settings.Dispose();
                 }
 
                 disposedValue = true;

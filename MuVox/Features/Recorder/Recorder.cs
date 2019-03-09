@@ -11,12 +11,11 @@ using NAudio.Wave;
 
 namespace TTech.Muvox.Features.Recorder
 {
-    public class Recorder : GalaSoft.MvvmLight.ObservableObject, ICleanup, IDisposable
+    public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
         private WaveIn waveIn;
         private WaveFileWriter writer;
-        private RecordingState recordingState;
         private string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
         private string outputFilenameBase;
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
@@ -25,11 +24,11 @@ namespace TTech.Muvox.Features.Recorder
         #region Constructors
         public Recorder()
         {
-            recordingState = RecordingState.Monitoring;
+            RecordingState = RecordingState.Monitoring;
 
             waveIn = new WaveIn();
-            waveIn.DataAvailable += waveIn_DataAvailable;
-            waveIn.RecordingStopped += waveIn_RecordingStopped;
+            waveIn.DataAvailable += WaveIn_DataAvailable;
+            waveIn.RecordingStopped += WaveIn_RecordingStopped;
             waveIn.BufferMilliseconds = 15;
             waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
 
@@ -39,18 +38,18 @@ namespace TTech.Muvox.Features.Recorder
         #endregion
 
         #region Events
-        private void waveIn_DataAvailable(object sender, WaveInEventArgs e)
+        private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            if (recordingState == RecordingState.Recording)
+            if (RecordingState == RecordingState.Recording)
             {
                 Task.Run(async () =>
                     {
                         await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
                     });
             }
-            else if (recordingState == RecordingState.RequestedStop)
+            else if (RecordingState == RecordingState.RequestedStop)
             {
-                recordingState = RecordingState.Monitoring;
+                RecordingState = RecordingState.Monitoring;
                 if (writer != null)
                 {
                     writer.Dispose();
@@ -78,13 +77,12 @@ namespace TTech.Muvox.Features.Recorder
                 minR = Math.Min(sample32, minR);
             }
 
-            if (NewSample != null)
-                NewSample(minL, maxL, minR, maxR);
+            NewSample?.Invoke(minL, maxL, minR, maxR);
 
             RaisePropertyChanged(() => TenthOfSecondsRecorded);
         }
 
-        private void waveIn_RecordingStopped(object sender, StoppedEventArgs e)
+        private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
         {
             if (writer != null)
             {
@@ -93,28 +91,10 @@ namespace TTech.Muvox.Features.Recorder
             }
 
             RaisePropertyChanged(() => TenthOfSecondsRecorded);
-
-            if (e.Exception != null)
-            {
-                //MessageBox.Show(String.Format("A problem was encountered during recording {0}",
-                //                              e.Exception.Message));
-            }
-
         }
         #endregion
 
         #region Private methods
-        private void ConvertWavStreamToMp3File(ref MemoryStream ms, string savetofilename)
-        {
-            ms.Seek(0, SeekOrigin.Begin);
-
-            using (var rdr = new WaveFileReader(ms))
-            using (var wtr = new LameMP3FileWriter(savetofilename, rdr.WaveFormat, LAMEPreset.VBR_90))
-            {
-                rdr.CopyTo(wtr);
-            }
-        }
-
         private int GetTenthOfSecondsRecorded()
         {
             if (writer != null)
@@ -127,7 +107,7 @@ namespace TTech.Muvox.Features.Recorder
         #region Properties
         public Action<float, float, float, float> NewSample { get; set; }
 
-        public RecordingState RecordingState { get { return recordingState; } }
+        public RecordingState RecordingState { get; private set; }
 
         public ObservableCollection<int> Markers { get; set; }
 
@@ -166,23 +146,23 @@ namespace TTech.Muvox.Features.Recorder
                 Markers.Clear();
             }
 
-            switch (recordingState)
+            switch (RecordingState)
             {
                 case RecordingState.Monitoring:
-                    recordingState = RecordingState.Recording;
+                    RecordingState = RecordingState.Recording;
                     break;
                 case RecordingState.Recording:
-                    recordingState = RecordingState.Paused;
+                    RecordingState = RecordingState.Paused;
                     break;
                 case RecordingState.Paused:
-                    recordingState = RecordingState.Recording;
+                    RecordingState = RecordingState.Recording;
                     break;
             }
         }
 
         public void StopRecording()
         {
-            recordingState = RecordingState.RequestedStop;
+            RecordingState = RecordingState.RequestedStop;
             if (Markers != null)
                 Markers.Clear();
         }

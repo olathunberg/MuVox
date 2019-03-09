@@ -46,8 +46,10 @@ namespace TTech.Muvox.Features.Marker
                         {
                             waveOut = new WaveOut();
 
-                            var reader = new NAudio.Wave.WaveFileReader(FileName);
-                            reader.CurrentTime = TimeSpan.FromSeconds(SelectedPosition / 10.0);
+                            var reader = new NAudio.Wave.WaveFileReader(FileName)
+                            {
+                                CurrentTime = TimeSpan.FromSeconds(SelectedPosition / 10.0)
+                            };
                             waveOut.Init(reader);
                             waveOut.Play();
                             waveOut.PlaybackStopped += WaveOut_PlaybackStopped;
@@ -73,7 +75,7 @@ namespace TTech.Muvox.Features.Marker
             {
                 if (markers != null)
                 {
-                    markers.CollectionChanged -= markers_CollectionChanged;
+                    markers.CollectionChanged -= Markers_CollectionChanged;
                     markers = null;
                 }
                 return new NAudio.Wave.WaveFileReader(FileName);
@@ -89,15 +91,10 @@ namespace TTech.Muvox.Features.Marker
                 if (markers == null)
                 {
                     markers = new ObservableCollection<int>(marker.GetMarkersFromFile(FileName));
-                    markers.CollectionChanged += markers_CollectionChanged;
+                    markers.CollectionChanged += Markers_CollectionChanged;
                 }
                 return markers;
             }
-        }
-
-        void markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            marker.CreateFileFromList(FileName, Markers);
         }
         #endregion
 
@@ -109,6 +106,10 @@ namespace TTech.Muvox.Features.Marker
         #endregion
 
         #region Private methods
+        private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            marker.CreateFileFromList(FileName, Markers);
+        }
         #endregion
 
         #region Public Methods
@@ -128,15 +129,12 @@ namespace TTech.Muvox.Features.Marker
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!disposedValue && disposing)
             {
-                if (disposing)
-                {
-                    if(waveOut != null)
-                        waveOut.Dispose();
-                }
+                if (waveOut != null)
+                    waveOut.Dispose();
 
-                // TODO: set large fields to null.
+                disposedValue = true;
             }
         }
 
