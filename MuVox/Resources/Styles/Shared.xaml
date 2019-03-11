@@ -40,5 +40,4 @@
     <!--Scroll Bar-->
     <SolidColorBrush x:Key="ScrollBarPageButtonBackgroundHighlighted" Color="#05FFFFFF"/>
     
-    
 </ResourceDictionary>

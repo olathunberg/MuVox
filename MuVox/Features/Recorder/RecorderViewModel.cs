@@ -97,6 +97,20 @@ namespace TTech.Muvox.Features.Recorder
                     () => recorder.RecordingState != RecordingState.Recording || recorder.RecordingState != RecordingState.Paused));
             }
         }
+
+        private RelayCommand configureCommand;
+        public ICommand Configure
+        {
+            get
+            {
+                return configureCommand ?? (configureCommand = new RelayCommand(
+                    () =>
+                    {
+                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Settings));
+                    },
+                    () => recorder.RecordingState != RecordingState.Recording || recorder.RecordingState != RecordingState.Paused));
+            }
+        }
         #endregion
 
         #region Properties

@@ -1,12 +1,9 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Shell;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
-using System.Windows.Shell;
-using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Shell;
 using TTech.Muvox.Features.Messages;
 
 namespace TTech.Muvox
@@ -41,31 +38,8 @@ namespace TTech.Muvox
         {
             this.MainWindow.Activate();
 
-            // Activate settings
-            Messenger.Default.Send(new GotoPageMessage(Pages.Settings));
-
             return true;
         }
         #endregion
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            var task = new JumpTask
-            {
-                Title = "Configure",
-                Arguments = "-configure",
-                Description = "Open program settings",
-                CustomCategory = "Actions",
-                IconResourcePath = Assembly.GetEntryAssembly().CodeBase,
-                ApplicationPath = Assembly.GetEntryAssembly().CodeBase
-            };
-
-            var jumpList = new JumpList();
-            jumpList.JumpItems.Add(task);
-            jumpList.ShowFrequentCategory = false;
-            jumpList.ShowRecentCategory = false;
-
-            JumpList.SetJumpList(Application.Current, jumpList);
-        }
     }
 }

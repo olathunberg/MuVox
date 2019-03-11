@@ -1,11 +1,10 @@
-﻿<Window xmlns:Recorder="clr-namespace:TTech.Muvox.Features.Recorder"
-        xmlns:local="clr-namespace:TTech.Muvox"
+﻿<Window xmlns:local="clr-namespace:TTech.Muvox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="TTech.Muvox.MainWindow"
         Style="{DynamicResource WindowStyle}"
         DataContext="{DynamicResource MainWindowModel}"
-        Title="TTech - MuVOX"
+        Title="TTech - MuVox"
         Width="684"
         Height="393"
         ResizeMode="NoResize" Icon="Resources/MuVox.ico" >
@@ -17,14 +16,6 @@
             <local:MainWindowModel x:Key="MainWindowModel" />
         </ResourceDictionary>
     </Window.Resources>
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Settings"
-                      Command="{Binding ShowSettingsCommand}"/>
-        </ContextMenu>
-    </Window.ContextMenu>
-
-    <Grid>
-        <ContentControl x:Name="CurrentView" Content="{Binding CurrentViewModel}"/>
-    </Grid>
+   
+    <ContentControl x:Name="CurrentView" Content="{Binding CurrentViewModel}"/>
 </Window>
