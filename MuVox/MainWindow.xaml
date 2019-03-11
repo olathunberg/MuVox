@@ -8,7 +8,7 @@
         Title="TTech - MuVOX"
         Width="684"
         Height="393"
-        ResizeMode="NoResize" Icon="RecordToMP3.ico" >
+        ResizeMode="NoResize" Icon="Resources/MuVox.ico" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

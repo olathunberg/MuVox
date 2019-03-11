@@ -59,7 +59,7 @@
     <CodeAnalysisRuleSet>MuVox.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>RecordToMP3.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\MuVox.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>TTech.Muvox.App</StartupObject>
@@ -176,6 +176,9 @@
     <Compile Include="Helpers\HotKeyManager.cs" />
     <Compile Include="Helpers\SingleInstance.cs" />
     <Compile Include="MainWindowModel.cs" />
+    <Compile Include="Resources\Logo.xaml.cs">
+      <DependentUpon>Logo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
     <Compile Include="UI Features\LoadingPanel\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
@@ -221,6 +224,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Resources\Logo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Styles\Button.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -323,12 +330,13 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="MuVox.ruleset" />
+    <None Include="Resources\Logo.metrop" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="RecordToMP3.ico" />
+    <Resource Include="Resources\MuVox.ico" />
     <Resource Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
