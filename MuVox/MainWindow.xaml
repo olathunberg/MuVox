@@ -7,7 +7,8 @@
         Title="TTech - MuVox"
         Width="684"
         Height="393"
-        ResizeMode="NoResize" Icon="Resources/MuVox.ico" >
+        ResizeMode="NoResize" 
+        Icon="Resources/MuVox.ico" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
