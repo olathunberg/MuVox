@@ -8,21 +8,8 @@ namespace TTech.Muvox.Features.Settings
 {
     public class SettingsViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        #region Fields
-        #endregion
-
-        #region Constructors
-        #endregion
-
-        #region Properties
         public Settings Settings { get { return SettingsBase<Settings>.Current; } }
-        #endregion
 
-        #region Private methods
-
-        #endregion
-
-        #region Commands
         private RelayCommand recordCommand;
         public ICommand Record
         {
@@ -37,14 +24,6 @@ namespace TTech.Muvox.Features.Settings
                     () => true));
             }
         }
-        #endregion
-
-        #region Overrides
-        public override void Cleanup()
-        {
-            base.Cleanup();
-        }
-        #endregion
 
         #region IDisposable Support
         private bool disposedValue; // To detect redundant calls

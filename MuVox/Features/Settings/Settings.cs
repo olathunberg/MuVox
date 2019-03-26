@@ -26,32 +26,28 @@ namespace TTech.Muvox.Features.Settings
             return true;
         }
 
-        #region Processor
+        
         [Category(PROCESSOR)]
         [DisplayName("Output path")]
         public string Processor_OutputPath { get; set; } = string.Empty;
 
         [Category(PROCESSOR)]
-        [DisplayName("Output path")]
+        [DisplayName("MP3 Quality")]
         public int Processor_Mp3Quality { get; set; } = 160;
-        #endregion
 
-        #region Recorder
         [Category(RECORDER)]
-        [DisplayName("Volumemeter, Peekmark holdtime (ms)")]
+        [DisplayName("Minutes on pregressbar")]
         public uint Recorder_MinutesOnProgressbar { get; set; } = 200;
 
         [Category(RECORDER)]
         [DisplayName("WaveInDevice")]
         [ItemsSource(typeof(WaveInDeviceItemsSource))]
-        public int Recorder_WaveInDevice { get; set; } = 1;
+        public int Recorder_WaveInDevice { get; set; } = 0;
 
         [Category(RECORDER)]
-        [DisplayName("Output path")]
+        [DisplayName("Filename")]
         public string Recorder_FileName { get; set; } = "MuVox {0:yyyy-MM-dd HHmmss}";
-        #endregion
 
-        #region UX
         [Category(UX)]
         [DisplayName("Volumemeter, Peekmark fallbackspeed")]
         public int UX_VolumeMeter_PeakMarkFallBackSpeed { get; set; } = 2;
@@ -69,9 +65,8 @@ namespace TTech.Muvox.Features.Settings
         public float UX_VolumeMeter_MaxDb { get; set; } = 8;
 
         [Category(UX)]
-        [DisplayName("Volumemeter, No samples")]
+        [DisplayName("Volumemeter, Num of samples")]
         public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
-        #endregion
     }
 
     public class WaveInDeviceItemsSource : IItemsSource
