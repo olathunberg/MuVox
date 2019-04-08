@@ -27,7 +27,7 @@ namespace TTech.Muvox.Features.Processor.Tools
                 int bytesPerMillisecond = reader.WaveFormat.AverageBytesPerSecond / 1000;
 
                 int startPos = (int)cutFrom.TotalMilliseconds * bytesPerMillisecond;
-                startPos = startPos - startPos % reader.WaveFormat.BlockAlign;
+                startPos -= startPos % reader.WaveFormat.BlockAlign;
 
                 var endPos = (int)reader.Length;
 
@@ -45,10 +45,10 @@ namespace TTech.Muvox.Features.Processor.Tools
                 int bytesPerMillisecond = reader.WaveFormat.AverageBytesPerSecond / 1000;
 
                 int startPos = (int)cutFrom.TotalMilliseconds * bytesPerMillisecond;
-                startPos = startPos - startPos % reader.WaveFormat.BlockAlign;
+                startPos -= startPos % reader.WaveFormat.BlockAlign;
 
                 int endPos = (int)cutTo.TotalMilliseconds * bytesPerMillisecond;
-                endPos = endPos - endPos % reader.WaveFormat.BlockAlign;
+                endPos -= endPos % reader.WaveFormat.BlockAlign;
 
                 CutWavFile(reader, writer, startPos, endPos, progressCallback);
             }

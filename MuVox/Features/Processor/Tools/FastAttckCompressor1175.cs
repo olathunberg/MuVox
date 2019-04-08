@@ -67,8 +67,6 @@ namespace TTech.Muvox.Features.Processor.Tools
         private float rundb;
         private float runmax;
         private float runratio;
-        private float thresh;
-        private float threshv;
         #endregion
 
         public FastAttackCompressor1175(ISampleProvider sourceProvider)
@@ -131,9 +129,6 @@ namespace TTech.Muvox.Features.Processor.Tools
             gr_meter = 1;
             gr_meter_decay = (float)Math.Exp(1 / (1 * SampleRate));
 
-            thresh = Threshold.Value;
-            threshv = (float)Math.Exp(Threshold.Value * db2log);
-
             switch (Ratio.Value)
             {
                 case 0: ratio = 4; break;
@@ -169,8 +164,8 @@ namespace TTech.Muvox.Features.Processor.Tools
             float aspl0 = Math.Abs(left);
             float aspl1 = Math.Abs(right);
             float maxspl = Math.Max(aspl0, aspl1);
-            maxspl = maxspl * maxspl;
-            runave = maxspl + rmscoef * (runave - maxspl);
+            maxspl *= maxspl;
+            runave = maxspl + (rmscoef * (runave - maxspl));
             var det = (float)Math.Sqrt(Math.Max(0f, runave));
 
             overdb = 2.08136898f * (float)Math.Log(det / cthreshv) * log2db;

@@ -39,7 +39,7 @@ namespace TTech.Muvox.Features.Marker
 
             using (var file = File.OpenText(markerFile))
             {
-                string line = null;
+                string? line = null;
                 while ((line = file.ReadLine()) != null)
                 {
                     markers.Add(int.Parse(line));

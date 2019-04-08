@@ -14,7 +14,7 @@ namespace TTech.Muvox.UI_Features.Converters
             object parameter, CultureInfo culture)
         {
             if (value == null)
-                return null;
+                return string.Empty;
             var secondsRecorded = (int)value;
             return string.Format("{0:00}:{1:00}.{2:0}", (secondsRecorded / 10) / 60, (secondsRecorded / 10) % 60, secondsRecorded % 10);
         }

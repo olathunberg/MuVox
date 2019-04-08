@@ -13,20 +13,22 @@ namespace TTech.Muvox.Features.Recorder
         #region Fields
         private float rightAmplitude;
         private float leftAmplitude;
-        private Recorder recorder;
+        private readonly Recorder recorder;
 
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
 
         // Move to volumemeter
-        private Queue<float> amplitudesL = new Queue<float>();
-        private Queue<float> amplitudesR = new Queue<float>();
+        private readonly Queue<float> amplitudesL = new Queue<float>();
+        private readonly Queue<float> amplitudesR = new Queue<float>();
         #endregion
 
         #region Constructors
         public RecorderViewModel()
         {
-            recorder = new Recorder();
-            recorder.NewSample = RecorderNewSample;
+            recorder = new Recorder
+            {
+                NewSample = RecorderNewSample
+            };
             ProgressBarMaximum = Settings.Recorder_MinutesOnProgressbar * 600;
             Messenger.Default.Register<SetMarkerMessage>(
                this, (action) =>
@@ -38,7 +40,7 @@ namespace TTech.Muvox.Features.Recorder
         #endregion
 
         #region Commands
-        private RelayCommand startRecordingCommand;
+        private RelayCommand? startRecordingCommand;
         public ICommand StartRecording
         {
             get
@@ -55,7 +57,7 @@ namespace TTech.Muvox.Features.Recorder
             }
         }
 
-        private RelayCommand stopRecordingCommand;
+        private RelayCommand? stopRecordingCommand;
         public ICommand StopRecording
         {
             get
@@ -71,7 +73,7 @@ namespace TTech.Muvox.Features.Recorder
             }
         }
 
-        private RelayCommand setMarkerCommand;
+        private RelayCommand? setMarkerCommand;
         public ICommand SetMarker
         {
             get
@@ -82,7 +84,7 @@ namespace TTech.Muvox.Features.Recorder
             }
         }
 
-        private RelayCommand processCommand;
+        private RelayCommand? processCommand;
         private (float, float) newLeftPoint;
         private (float, float) newRightPoint;
         public ICommand Process
@@ -98,7 +100,7 @@ namespace TTech.Muvox.Features.Recorder
             }
         }
 
-        private RelayCommand configureCommand;
+        private RelayCommand? configureCommand;
         public ICommand Configure
         {
             get

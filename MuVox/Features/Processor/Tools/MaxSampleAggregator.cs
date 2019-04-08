@@ -34,9 +34,8 @@ namespace TTech.Muvox.Features.Processor.Tools
 
             for (int n = 0; n < samplesRead; n += channels)
                 Add(buffer[n + offset]);
-          
-            if (MaximumCalculated != null)
-                MaximumCalculated(this, new MaxSampleEventArgs(minValue, maxValue));
+
+            MaximumCalculated?.Invoke(this, new MaxSampleEventArgs(minValue, maxValue));
 
             return samplesRead;
         }

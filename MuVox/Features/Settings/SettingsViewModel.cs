@@ -10,7 +10,7 @@ namespace TTech.Muvox.Features.Settings
     {
         public Settings Settings { get { return SettingsBase<Settings>.Current; } }
 
-        private RelayCommand recordCommand;
+        private RelayCommand? recordCommand;
         public ICommand Record
         {
             get

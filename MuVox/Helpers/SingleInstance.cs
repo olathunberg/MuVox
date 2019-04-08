@@ -157,9 +157,7 @@ namespace Microsoft.Shell
             IntPtr argv = IntPtr.Zero;
             try
             {
-                int numArgs = 0;
-
-                argv = _CommandLineToArgvW(cmdLine, out numArgs);
+                argv = _CommandLineToArgvW(cmdLine, out int numArgs);
                 if (argv == IntPtr.Zero)
                 {
                     throw new Win32Exception();
@@ -176,8 +174,7 @@ namespace Microsoft.Shell
             }
             finally
             {
-
-                IntPtr p = _LocalFree(argv);
+                _ = _LocalFree(argv);
                 // Otherwise LocalFree failed.
                 // Assert.AreEqual(IntPtr.Zero, p);
             }
@@ -228,12 +225,12 @@ namespace Microsoft.Shell
         /// <summary>
         /// Application mutex.
         /// </summary>
-        private static Mutex singleInstanceMutex;
+        private static Mutex? singleInstanceMutex;
 
         /// <summary>
         /// IPC channel for communications.
         /// </summary>
-        private static IpcServerChannel channel;
+        private static IpcServerChannel? channel;
 
         /// <summary>
         /// List of command line arguments for the application.
@@ -271,8 +268,7 @@ namespace Microsoft.Shell
             string channelName = String.Concat(applicationIdentifier, Delimiter, ChannelNameSuffix);
 
             // Create mutex based on unique application Id to check if this is the first instance of the application.
-            bool firstInstance;
-            singleInstanceMutex = new Mutex(true, applicationIdentifier, out firstInstance);
+            singleInstanceMutex = new Mutex(true, applicationIdentifier, out bool firstInstance);
             if (firstInstance)
             {
                 CreateRemoteService(channelName);
@@ -313,7 +309,7 @@ namespace Microsoft.Shell
         /// <returns>List of command line arg strings.</returns>
         private static IList<string> GetCommandLineArgs(string uniqueApplicationName)
         {
-            string[] args = null;
+            string[]? args = null;
             if (AppDomain.CurrentDomain.ActivationContext == null)
             {
                 // The application was not clickonce deployed, get args from standard API's
@@ -361,13 +357,16 @@ namespace Microsoft.Shell
         /// <param name="channelName">Application's IPC channel name.</param>
         private static void CreateRemoteService(string channelName)
         {
-            var serverProvider = new BinaryServerFormatterSinkProvider();
-            serverProvider.TypeFilterLevel = TypeFilterLevel.Full;
-            IDictionary props = new Dictionary<string, string>();
-
-            props["name"] = channelName;
-            props["portName"] = channelName;
-            props["exclusiveAddressUse"] = "false";
+            var serverProvider = new BinaryServerFormatterSinkProvider
+            {
+                TypeFilterLevel = TypeFilterLevel.Full
+            };
+            IDictionary props = new Dictionary<string, string>
+            {
+                ["name"] = channelName,
+                ["portName"] = channelName,
+                ["exclusiveAddressUse"] = "false"
+            };
 
             // Create the IPC Server channel with the channel properties
             channel = new IpcServerChannel(props, serverProvider);
@@ -414,11 +413,12 @@ namespace Microsoft.Shell
         /// </summary>
         /// <param name="arg">Callback argument.</param>
         /// <returns>Always null.</returns>
-        private static object ActivateFirstInstanceCallback(object arg)
+        private static object? ActivateFirstInstanceCallback(object arg)
         {
             // Get command line args to be passed to first instance
-            var args = arg as IList<string>;
-            ActivateFirstInstance(args);
+            if (arg is IList<string> args)
+                ActivateFirstInstance(args);
+
             return null;
         }
 
@@ -466,7 +466,7 @@ namespace Microsoft.Shell
             /// to ensure that lease never expires.
             /// </summary>
             /// <returns>Always null.</returns>
-            public override object InitializeLifetimeService()
+            public override object? InitializeLifetimeService()
             {
                 return null;
             }

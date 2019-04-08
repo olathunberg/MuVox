@@ -10,11 +10,11 @@ namespace TTech.Muvox
     public class MainWindowModel : ViewModelBase
     {
         private readonly ViewModelLocator viewModelLocator = (ViewModelLocator)Application.Current.Resources["ViewModelLocator"];
-        private ViewModelBase _currentViewModel;
+        private ViewModelBase? _currentViewModel;
 
         public ViewModelBase CurrentViewModel
         {
-            get { return _currentViewModel; }
+            get { return _currentViewModel ?? viewModelLocator.Recorder; }
             set
             {
                 if (_currentViewModel == value)
@@ -44,7 +44,7 @@ namespace TTech.Muvox
                 });
         }
 
-        private RelayCommand showSettingsCommand;
+        private RelayCommand? showSettingsCommand;
         public ICommand ShowSettingsCommand
         {
             get

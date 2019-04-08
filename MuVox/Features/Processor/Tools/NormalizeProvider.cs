@@ -12,7 +12,7 @@ namespace TTech.Muvox.Features.Processor.Tools
         #region Fields
         private readonly ISampleProvider sourceProvider;
 
-        private float ratio;
+        private readonly float ratio;
         #endregion
 
         public NormalizeProvider(ISampleProvider sourceProvider, float ratio, float currentMax)

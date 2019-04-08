@@ -29,14 +29,14 @@ namespace TTech.Muvox.Features.LogViewer
 
         void LogViewerView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (DataContext != null && DataContext is LogViewerModel)
-                (DataContext as LogViewerModel).Entries.CollectionChanged += Entries_CollectionChanged;
+            if (DataContext != null && DataContext is LogViewerModel logViewerModel && logViewerModel.Entries != null)
+                logViewerModel.Entries.CollectionChanged += Entries_CollectionChanged;
         }
 
         void Entries_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var sv = VisualTreeHelper.GetChild((DependencyObject)EntriesControl, 0) as ScrollViewer;
-            sv.ScrollToEnd();
+            if (VisualTreeHelper.GetChild((DependencyObject)EntriesControl, 0) is ScrollViewer sv)
+                sv.ScrollToEnd();
         }
     }
 }

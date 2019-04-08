@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -8,14 +9,14 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
     public partial class LiveWaveFormViewer : UserControl
     {
         #region Fields
-        private int blankZone = 2;
+        private readonly int blankZone = 2;
         private int renderPosition;
-        private double xScale = 2;
+        private readonly double xScale = 2;
         private double yScale = 40;
         private double yTranslate = 40;
-        private System.Windows.Media.Imaging.WriteableBitmap bitmap { get; set; }
-        private int[] maxPoints;
-        private int[] minPoints;
+        private System.Windows.Media.Imaging.WriteableBitmap? bitmap;
+        private int[] maxPoints = Array.Empty<int>();
+        private int[] minPoints = Array.Empty<int>();
 
         #endregion
 
@@ -62,8 +63,10 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             DependencyProperty.Register("AddPoint", typeof((float, float)), typeof(LiveWaveFormViewer), new PropertyMetadata((0f, 0f), (s, e) =>
                 {
                     if (e.NewValue == null) return;
-                    (float, float) newValue = ((float, float))e.NewValue;
-                    (s as LiveWaveFormViewer).AddValue(newValue.Item1, newValue.Item2);
+
+                    var newValue = ((float, float))e.NewValue;
+                    if (s is LiveWaveFormViewer liveWaveFormViewer)
+                        liveWaveFormViewer.AddValue(newValue.Item1, newValue.Item2);
                 }));
         #endregion
 

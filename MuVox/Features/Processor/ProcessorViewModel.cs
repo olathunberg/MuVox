@@ -14,7 +14,6 @@ namespace TTech.Muvox.Features.Processor
     public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
         #region Fields
-        private LogViewer.LogViewerModel logViewerModel;
         private bool isProcessing;
         private long progressBarMaximum;
         private long progress;
@@ -30,7 +29,7 @@ namespace TTech.Muvox.Features.Processor
         #endregion
 
         #region Commands
-        private RelayCommand recordCommand;
+        private RelayCommand? recordCommand;
         public ICommand Record
         {
             get
@@ -44,7 +43,7 @@ namespace TTech.Muvox.Features.Processor
             }
         }
 
-        private RelayCommand editMarkersCommand;
+        private RelayCommand? editMarkersCommand;
         public ICommand EditMarkers
         {
             get
@@ -58,7 +57,7 @@ namespace TTech.Muvox.Features.Processor
             }
         }
 
-        private RelayCommand startProcessingCommand;
+        private RelayCommand? startProcessingCommand;
         public ICommand StartProcessing
         {
             get
@@ -71,7 +70,7 @@ namespace TTech.Muvox.Features.Processor
             }
         }
 
-        private RelayCommand chooseFileCommand;
+        private RelayCommand? chooseFileCommand;
         public ICommand ChooseFile
         {
             get
@@ -113,11 +112,7 @@ namespace TTech.Muvox.Features.Processor
             }
         }
 
-        public LogViewer.LogViewerModel LogViewerModel
-        {
-            get { return logViewerModel; }
-            set { logViewerModel = value; }
-        }
+        public LogViewer.LogViewerModel LogViewerModel { get; set; }
 
         public long TotalProgress
         {
@@ -127,10 +122,10 @@ namespace TTech.Muvox.Features.Processor
 
         private void RaiseCanExecuteChanged()
         {
-            recordCommand.RaiseCanExecuteChanged();
-            editMarkersCommand.RaiseCanExecuteChanged();
-            startProcessingCommand.RaiseCanExecuteChanged();
-            chooseFileCommand.RaiseCanExecuteChanged();
+            recordCommand?.RaiseCanExecuteChanged();
+            editMarkersCommand?.RaiseCanExecuteChanged();
+            startProcessingCommand?.RaiseCanExecuteChanged();
+            chooseFileCommand?.RaiseCanExecuteChanged();
         }
 
         public long TotalProgressMaximum
@@ -177,7 +172,7 @@ namespace TTech.Muvox.Features.Processor
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, logViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
+                    baseFileName = await mp3ToWave.Convert(baseFileName, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
                 }
 
                 LogViewerModel.Add("Splitting into tracks...");

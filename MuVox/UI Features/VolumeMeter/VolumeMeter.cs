@@ -10,9 +10,9 @@ namespace TTech.Muvox.UI_Features.VolumeMeter
     internal class VolumeMeter : FrameworkElement
     {
         #region Fields
-        private Brush accentColor;
-        private Brush foreground;
-        private Brush background;
+        private Brush accentColor = Brushes.Transparent;
+        private Brush foreground = Brushes.Transparent;
+        private Brush background = Brushes.Transparent;
         private double maxMark;
         private DateTime maxTime = DateTime.Now;
 
@@ -38,8 +38,8 @@ namespace TTech.Muvox.UI_Features.VolumeMeter
         public static readonly DependencyProperty AmplitudeProperty =
             DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(0f, (s, e) =>
                 {
-                    if (e.OldValue != e.NewValue)
-                        (s as FrameworkElement).InvalidateVisual();
+                    if (e.OldValue != e.NewValue && s is FrameworkElement frameworkElement)
+                        frameworkElement.InvalidateVisual();
                 }));
 
         #endregion
@@ -100,7 +100,7 @@ namespace TTech.Muvox.UI_Features.VolumeMeter
         /// <summary>
         /// Color of peak mark
         /// </summary>
-        public Brush PeakMarkColor { get; set; }
+        public Brush PeakMarkColor { get; set; } = Brushes.Red;
 
         /// <summary>
         /// Number of milliseconds befor peak starts to fall

@@ -32,11 +32,11 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
         private int samplesPerPixel = 0;
 
-        private short[] streamData;
+        private short[]? streamData;
 
-        private WaveStream waveStream;
+        private WaveStream? waveStream;
 
-        private WriteableBitmap bitmap { get; set; }
+        private WriteableBitmap? bitmap;
 
         private int averageBytesPerSecond;
         #endregion
@@ -84,7 +84,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         }
 
         #region Commands
-        private RelayCommand deleteSelectedMarkerCommand;
+        private RelayCommand? deleteSelectedMarkerCommand;
         public ICommand DeleteSelectedMarker
         {
             get
@@ -109,7 +109,8 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         private void WaveFormViewer_Loaded(object sender, RoutedEventArgs e)
         {
             var window = FindVisualAncestorOfType<UserControl>(this);
-            window.InputBindings.Add(new KeyBinding(DeleteSelectedMarker, Key.Delete, ModifierKeys.None));
+            if (window != null)
+                window.InputBindings.Add(new KeyBinding(DeleteSelectedMarker, Key.Delete, ModifierKeys.None));
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -122,7 +123,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
                 {
-                    StartPosition = StartPosition + (int)e.GetPosition(this).X * SamplesPerPixel;
+                    StartPosition += (int)e.GetPosition(this).X * SamplesPerPixel;
                     samplesPerPixel /= 2;
                     StartPosition -= (int)this.ActualWidth * samplesPerPixel / 2;
                     if (StartPosition < 0)
@@ -156,7 +157,8 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
-            (element as Line).Stroke = Brushes.Red;
+            if (element is Line line)
+                line.Stroke = Brushes.Red;
             if (dragStart != null)
                 SelectedPosition = PositionToTime(dragStart.Value.X);
             e.Handled = true;
@@ -168,33 +170,35 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             {
                 var element = (UIElement)sender;
                 var p2 = args.GetPosition(this);
-                (element as Line).X1 = (element as Line).X2 = p2.X;
+                if (element is Line line)
+                    line.X1 = line.X2 = p2.X;
             }
         }
 
         private new void MouseUp(object sender, MouseButtonEventArgs e)
         {
-            var element = (UIElement)sender;
-            element.ReleaseMouseCapture();
-
-            if ((element as Line).X1 >= this.ActualWidth)
+            if (sender is UIElement element)
             {
-                RemoveMarker(element as Line);
-                if (dragStart != null)
+                element.ReleaseMouseCapture();
+
+                if (element is Line line && line.X1 >= this.ActualWidth)
                 {
-                    var mark = (int)PositionToTime(dragStart.Value.X);
-                    RemoveFromMarkersCollection(mark);
+                    RemoveMarker(line);
+                    if (dragStart != null)
+                    {
+                        var mark = (int)PositionToTime(dragStart.Value.X);
+                        RemoveFromMarkersCollection(mark);
+                    }
+                }
+                else
+                {
+                    if (dragStart != null)
+                    {
+                        var mark = (int)PositionToTime(dragStart.Value.X);
+                        RemoveFromMarkersCollection(mark);
+                    }
                 }
             }
-            else
-            {
-                if (dragStart != null)
-                {
-                    var mark = (int)PositionToTime(dragStart.Value.X);
-                    RemoveFromMarkersCollection(mark);
-                }
-            }
-
             dragStart = null;
         }
 
@@ -263,7 +267,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         #endregion
 
         #region Private methods
-        private T FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
+        private T? FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
         {
             for (var parent = VisualTreeHelper.GetParent(d); parent != null; parent = VisualTreeHelper.GetParent(parent))
             {
@@ -312,6 +316,9 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                     {
                         short low = 0;
                         short high = 0;
+
+                        if (streamData == null)
+                            return;
 
                         if (((StartPosition / samplesPerPixel) + x + 1) * samplesPerPixel > streamData.Length)
                             return;
@@ -370,7 +377,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             var endTime = (int)PositionToTime((int)this.ActualWidth);
 
             var scale = (int)Math.Round((endTime - startTime) * 100 / this.ActualWidth, MidpointRounding.AwayFromZero) / 5;
-            scale = scale - scale % 10;
+            scale -= scale % 10;
 
             if (scale == 0)
                 scale += 1;

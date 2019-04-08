@@ -11,16 +11,20 @@ namespace TTech.Muvox.Features.Marker
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
         #region Fields
-        Marker marker = new Marker();
-        ObservableCollection<int> markers;
-        private WaveOut waveOut = null;
+        private readonly Marker marker;
+        private readonly ObservableCollection<int> markers;
+        private WaveOut? waveOut = null;
         #endregion
 
-        #region Constructors
-        #endregion
+        public MarkerViewModel()
+        {
+            marker = new Marker();
+            markers = new ObservableCollection<int>();
+            markers.CollectionChanged += Markers_CollectionChanged;
+        }
 
         #region Commands
-        private RelayCommand processCommand;
+        private RelayCommand? processCommand;
         public ICommand Process
         {
             get
@@ -34,7 +38,7 @@ namespace TTech.Muvox.Features.Marker
             }
         }
 
-        private RelayCommand playFromCurrentCommand;
+        private RelayCommand? playFromCurrentCommand;
         public ICommand PlayFromCurrent
         {
             get
@@ -73,11 +77,7 @@ namespace TTech.Muvox.Features.Marker
         {
             get
             {
-                if (markers != null)
-                {
-                    markers.CollectionChanged -= Markers_CollectionChanged;
-                    markers = null;
-                }
+                markers.Clear();
                 return new NAudio.Wave.WaveFileReader(FileName);
             }
         }
@@ -88,11 +88,10 @@ namespace TTech.Muvox.Features.Marker
         {
             get
             {
-                if (markers == null)
-                {
-                    markers = new ObservableCollection<int>(marker.GetMarkersFromFile(FileName));
-                    markers.CollectionChanged += Markers_CollectionChanged;
-                }
+                markers.Clear();
+                foreach (var mark in marker.GetMarkersFromFile(FileName))
+                    markers.Add(mark);
+
                 return markers;
             }
         }
@@ -118,9 +117,12 @@ namespace TTech.Muvox.Features.Marker
         #region Events
         private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
         {
-            waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
-            waveOut.Dispose();
-            waveOut = null;
+            if (waveOut != null)
+            {
+                waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
+                waveOut.Dispose();
+                waveOut = null;
+            }
         }
         #endregion
 

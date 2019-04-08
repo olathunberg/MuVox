@@ -24,11 +24,11 @@ namespace TTech.Muvox.Helpers
         {
             if (HotKeyManager.HotKeyPressed != null)
             {
-                HotKeyManager.HotKeyPressed(null, e);
+                HotKeyPressed(null, e);
             }
         }
 
-        private static MessageWindow _wnd = new MessageWindow();
+        private static readonly MessageWindow _wnd = new MessageWindow();
 
         private class MessageWindow : Form
         {

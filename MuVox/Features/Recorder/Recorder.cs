@@ -14,10 +14,10 @@ namespace TTech.Muvox.Features.Recorder
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
-        private WaveIn waveIn;
-        private WaveFileWriter writer;
+        private WaveIn? waveIn;
+        private WaveFileWriter? writer;
         private string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
-        private string outputFilenameBase;
+        private string? outputFilenameBase;
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
         #endregion
 
@@ -40,11 +40,12 @@ namespace TTech.Muvox.Features.Recorder
         #region Events
         private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
-            if (RecordingState == RecordingState.Recording)
+            if (RecordingState == RecordingState.Recording && writer != null && e != null)
             {
                 Task.Run(async () =>
                     {
-                        await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
+                        if (writer != null)
+                            await writer.WriteAsync(e.Buffer, 0, e.BytesRecorded);
                     });
             }
             else if (RecordingState == RecordingState.RequestedStop)
@@ -105,11 +106,11 @@ namespace TTech.Muvox.Features.Recorder
         #endregion
 
         #region Properties
-        public Action<float, float, float, float> NewSample { get; set; }
+        public Action<float, float, float, float>? NewSample { get; set; }
 
         public RecordingState RecordingState { get; private set; }
 
-        public ObservableCollection<int> Markers { get; set; }
+        public ObservableCollection<int> Markers { get; set; } = new ObservableCollection<int>();
 
         public int TenthOfSecondsRecorded
         {
@@ -130,18 +131,17 @@ namespace TTech.Muvox.Features.Recorder
 
         public void StartRecording()
         {
+            if (waveIn == null)
+                throw new InvalidDataException(nameof(waveIn));
             if (writer == null)
             {
                 outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
                 Directory.CreateDirectory(outputFolder);
-                outputFilenameBase = String.Format(Settings.Recorder_FileName, DateTime.Now);
+                outputFilenameBase = string.Format(Settings.Recorder_FileName, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
                 MuVox.Properties.Settings.Default.RECORDER_LastFile = writer.Filename;
                 MuVox.Properties.Settings.Default.Save();
-
-                if (Markers == null)
-                    Markers = new ObservableCollection<int>();
 
                 Markers.Clear();
             }
@@ -169,9 +169,12 @@ namespace TTech.Muvox.Features.Recorder
 
         public void Cleanup()
         {
-            waveIn.StopRecording();
-            waveIn.Dispose();
-            waveIn = null;
+            if (waveIn != null)
+            {
+                waveIn.StopRecording();
+                waveIn.Dispose();
+                waveIn = null;
+            }
         }
 
         #region IDisposable Support

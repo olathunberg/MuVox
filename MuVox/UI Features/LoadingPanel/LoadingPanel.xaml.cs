@@ -45,13 +45,13 @@ namespace TTech.Muvox.UI_Features.LoadingPanel
                 {
                     await Task.Delay(view.ShowDelay);
 
-                    var storyboard = view.Resources["FadeIn"] as Storyboard;
-                    storyboard.Begin(view.border);
+                    if (view.Resources["FadeIn"] is Storyboard storyboard)
+                        storyboard.Begin(view.border);
                 }
                 else
                 {
-                    var storyboard = view.Resources["FadeOut"] as Storyboard;
-                    storyboard.Begin(view.border);
+                    if (view.Resources["FadeOut"] is Storyboard storyboard)
+                        storyboard.Begin(view.border);
                 }
             }));
 
