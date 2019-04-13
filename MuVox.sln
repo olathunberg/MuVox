@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuVox", "MuVox\MuVox.csproj", "{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuVox.Testing", "MuVox.Testing\MuVox.Testing.csproj", "{CF5EFD1B-A05A-42A4-B891-5C73221AD596}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5EFD1B-A05A-42A4-B891-5C73221AD596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5EFD1B-A05A-42A4-B891-5C73221AD596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5EFD1B-A05A-42A4-B891-5C73221AD596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5EFD1B-A05A-42A4-B891-5C73221AD596}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
