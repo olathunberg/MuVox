@@ -123,7 +123,7 @@ namespace TTech.Muvox.Features.Recorder
         {
             Markers.Add(GetTenthOfSecondsRecorded());
 
-            var fileName = Path.Combine(outputFolder, outputFilenameBase) + ".markers";
+            var fileName = Path.Combine(outputFolder, outputFilenameBase);
             new Marker.Marker().AddMarkerToFile(fileName, Markers.Last());
 
             RaisePropertyChanged(() => Markers);

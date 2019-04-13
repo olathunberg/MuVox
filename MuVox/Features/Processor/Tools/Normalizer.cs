@@ -1,12 +1,8 @@
-﻿using NAudio.Lame;
-using NAudio.Wave;
+﻿using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TTech.Muvox.Features.Processor.Tools
@@ -58,7 +54,5 @@ namespace TTech.Muvox.Features.Processor.Tools
 
             File.Delete(tempFile);
         }
-
-
     }
 }

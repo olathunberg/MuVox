@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace TTech.Muvox.Features.LogViewer
 {
@@ -21,7 +16,15 @@ namespace TTech.Muvox.Features.LogViewer
             if (Entries == null)
                 Entries = new ObservableCollection<LogEntryModel>();
 
-            System.Windows.Application.Current.Dispatcher.Invoke(() => Entries.Add(new LogEntryModel(message)));
+            if (System.Windows.Application.Current != null)
+                System.Windows.Application.Current.Dispatcher.Invoke(() => AddEntry(message));
+            else
+                AddEntry(message);
+        }
+
+        private void AddEntry(string message)
+        {
+            Entries.Add(new LogEntryModel(message));
         }
     }
 }

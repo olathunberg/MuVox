@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using GalaSoft.MvvmLight.CommandWpf;
+﻿using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using NAudio.Wave;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 using TTech.Muvox.Features.Messages;
 
 namespace TTech.Muvox.Features.Marker
 {
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        #region Fields
         private readonly Marker marker;
         private readonly ObservableCollection<int> markers;
         private WaveOut? waveOut = null;
-        #endregion
 
         public MarkerViewModel()
         {
@@ -23,7 +21,6 @@ namespace TTech.Muvox.Features.Marker
             markers.CollectionChanged += Markers_CollectionChanged;
         }
 
-        #region Commands
         private RelayCommand? processCommand;
         public ICommand Process
         {
@@ -68,9 +65,7 @@ namespace TTech.Muvox.Features.Marker
                     () => true));
             }
         }
-        #endregion
 
-        #region Properties
         public string FileName { get { return MuVox.Properties.Settings.Default.RECORDER_LastFile; } }
 
         public WaveStream WaveStream
@@ -95,26 +90,17 @@ namespace TTech.Muvox.Features.Marker
                 return markers;
             }
         }
-        #endregion
 
-        #region Overrides
         public override void Cleanup()
         {
             base.Cleanup();
         }
-        #endregion
 
-        #region Private methods
         private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             marker.CreateFileFromList(FileName, Markers);
         }
-        #endregion
 
-        #region Public Methods
-        #endregion
-
-        #region Events
         private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
         {
             if (waveOut != null)
@@ -124,7 +110,6 @@ namespace TTech.Muvox.Features.Marker
                 waveOut = null;
             }
         }
-        #endregion
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
