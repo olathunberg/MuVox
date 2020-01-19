@@ -56,13 +56,12 @@ namespace TTech.Muvox.Features.Processor.Tools
 
         private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            var markerClass = new Marker.Marker();
-            if (markerClass.HasMarkerFile(baseFilename))
+            if (Marker.MarkerHelper.HasMarkerFile(baseFilename))
             {
                 using (var reader = new WaveFileReader(baseFilename))
                     sourceLengthCallback(reader.Length);
 
-                var markers = markerClass.GetMarkersFromFile(baseFilename);
+                var markers = Marker.MarkerHelper.GetMarkersFromFile(baseFilename);
                 var newFiles = new ConcurrentBag<string>();
 
                 addLogMessage("Creating " + (markers.Count + 1) + " segments");

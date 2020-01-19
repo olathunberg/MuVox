@@ -4,15 +4,15 @@ using System.Linq;
 
 namespace TTech.Muvox.Features.Marker
 {
-    public class Marker
+    public static class MarkerHelper
     {
-        public bool HasMarkerFile(string baseFilename)
+        public static bool HasMarkerFile(string baseFilename)
         {
             var markerFile = GetMarkerFilename(baseFilename);
             return File.Exists(markerFile);
         }
 
-        public void AddMarkerToFile(string baseFilename, int mark)
+        public static void AddMarkerToFile(string baseFilename, int mark)
         {
             var markerFile = GetMarkerFilename(baseFilename);
 
@@ -28,7 +28,7 @@ namespace TTech.Muvox.Features.Marker
             }
         }
 
-        public List<int> GetMarkersFromFile(string filename)
+        public static List<int> GetMarkersFromFile(string filename)
         {
             var markerFile = GetMarkerFilename(filename);
             var markers = new List<int>();
@@ -46,7 +46,7 @@ namespace TTech.Muvox.Features.Marker
             return markers;
         }
 
-        public void CreateFileFromList(string baseFilename, IList<int> markers)
+        public static void CreateFileFromList(string baseFilename, IList<int> markers)
         {
             var markerFile = GetMarkerFilename(baseFilename);
             using (var sw = File.CreateText(markerFile))
@@ -56,7 +56,7 @@ namespace TTech.Muvox.Features.Marker
             }
         }
 
-        private string GetMarkerFilename(string baseFilename)
+        private static string GetMarkerFilename(string baseFilename)
         {
             return Path.ChangeExtension(baseFilename, ".markers");
         }

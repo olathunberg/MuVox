@@ -10,13 +10,11 @@ namespace TTech.Muvox.Features.Marker
 {
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        private readonly Marker marker;
         private readonly ObservableCollection<int> markers;
         private WaveOut? waveOut = null;
 
         public MarkerViewModel()
         {
-            marker = new Marker();
             markers = new ObservableCollection<int>();
             markers.CollectionChanged += Markers_CollectionChanged;
         }
@@ -84,7 +82,7 @@ namespace TTech.Muvox.Features.Marker
             get
             {
                 markers.Clear();
-                foreach (var mark in marker.GetMarkersFromFile(FileName))
+                foreach (var mark in MarkerHelper.GetMarkersFromFile(FileName))
                     markers.Add(mark);
 
                 return markers;
@@ -98,7 +96,7 @@ namespace TTech.Muvox.Features.Marker
 
         private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            marker.CreateFileFromList(FileName, Markers);
+            MarkerHelper.CreateFileFromList(FileName, Markers);
         }
 
         private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)

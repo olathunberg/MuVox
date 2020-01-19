@@ -267,7 +267,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         #endregion
 
         #region Private methods
-        private T? FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
+        private T FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
         {
             for (var parent = VisualTreeHelper.GetParent(d); parent != null; parent = VisualTreeHelper.GetParent(parent))
             {

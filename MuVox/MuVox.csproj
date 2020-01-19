@@ -140,7 +140,7 @@
     <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">
       <DependentUpon>LogViewerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Features\Marker\Marker.cs" />
+    <Compile Include="Features\Marker\MarkerHelper.cs" />
     <Compile Include="Features\Marker\MarkerView.xaml.cs">
       <DependentUpon>MarkerView.xaml</DependentUpon>
     </Compile>
