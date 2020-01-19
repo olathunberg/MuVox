@@ -502,7 +502,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         #endregion
 
         #region Eventhandlers
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         #endregion
     }
 }

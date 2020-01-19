@@ -20,6 +20,13 @@ namespace TTech.Muvox.Features.Processor.Tools
             Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
 
+            if (addLogMessage == null)
+                return;
+            if (sourceLengthCallback == null)
+                return;
+            if (progressCallback == null)
+                return;
+
             addLogMessage("Running compressor...");
 
             float maxValue = 0f;

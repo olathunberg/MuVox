@@ -6,7 +6,7 @@ namespace TTech.Muvox.Helpers
 {
     public static class HotKeyManager
     {
-        public static event EventHandler<HotKeyEventArgs> HotKeyPressed;
+        public static event EventHandler<HotKeyEventArgs>? HotKeyPressed;
 
         public static int RegisterHotKey(Keys key, KeyModifiers modifiers)
         {
@@ -22,10 +22,7 @@ namespace TTech.Muvox.Helpers
 
         public static void OnHotKeyPressed(HotKeyEventArgs e)
         {
-            if (HotKeyManager.HotKeyPressed != null)
-            {
-                HotKeyPressed(null, e);
-            }
+            HotKeyPressed?.Invoke(null, e);
         }
 
         private static readonly MessageWindow _wnd = new MessageWindow();
@@ -37,7 +34,7 @@ namespace TTech.Muvox.Helpers
                 if (m.Msg == WM_HOTKEY)
                 {
                     var e = new HotKeyEventArgs(m.LParam);
-                    HotKeyManager.OnHotKeyPressed(e);
+                    OnHotKeyPressed(e);
                 }
 
                 base.WndProc(ref m);

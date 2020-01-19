@@ -58,6 +58,9 @@ namespace TTech.Muvox.Features.Recorder
                 }
             }
 
+            if (e == null)
+                return;
+
             float maxL = 0;
             float minL = 0;
             float maxR = 0;

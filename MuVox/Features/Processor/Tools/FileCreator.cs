@@ -1,11 +1,6 @@
 ﻿using NAudio.Lame;
 using NAudio.Wave;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TTech.Muvox.Features.Processor.Tools
 {
@@ -13,7 +8,8 @@ namespace TTech.Muvox.Features.Processor.Tools
     {
         internal static void CreateWaveFile(string filename, IWaveProvider sourceProvider, Action<long> progressCallback)
         {
-            Debug.Assert(progressCallback != null);
+            if (progressCallback == null)
+                return;
 
             using (var writer = new WaveFileWriter(filename, sourceProvider.WaveFormat))
             {
@@ -38,7 +34,8 @@ namespace TTech.Muvox.Features.Processor.Tools
 
         internal static void CreateMp3File(string filename, IWaveProvider sourceProvider, int bitRate, Action<long> progressCallback)
         {
-            Debug.Assert(progressCallback != null);
+            if (progressCallback == null)
+                return;
 
             using (var writer = new LameMP3FileWriter(filename, sourceProvider.WaveFormat, bitRate))
             {

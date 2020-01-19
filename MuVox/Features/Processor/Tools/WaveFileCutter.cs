@@ -20,7 +20,8 @@ namespace TTech.Muvox.Features.Processor.Tools
         public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, Action<long> progressCallback)
         {
             Debug.Assert(progressCallback != null);
-
+            if (progressCallback == null)
+                return;
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
             {
@@ -38,6 +39,8 @@ namespace TTech.Muvox.Features.Processor.Tools
         public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo, Action<long> progressCallback)
         {
             Debug.Assert(progressCallback != null);
+            if (progressCallback == null)
+                return;
 
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))

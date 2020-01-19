@@ -6,7 +6,7 @@ namespace TTech.Muvox.Features.Processor.Tools
 {
     public class MaxSampleAggregator : ISampleProvider
     {
-        public event EventHandler<MaxSampleEventArgs> MaximumCalculated;
+        public event EventHandler<MaxSampleEventArgs>? MaximumCalculated;
         private float maxValue;
         private float minValue;
 

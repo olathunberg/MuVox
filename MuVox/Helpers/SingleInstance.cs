@@ -13,18 +13,17 @@ namespace Microsoft.Shell
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Runtime.Remoting;
     using System.Runtime.Remoting.Channels;
     using System.Runtime.Remoting.Channels.Ipc;
     using System.Runtime.Serialization.Formatters;
+    using System.Security;
     using System.Threading;
     using System.Windows;
     using System.Windows.Threading;
-    using System.Xml.Serialization;
-    using System.Security;
-    using System.Runtime.InteropServices;
-    using System.ComponentModel;
 
     internal enum WM
     {
@@ -231,12 +230,6 @@ namespace Microsoft.Shell
         /// IPC channel for communications.
         /// </summary>
         private static IpcServerChannel? channel;
-
-        /// <summary>
-        /// List of command line arguments for the application.
-        /// </summary>
-        private static IList<string> commandLineArgs;
-
         #endregion
 
         #region Public Properties
@@ -244,10 +237,7 @@ namespace Microsoft.Shell
         /// <summary>
         /// Gets list of command line arguments for the application.
         /// </summary>
-        public static IList<string> CommandLineArgs
-        {
-            get { return commandLineArgs; }
-        }
+        public static IList<string> CommandLineArgs { get; private set; } = new List<string>();
 
         #endregion
 
@@ -260,7 +250,7 @@ namespace Microsoft.Shell
         /// <returns>True if this is the first instance of the application.</returns>
         public static bool InitializeAsFirstInstance(string uniqueName)
         {
-            commandLineArgs = GetCommandLineArgs(uniqueName);
+            CommandLineArgs = GetCommandLineArgs(uniqueName);
 
             // Build unique application Id and the IPC channel name.
             string applicationIdentifier = uniqueName + Environment.UserName;
@@ -275,7 +265,7 @@ namespace Microsoft.Shell
             }
             else
             {
-                SignalFirstInstance(channelName, commandLineArgs);
+                SignalFirstInstance(channelName, CommandLineArgs);
             }
 
             return firstInstance;

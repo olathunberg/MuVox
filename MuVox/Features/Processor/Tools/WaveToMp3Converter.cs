@@ -15,6 +15,12 @@ namespace TTech.Muvox.Features.Processor.Tools
             Debug.Assert(addLogMessage != null);
             Debug.Assert(sourceLengthCallback != null);
             Debug.Assert(progressCallback != null);
+            if (addLogMessage == null)
+                return Task.FromResult(string.Empty);
+            if (sourceLengthCallback == null)
+                return Task.FromResult(string.Empty);
+            if (progressCallback == null)
+                return Task.FromResult(string.Empty);
 
             return Task.Run(() => DoConvert(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
