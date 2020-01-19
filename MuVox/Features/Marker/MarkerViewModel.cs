@@ -81,9 +81,11 @@ namespace TTech.Muvox.Features.Marker
         {
             get
             {
+                markers.CollectionChanged -= Markers_CollectionChanged;
                 markers.Clear();
                 foreach (var mark in MarkerHelper.GetMarkersFromFile(FileName))
                     markers.Add(mark);
+                markers.CollectionChanged += Markers_CollectionChanged;
 
                 return markers;
             }
@@ -96,7 +98,7 @@ namespace TTech.Muvox.Features.Marker
 
         private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            MarkerHelper.CreateFileFromList(FileName, Markers);
+            MarkerHelper.CreateFileFromList(FileName, markers);
         }
 
         private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
@@ -118,6 +120,10 @@ namespace TTech.Muvox.Features.Marker
             {
                 if (waveOut != null)
                     waveOut.Dispose();
+
+                if(markers != null)
+                    markers.CollectionChanged -= Markers_CollectionChanged;
+
 
                 disposedValue = true;
             }
