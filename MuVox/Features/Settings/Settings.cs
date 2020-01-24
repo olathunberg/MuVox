@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using NAudio.Wave;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
@@ -26,7 +27,7 @@ namespace TTech.Muvox.Features.Settings
             return true;
         }
 
-        
+
         [Category(PROCESSOR)]
         [DisplayName("Output path")]
         public string Processor_OutputPath { get; set; } = string.Empty;
@@ -47,6 +48,10 @@ namespace TTech.Muvox.Features.Settings
         [Category(RECORDER)]
         [DisplayName("Filename")]
         public string Recorder_FileName { get; set; } = "MuVox {0:yyyy-MM-dd HHmmss}";
+
+        [Category(RECORDER)]
+        [DisplayName("Output path")]
+        public string Recorder_OutputPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
 
         [Category(UX)]
         [DisplayName("Volumemeter, Peekmark fallbackspeed")]

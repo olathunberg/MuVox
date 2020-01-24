@@ -16,7 +16,7 @@ namespace TTech.Muvox.Features.Recorder
         #region Fields
         private WaveIn? waveIn;
         private WaveFileWriter? writer;
-        private string outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
+        private string outputFolder = string.Empty;
         private string? outputFilenameBase;
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
         #endregion
@@ -138,7 +138,7 @@ namespace TTech.Muvox.Features.Recorder
                 throw new InvalidDataException(nameof(waveIn));
             if (writer == null)
             {
-                outputFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
+                outputFolder = Settings.Recorder_OutputPath;
                 Directory.CreateDirectory(outputFolder);
                 outputFilenameBase = string.Format(Settings.Recorder_FileName, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
