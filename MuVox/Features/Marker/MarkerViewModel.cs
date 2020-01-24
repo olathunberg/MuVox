@@ -70,7 +70,9 @@ namespace TTech.Muvox.Features.Marker
         {
             get
             {
+                markers.CollectionChanged -= Markers_CollectionChanged;
                 markers.Clear();
+                markers.CollectionChanged += Markers_CollectionChanged;
                 return new NAudio.Wave.WaveFileReader(FileName);
             }
         }
