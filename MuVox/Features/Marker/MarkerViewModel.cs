@@ -59,8 +59,21 @@ namespace TTech.Muvox.Features.Marker
                             waveOut.Dispose();
                             waveOut = null;
                         }
+
+                        RaisePropertyChanged(() => PlayButtonText);
                     },
                     () => true));
+            }
+        }
+
+        public string PlayButtonText
+        {
+            get
+            {
+                if (waveOut == null)
+                    return "PLAY (Space)";
+                else
+                    return "STOP (Space)";
             }
         }
 
@@ -123,7 +136,7 @@ namespace TTech.Muvox.Features.Marker
                 if (waveOut != null)
                     waveOut.Dispose();
 
-                if(markers != null)
+                if (markers != null)
                     markers.CollectionChanged -= Markers_CollectionChanged;
 
 

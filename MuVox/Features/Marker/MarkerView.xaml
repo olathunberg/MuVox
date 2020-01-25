@@ -1,11 +1,8 @@
-﻿<UserControl xmlns:LogViewer="clr-namespace:TTech.Muvox.Features.LogViewer"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:converters="clr-namespace:TTech.Muvox.UI_Features.Converters"
              xmlns:WaveFormViewer="clr-namespace:TTech.Muvox.UI_Features.WaveFormViewer"
-             xmlns:main="clr-namespace:TTech.Muvox"
              x:Class="TTech.Muvox.Features.Marker.MarkerView"
              Focusable="True"
              d:DesignHeight="200"
@@ -50,6 +47,9 @@
                     <TextBlock Text="PROCESSING (F1)" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 </StackPanel>
             </Button>
+            <Button Grid.Column="1" Command="{Binding PlayFromCurrent}" Content="{Binding PlayButtonText}" />
+
+
         </Grid>
 
         <Grid Grid.Row="1" Margin="10,0,10,10">
