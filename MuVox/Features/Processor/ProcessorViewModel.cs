@@ -106,6 +106,9 @@ namespace TTech.Muvox.Features.Processor
             get { return MuVox.Properties.Settings.Default.RECORDER_LastFile; }
             set
             {
+                if (value == null)
+                    return;
+
                 MuVox.Properties.Settings.Default.RECORDER_LastFile = value;
                 MuVox.Properties.Settings.Default.Save();
                 RaisePropertyChanged();
@@ -228,7 +231,10 @@ namespace TTech.Muvox.Features.Processor
                 AddExtension = true,
                 DefaultExt = ".wav",
                 Multiselect = false,
-                Filter = "Wave|*.wav|MP3|*.mp3"
+                Filter = "Wave|*.wav|MP3|*.mp3",
+                InitialDirectory = string.IsNullOrEmpty(MuVox.Properties.Settings.Default.RECORDER_LastFile)
+                    ? null
+                    : System.IO.Path.GetDirectoryName( MuVox.Properties.Settings.Default.RECORDER_LastFile)
             };
 
             var dlgResult = fileDialog.ShowDialog();
