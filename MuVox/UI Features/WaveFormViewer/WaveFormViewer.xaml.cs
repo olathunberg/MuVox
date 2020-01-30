@@ -378,7 +378,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
         {
             timeMarks.Children.Clear();
 
-            foreach (var item in TimeMarkerHelper.CalcTimeMarkers(averageBytesPerSecond, (int)StartPosition, (int)ActualWidth, (int)ActualHeight, SamplesPerPixel, LineColor))
+            foreach (var item in TimeMarkerHelper.GenerateTimeMarkers(averageBytesPerSecond, (int)StartPosition, (int)ActualWidth, (int)ActualHeight, SamplesPerPixel, LineColor))
             {
                 timeMarks.Children.Add(item);
             }
