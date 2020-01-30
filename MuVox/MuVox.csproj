@@ -159,6 +159,8 @@
     </Compile>
     <Compile Include="UI Features\LoadingPanel\LoadingPanelModel.cs" />
     <Compile Include="UI Features\VolumeMeter\VolumeMeter.cs" />
+    <Compile Include="UI Features\Helpers\TimeHelper.cs" />
+    <Compile Include="UI Features\Helpers\TimeMarkerHelper.cs" />
     <Compile Include="UI Features\WaveFormViewer\WaveFormViewer.xaml.cs">
       <DependentUpon>WaveFormViewer.xaml</DependentUpon>
     </Compile>

@@ -123,6 +123,7 @@ namespace TTech.Muvox.Features.Marker
                 waveOut.PlaybackStopped -= WaveOut_PlaybackStopped;
                 waveOut.Dispose();
                 waveOut = null;
+                RaisePropertyChanged(() => PlayButtonText);
             }
         }
 

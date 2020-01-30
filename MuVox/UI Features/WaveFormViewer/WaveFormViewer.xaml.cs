@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using NAudio.Wave;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,8 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using GalaSoft.MvvmLight.Command;
-using NAudio.Wave;
+using TTech.MuVox.UI_Features.Helpers;
 
 namespace TTech.Muvox.UI_Features.WaveFormViewer
 {
@@ -133,7 +134,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                 }
                 else
                 {
-                    var mark = PositionToTime(x);
+                    var mark = TimeHelper.PositionToTime(x, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
 
                     MarkersCollection.Add((int)mark);
 
@@ -160,7 +161,9 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             if (element is Line line)
                 line.Stroke = Brushes.Red;
             if (dragStart != null)
-                SelectedPosition = PositionToTime(dragStart.Value.X);
+            {
+                SelectedPosition = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+            }
             e.Handled = true;
         }
 
@@ -186,7 +189,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                     RemoveMarker(line);
                     if (dragStart != null)
                     {
-                        var mark = (int)PositionToTime(dragStart.Value.X);
+                        var mark = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
                         RemoveFromMarkersCollection(mark);
                     }
                 }
@@ -194,7 +197,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                 {
                     if (dragStart != null)
                     {
-                        var mark = (int)PositionToTime(dragStart.Value.X);
+                        var mark = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
                         RemoveFromMarkersCollection(mark);
                     }
                 }
@@ -294,7 +297,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
-            SelectedPosition = PositionToTime(position);
+            SelectedPosition = TimeHelper.PositionToTime(position, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
 
             EnableDrag(newLine);
             markers.Children.Add(newLine);
@@ -357,14 +360,14 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
         private void DrawMarkers()
         {
-            var startTime = (int)PositionToTime(0);
-            var endTime = (int)PositionToTime((int)this.ActualWidth);
+            var startTime = TimeHelper.PositionToTime(0, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+            var endTime = TimeHelper.PositionToTime((int)this.ActualWidth, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
 
             markers.Children.Clear();
             foreach (var mark in MarkersCollection)
             {
                 if (mark <= endTime && mark >= startTime)
-                    AddNewMarker(TimeToPosition(mark));
+                    AddNewMarker(TimeHelper.TimeToPosition(mark, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel));
             }
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
@@ -373,63 +376,12 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
 
         private void DrawTimeMarkers()
         {
-            var startTime = (int)PositionToTime(0);
-            var endTime = (int)PositionToTime((int)this.ActualWidth);
-
-            var scale = (int)Math.Round((endTime - startTime) * 100 / this.ActualWidth, MidpointRounding.AwayFromZero) / 5;
-            scale -= scale % 10;
-
-            if (scale == 0)
-                scale += 1;
-
             timeMarks.Children.Clear();
-            var firstMark = scale - (startTime % scale);
-            for (int i = 0; i < (endTime - startTime) / scale; i++)
-                timeMarks.Children.Add(NewTimeMark(TimeToPosition(firstMark + i * scale), 5));
 
-            scale *= 10;
-            firstMark = scale - (startTime % scale);
-            for (int i = 0; i < (endTime - startTime) / scale; i++)
+            foreach (var item in TimeMarkerHelper.CalcTimeMarkers(averageBytesPerSecond, (int)StartPosition, (int)ActualWidth, (int)ActualHeight, SamplesPerPixel, LineColor))
             {
-                var x = TimeToPosition(firstMark + i * scale);
-                timeMarks.Children.Add(NewTimeLabel(x, GetTimeText((firstMark + i * scale) / scale)));
-                timeMarks.Children.Add(NewTimeMark(x, 10));
+                timeMarks.Children.Add(item);
             }
-        }
-
-        private string GetTimeText(int tenthsOfSecond)
-        {
-            if (tenthsOfSecond > 600)
-                return $"{tenthsOfSecond / 600}m";
-
-            return $"{tenthsOfSecond * 10}s";
-        }
-
-        private Label NewTimeLabel(int x, string content)
-        {
-            return new Label
-            {
-                Foreground = new SolidColorBrush(LineColor),
-                SnapsToDevicePixels = true,
-                Content = content,
-                Margin = new Thickness(x - 7, this.ActualHeight - 30, 0, 0),
-                Cursor = Cursors.None
-            };
-        }
-
-        private Line NewTimeMark(int x, int height)
-        {
-            return new Line
-            {
-                Stroke = new SolidColorBrush(LineColor),
-                SnapsToDevicePixels = true,
-                StrokeThickness = 1,
-                X1 = x,
-                Y1 = (int)this.ActualHeight - height,
-                X2 = x,
-                Y2 = (int)this.ActualHeight,
-                Cursor = Cursors.None
-            };
         }
 
         private void EnableDrag(UIElement element)
@@ -437,14 +389,6 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             element.MouseDown += MouseDown;
             element.MouseMove += MouseMove;
             element.MouseUp += MouseUp;
-        }
-
-        private double PositionToTime(double position)
-        {
-            if (averageBytesPerSecond == 0)
-                return 0;
-
-            return ((StartPosition + position * SamplesPerPixel) * 2) / (averageBytesPerSecond / 10);
         }
 
         private Task ReadStream()
@@ -487,18 +431,6 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
             else if (MarkersCollection.Contains(mark - 1))
                 MarkersCollection.Remove(mark - 1);
         }
-
-        private int TimeToPosition(int mark)
-        {
-            if (SamplesPerPixel == 0)
-                return 0;
-
-            return (int)((((mark * (averageBytesPerSecond / 10)) / 2) - StartPosition) / SamplesPerPixel);
-        }
-        #endregion
-
-        #region Public methods
-
         #endregion
 
         #region Eventhandlers
