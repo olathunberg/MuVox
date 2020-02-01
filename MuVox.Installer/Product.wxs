@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define MuVox_TargetDir=$(var.MuVox.TargetDir)?>
+  <Product Id="*" Name="MuVox" Language="1033" Version="1.5" Manufacturer="TTech Software" UpgradeCode="736f98df-9670-4023-af62-d6ff4751e4d3">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="MuVox.cab" EmbedCab="yes" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of MuVox is already installed." />
+
+    <Feature Id="ProductFeature" Title="MuVox.Installer" Level="1">
+      <ComponentGroupRef Id="ProgramFilesFolder_files" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+
+    <Icon Id="icon.ico" SourceFile="$(var.MuVox_TargetDir)\..\..\Resources\MuVox.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="TTech" Name="TTech" >
+          <Directory Id="INSTALLFOLDER" Name="MuVox" />
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="MuVox"/>
+      </Directory>
+    </Directory>
+
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="56763A43-8F58-43CF-A564-7F5A5AA92785">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="MuVox"
+                  Target="[#MuVox.exe]"
+                  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\[Manufacturer]\[ProductName]" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <ComponentGroup Id="ProgramFilesFolder_files" Directory="INSTALLFOLDER">
+      <Component Id="libmp3lame.32.dll" Guid="bd1ccff4-8b39-4154-b468-027af0a4e4b0">
+        <File Id="libmp3lame.32.dll" Name="libmp3lame.32.dll" Source="$(var.MuVox_TargetDir)libmp3lame.32.dll" />
+      </Component>
+      <Component Id="libmp3lame.64.dll" Guid="5a718602-b6fe-423a-959d-7d3545343ca3">
+        <File Id="libmp3lame.64.dll" Name="libmp3lame.64.dll" Source="$(var.MuVox_TargetDir)libmp3lame.64.dll" />
+      </Component>
+      <Component Id="MuVox.exe" Guid="4592c0af-4851-4a66-a63d-2c3e364fdd11">
+        <File Id="MuVox.exe" Name="MuVox.exe" Source="$(var.MuVox_TargetDir)MuVox.exe" />
+      </Component>
+      <Component Id="GalaSoft.MvvmLight.dll" Guid="97a31abe-4f4a-4b71-bbef-78f3997aa527">
+        <File Id="GalaSoft.MvvmLight.dll" Name="GalaSoft.MvvmLight.dll" Source="$(var.MuVox_TargetDir)GalaSoft.MvvmLight.dll" />
+      </Component>
+      <Component Id="Xceed.Wpf.Toolkit.dll" Guid="3b8628a0-2e90-43be-9643-e41752a9e20b">
+        <File Id="Xceed.Wpf.Toolkit.dll" Name="Xceed.Wpf.Toolkit.dll" Source="$(var.MuVox_TargetDir)Xceed.Wpf.Toolkit.dll" />
+      </Component>
+      <Component Id="MuVox.exe.config" Guid="32bb7638-5b21-487d-96ce-80f47f7d62df">
+        <File Id="MuVox.exe.config" Name="MuVox.exe.config" Source="$(var.MuVox_TargetDir)MuVox.exe.config" />
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Guid="fd08eb2d-6eed-4b82-9961-5bbc9fc3a029">
+        <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.MuVox_TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+      <Component Id="NAudio.Lame.dll" Guid="8bbb4eef-2d24-4fc7-9a7f-e7e4d8723342">
+        <File Id="NAudio.Lame.dll" Name="NAudio.Lame.dll" Source="$(var.MuVox_TargetDir)NAudio.Lame.dll" />
+      </Component>
+      <Component Id="GalaSoft.MvvmLight.Platform.dll" Guid="6d31c4dd-5637-4643-b811-014428dc310f">
+        <File Id="GalaSoft.MvvmLight.Platform.dll" Name="GalaSoft.MvvmLight.Platform.dll" Source="$(var.MuVox_TargetDir)GalaSoft.MvvmLight.Platform.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="39d6f646-c41d-495c-b0b9-f5cbe6970f97">
+        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.MuVox_TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="WriteableBitmapEx.Wpf.dll" Guid="5815747c-ec31-4fc9-bb41-e56238f1b371">
+        <File Id="WriteableBitmapEx.Wpf.dll" Name="WriteableBitmapEx.Wpf.dll" Source="$(var.MuVox_TargetDir)WriteableBitmapEx.Wpf.dll" />
+      </Component>
+      <Component Id="NAudio.dll" Guid="9ed9f8d7-57cc-4e6e-bf4c-b221b800f938">
+        <File Id="NAudio.dll" Name="NAudio.dll" Source="$(var.MuVox_TargetDir)NAudio.dll" />
+      </Component>
+    </ComponentGroup>
+  </Product>
+</Wix>
