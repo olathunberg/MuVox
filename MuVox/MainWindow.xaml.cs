@@ -17,10 +17,10 @@ namespace TTech.Muvox
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            if (DataContext is ICleanup cleanup)
-                cleanup.Cleanup();
-
             base.OnClosing(e);
+
+            if (!e.Cancel && DataContext is ICleanup cleanup)
+                cleanup.Cleanup();
         }
     }
 }

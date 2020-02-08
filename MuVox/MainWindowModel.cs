@@ -4,6 +4,7 @@ using TTech.Muvox.Features.Messages;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
+using System.ComponentModel;
 
 namespace TTech.Muvox
 {
@@ -42,6 +43,22 @@ namespace TTech.Muvox
                     if (action.GotoPage == Pages.Settings)
                         CurrentViewModel = viewModelLocator.Settings;
                 });
+        }
+
+        private RelayCommand<CancelEventArgs>? windowClosingCommand;
+        public ICommand WindowClosingCommand
+        {
+            get
+            {
+                return windowClosingCommand ?? (windowClosingCommand = new RelayCommand<CancelEventArgs> (
+                    args =>
+                    {
+                        if (viewModelLocator.Recorder.Recorder.RecordingState != Features.Recorder.RecordingState.Monitoring)
+                        {
+                            args.Cancel = true;
+                        }
+                    }));
+            }
         }
 
         private RelayCommand? showSettingsCommand;

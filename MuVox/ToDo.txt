@@ -1,7 +1,7 @@
 ﻿BUGS
 
 GUI
-- Ask before closing when recording
+x Ask before closing when recording
 - Display current soundsource
 
 SETTINGS
