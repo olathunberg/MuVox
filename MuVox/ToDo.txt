@@ -1,15 +1,11 @@
-﻿BUGGAR
+﻿BUGS
 
 GUI
-- Färgmarkera knappar, grön för start röd för stop osv?
+- Ask before closing when recording
+- Display current soundsource
 
-INSTÄLLNINGAR
+SETTINGS
 
-FUNKTION
-x Efterbehandling, normalisering
-- Efterbehandling, brusreducering
-- Efterbehandling, radera tomrum
-
-x Flytta all inspelningslogik till Recorder
-
-ÖVRIGT
+FUNCTIONS
+- Postproduction, noise reduction
+- Postproduction, remove silence
