@@ -5,6 +5,8 @@ using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Reflection;
+using TTech.MuVox.Helpers;
 
 namespace TTech.Muvox
 {
@@ -44,6 +46,8 @@ namespace TTech.Muvox
                         CurrentViewModel = viewModelLocator.Settings;
                 });
         }
+
+        public string TitleText => $"TTech - MuVox '{Assembly.GetExecutingAssembly().GetName().Version.ToString(2)} {Assembly.GetExecutingAssembly().GetLinkerTime().ToShortDateString()}'";
 
         private RelayCommand<CancelEventArgs>? windowClosingCommand;
         public ICommand WindowClosingCommand

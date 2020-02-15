@@ -6,7 +6,7 @@
         x:Class="TTech.Muvox.MainWindow"
         Style="{DynamicResource WindowStyle}"
         DataContext="{DynamicResource MainWindowModel}"
-        Title="TTech - MuVox"
+        Title="{Binding TitleText}"
         Width="684"
         Height="393"
         ResizeMode="NoResize" 

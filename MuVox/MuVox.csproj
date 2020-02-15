@@ -149,6 +149,7 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Helpers\HotKeyManager.cs" />
     <Compile Include="Helpers\SingleInstance.cs" />
+    <Compile Include="Helpers\VersionHelper.cs" />
     <Compile Include="MainWindowModel.cs" />
     <Compile Include="Resources\Logo.xaml.cs">
       <DependentUpon>Logo.xaml</DependentUpon>

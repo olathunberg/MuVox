@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <?define MuVox_TargetDir=$(var.MuVox.TargetDir)?>
-  <Product Id="*" Name="MuVox" Language="1033" Version="1.5" Manufacturer="TTech Software" UpgradeCode="736f98df-9670-4023-af62-d6ff4751e4d3">
+  <Product Id="*" Name="MuVox" Language="1033" Version="1.6" Manufacturer="TTech Software" UpgradeCode="736f98df-9670-4023-af62-d6ff4751e4d3">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <Media Id="1" Cabinet="MuVox.cab" EmbedCab="yes" />
 
