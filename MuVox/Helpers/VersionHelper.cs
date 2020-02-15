@@ -6,7 +6,7 @@ namespace TTech.MuVox.Helpers
 {
     public static class VersionHelper
     {
-        public static DateTime GetLinkerTime(this Assembly assembly, TimeZoneInfo target = null)
+        public static DateTime GetLinkerTime(this Assembly assembly, TimeZoneInfo? target = null)
         {
             var filePath = assembly.Location;
             const int c_PeHeaderOffset = 60;

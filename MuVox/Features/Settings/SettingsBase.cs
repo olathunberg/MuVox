@@ -14,7 +14,7 @@ namespace TTech.Muvox.Features.Settings
     /// <typeparam name="T">Class containing settings</typeparam>
     public static class SettingsBase<T> where T : GalaSoft.MvvmLight.ObservableObject, ISettings, new()
     {
-        private static T current;
+        private static T? current;
 
         public static T Current
         {

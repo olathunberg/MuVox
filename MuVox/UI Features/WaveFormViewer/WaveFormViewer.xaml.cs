@@ -277,7 +277,7 @@ namespace TTech.Muvox.UI_Features.WaveFormViewer
                 if (parent is T result)
                     return result;
             }
-            return null;
+            return default;
         }
 
         private void AddNewMarker(int position)
