@@ -1,6 +1,7 @@
 ﻿using NAudio.Lame;
 using NAudio.Wave;
 using System;
+using System.IO;
 
 namespace TTech.Muvox.Features.Processor.Tools
 {
@@ -36,6 +37,9 @@ namespace TTech.Muvox.Features.Processor.Tools
         {
             if (progressCallback == null)
                 return;
+
+            if (!Directory.Exists(Path.GetDirectoryName(filename)))
+                Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
             using (var writer = new LameMP3FileWriter(filename, sourceProvider.WaveFormat, bitRate))
             {
