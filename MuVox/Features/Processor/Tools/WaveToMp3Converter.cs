@@ -28,6 +28,9 @@ namespace TTech.Muvox.Features.Processor.Tools
         private string DoConvert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             var newFilename = Path.ChangeExtension(baseFilename, ".mp3");
+            if (!string.IsNullOrEmpty(Settings.Processor_OutputPath))
+                newFilename = Path.Combine(Settings.Processor_OutputPath, Path.GetFileName(newFilename));
+
             using (var reader = new WaveFileReader(baseFilename))
             {
                 sourceLengthCallback(reader.Length);
