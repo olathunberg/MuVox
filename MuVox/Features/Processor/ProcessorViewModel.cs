@@ -196,7 +196,8 @@ namespace TTech.Muvox.Features.Processor
                     LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
                     await waveToMp3Converter.Convert(item, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
 
-                    File.Delete(item);
+                    if (item != baseFileName)
+                        File.Delete(item);
                 }
             }
             catch (Exception ex)
@@ -234,7 +235,7 @@ namespace TTech.Muvox.Features.Processor
                 Filter = "Wave|*.wav|MP3|*.mp3",
                 InitialDirectory = string.IsNullOrEmpty(MuVox.Properties.Settings.Default.RECORDER_LastFile)
                     ? null
-                    : System.IO.Path.GetDirectoryName( MuVox.Properties.Settings.Default.RECORDER_LastFile)
+                    : System.IO.Path.GetDirectoryName(MuVox.Properties.Settings.Default.RECORDER_LastFile)
             };
 
             var dlgResult = fileDialog.ShowDialog();
