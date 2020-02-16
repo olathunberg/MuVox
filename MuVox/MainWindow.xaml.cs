@@ -1,7 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using System.Windows;
 
-namespace TTech.Muvox
+namespace TTech.MuVox
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

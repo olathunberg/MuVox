@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TTech.MuVox.UI_Features.Helpers;
 
-namespace TTech.Muvox.UI_Features.WaveFormViewer
+namespace TTech.MuVox.UI_Features.WaveFormViewer
 {
     /// <summary>
     /// Interaction logic for WaveFormViewer.xaml

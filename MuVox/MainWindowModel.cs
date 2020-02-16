@@ -1,6 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
-using TTech.Muvox.Features.Messages;
+using TTech.MuVox.Features.Messages;
 using System.Windows;
 using GalaSoft.MvvmLight.Command;
 using System.Windows.Input;
@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Reflection;
 using TTech.MuVox.Helpers;
 
-namespace TTech.Muvox
+namespace TTech.MuVox
 {
     public class MainWindowModel : ViewModelBase
     {

@@ -2,11 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:VolumeMeter="clr-namespace:TTech.Muvox.UI_Features.VolumeMeter"
-             xmlns:WaveFormViewer="clr-namespace:TTech.Muvox.UI_Features.WaveFormViewer"
-             xmlns:converters="clr-namespace:TTech.Muvox.UI_Features.Converters"
-             xmlns:converters2="clr-namespace:TTech.MuVox.UI_Features.Converters"
-             x:Class="TTech.Muvox.Features.Recorder.RecorderView"
+             xmlns:VolumeMeter="clr-namespace:TTech.MuVox.UI_Features.VolumeMeter"
+             xmlns:WaveFormViewer="clr-namespace:TTech.MuVox.UI_Features.WaveFormViewer"
+             xmlns:converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
+             x:Class="TTech.MuVox.Features.Recorder.RecorderView"
              xmlns:local="clr-namespace:TTech.MuVox.Features.Recorder"
              Focusable="True"
              d:DesignHeight="300"
@@ -23,7 +22,7 @@
                 <Setter Property="Margin" Value="10,10"/>
             </Style>
             <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
-            <converters2:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
             <local:BoolToRowSpanConverter x:Key="BoolToRowSpanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>

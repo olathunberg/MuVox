@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TTech.Muvox.Features.Settings
+namespace TTech.MuVox.Features.Settings
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml

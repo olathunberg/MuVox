@@ -2,7 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 
-namespace TTech.Muvox.Features.Settings
+namespace TTech.MuVox.Features.Settings
 {
     /// <summary>
     /// Provides a singleton with lazy loading of settings

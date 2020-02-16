@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TTech.Muvox.UI_Features.LoadingPanel
+namespace TTech.MuVox.UI_Features.LoadingPanel
 {
     /// <summary>
     /// Interaction logic for LoadingPanel.xaml

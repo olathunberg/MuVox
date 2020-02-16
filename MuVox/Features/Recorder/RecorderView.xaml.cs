@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TTech.Muvox.Features.Recorder
+namespace TTech.MuVox.Features.Recorder
 {
     /// <summary>
     /// Interaction logic for RecorderView.xaml

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTech.Muvox.Features.Recorder
+namespace TTech.MuVox.Features.Recorder
 {
     public enum RecordingState
     {

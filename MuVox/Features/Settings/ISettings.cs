@@ -1,4 +1,4 @@
-﻿namespace TTech.Muvox.Features.Settings
+﻿namespace TTech.MuVox.Features.Settings
 {
     public interface ISettings
     {

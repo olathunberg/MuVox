@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace TTech.Muvox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.Tools
 {
     public class Normalizer
     {

@@ -1,11 +1,11 @@
-﻿<UserControl xmlns:LoadingPanel="clr-namespace:TTech.Muvox.UI_Features.LoadingPanel"  
-             xmlns:LogViewer="clr-namespace:TTech.Muvox.Features.LogViewer"  
+﻿<UserControl xmlns:LoadingPanel="clr-namespace:TTech.MuVox.UI_Features.LoadingPanel"  
+             xmlns:LogViewer="clr-namespace:TTech.MuVox.Features.LogViewer"  
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:TTech.Muvox.UI_Features.Converters"
-             x:Class="TTech.Muvox.Features.Processor.ProcessorView" 
+             xmlns:converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
+             x:Class="TTech.MuVox.Features.Processor.ProcessorView" 
              Focusable="True"
              mc:Ignorable="d">
     <UserControl.Resources>

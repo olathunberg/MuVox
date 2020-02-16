@@ -9,7 +9,7 @@ using GalaSoft.MvvmLight;
 using NAudio.Lame;
 using NAudio.Wave;
 
-namespace TTech.Muvox.Features.Recorder
+namespace TTech.MuVox.Features.Recorder
 {
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {

@@ -4,7 +4,7 @@ using System.IO;
 using NAudio.Wave;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
-namespace TTech.Muvox.Features.Settings
+namespace TTech.MuVox.Features.Settings
 {
     public class Settings : GalaSoft.MvvmLight.ObservableObject, ISettings
     {

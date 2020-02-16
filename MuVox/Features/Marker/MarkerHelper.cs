@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace TTech.Muvox.Features.Marker
+namespace TTech.MuVox.Features.Marker
 {
     public static class MarkerHelper
     {

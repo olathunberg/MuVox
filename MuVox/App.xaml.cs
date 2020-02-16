@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows;
-using TTech.Muvox.Features.Messages;
+using TTech.MuVox.Features.Messages;
 
-namespace TTech.Muvox
+namespace TTech.MuVox
 {
     /// <summary>
     /// Interaction logic for App.xaml

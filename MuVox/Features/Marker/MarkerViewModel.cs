@@ -4,9 +4,9 @@ using NAudio.Wave;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using TTech.Muvox.Features.Messages;
+using TTech.MuVox.Features.Messages;
 
-namespace TTech.Muvox.Features.Marker
+namespace TTech.MuVox.Features.Marker
 {
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {

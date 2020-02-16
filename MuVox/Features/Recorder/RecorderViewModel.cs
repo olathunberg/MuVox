@@ -4,9 +4,9 @@ using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
-using TTech.Muvox.Features.Messages;
+using TTech.MuVox.Features.Messages;
 
-namespace TTech.Muvox.Features.Recorder
+namespace TTech.MuVox.Features.Recorder
 {
     public class RecorderViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {

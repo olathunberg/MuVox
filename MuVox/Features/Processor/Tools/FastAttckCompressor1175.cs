@@ -31,7 +31,7 @@
 using NAudio.Wave;
 using System;
 
-namespace TTech.Muvox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.Tools
 {
     public class FastAttackCompressor1175 : ISampleProvider
     {

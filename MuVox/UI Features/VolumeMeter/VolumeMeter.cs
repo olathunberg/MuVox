@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TTech.Muvox.Features.Settings;
+using TTech.MuVox.Features.Settings;
 
-namespace TTech.Muvox.UI_Features.VolumeMeter
+namespace TTech.MuVox.UI_Features.VolumeMeter
 {
     internal class VolumeMeter : FrameworkElement
     {

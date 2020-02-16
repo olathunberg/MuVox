@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Windows;
-using TTech.Muvox.UI_Features.Converters;
 using TTech.MuVox.UI_Features.Converters;
 
 namespace MuVox.Testing.UI_Features

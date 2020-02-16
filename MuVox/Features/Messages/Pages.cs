@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TTech.Muvox.Features.Messages
+namespace TTech.MuVox.Features.Messages
 {
     public enum Pages
     {

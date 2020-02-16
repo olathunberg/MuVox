@@ -66,7 +66,7 @@
     <ApplicationIcon>Resources\MuVox.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>TTech.Muvox.App</StartupObject>
+    <StartupObject>TTech.MuVox.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>A7BC22358B2EE1E38E8A5EB27906A062A5139CA1</ManifestCertificateThumbprint>

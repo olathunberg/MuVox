@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TTech.Muvox.Features.Marker
+namespace TTech.MuVox.Features.Marker
 {
     /// <summary>
     /// Interaction logic for MarkerView.xaml

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTech.Muvox.Features.Messages
+namespace TTech.MuVox.Features.Messages
 {
     public class GotoPageMessage
     {

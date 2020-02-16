@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TTech.Muvox.UI_Features.Converters
+namespace TTech.MuVox.UI_Features.Converters
 {
     public class TenthSecondToStringConverter : IValueConverter
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace TTech.Muvox.Features.LogViewer
+namespace TTech.MuVox.Features.LogViewer
 {
     public class LogViewerModel : GalaSoft.MvvmLight.ViewModelBase
     {

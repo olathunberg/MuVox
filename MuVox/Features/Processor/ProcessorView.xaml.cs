@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace TTech.Muvox.Features.Processor
+namespace TTech.MuVox.Features.Processor
 {
     /// <summary>
     /// Interaction logic for ProcessorView.xaml

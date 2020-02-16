@@ -2,9 +2,9 @@
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
-using TTech.Muvox.Features.Messages;
+using TTech.MuVox.Features.Messages;
 
-namespace TTech.Muvox.Features.Settings
+namespace TTech.MuVox.Features.Settings
 {
     public class SettingsViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {

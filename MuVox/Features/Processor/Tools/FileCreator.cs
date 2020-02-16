@@ -3,7 +3,7 @@ using NAudio.Wave;
 using System;
 using System.IO;
 
-namespace TTech.Muvox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.Tools
 {
     internal static class FileCreator
     {

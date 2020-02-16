@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TTech.Muvox.Features.LogViewer;
+using TTech.MuVox.Features.LogViewer;
 
 namespace MuVox.Testing.Features
 {

@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 
-namespace TTech.Muvox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.Tools
 {
     public class MaxSampleAggregator : ISampleProvider
     {

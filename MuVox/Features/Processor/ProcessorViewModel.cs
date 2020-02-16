@@ -6,10 +6,10 @@ using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
 using NAudio.Wave;
-using TTech.Muvox.Features.Messages;
-using TTech.Muvox.Features.Processor.Tools;
+using TTech.MuVox.Features.Messages;
+using TTech.MuVox.Features.Processor.Tools;
 
-namespace TTech.Muvox.Features.Processor
+namespace TTech.MuVox.Features.Processor
 {
     public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTech.Muvox.Features.LogViewer
+namespace TTech.MuVox.Features.LogViewer
 {
     public class LogEntryModel : GalaSoft.MvvmLight.ObservableObject
     {

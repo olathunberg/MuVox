@@ -1,10 +1,10 @@
 ﻿using System;
-using TTech.Muvox.Features.Marker;
-using TTech.Muvox.Features.Processor;
-using TTech.Muvox.Features.Recorder;
-using TTech.Muvox.Features.Settings;
+using TTech.MuVox.Features.Marker;
+using TTech.MuVox.Features.Processor;
+using TTech.MuVox.Features.Recorder;
+using TTech.MuVox.Features.Settings;
 
-namespace TTech.Muvox
+namespace TTech.MuVox
 {
     public class ViewModelLocator : IDisposable
     {

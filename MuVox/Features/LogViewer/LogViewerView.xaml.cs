@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TTech.Muvox.Features.LogViewer
+namespace TTech.MuVox.Features.LogViewer
 {
     /// <summary>
     /// Interaction logic for LogViewerView.xaml
