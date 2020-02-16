@@ -133,6 +133,7 @@
       <DependentUpon>ProcessorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Features\Processor\ProcessorViewModel.cs" />
+    <Compile Include="Features\Recorder\BoolToRowSpanConverter.cs" />
     <Compile Include="Features\Recorder\Recorder.cs" />
     <Compile Include="Features\Recorder\RecorderView.xaml.cs">
       <DependentUpon>RecorderView.xaml</DependentUpon>
@@ -154,6 +155,7 @@
     <Compile Include="Resources\Logo.xaml.cs">
       <DependentUpon>Logo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI Features\Converters\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="UI Features\Converters\TenthSecondToStringConverter.cs" />
     <Compile Include="UI Features\LoadingPanel\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>

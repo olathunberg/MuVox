@@ -118,6 +118,8 @@ namespace TTech.Muvox.Features.Recorder
         #region Properties
         public Recorder Recorder { get { return recorder; } }
 
+        public bool MonoDisplay => Settings.UX_MonoDisplay;
+
         public string StartButtonText
         {
             get

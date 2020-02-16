@@ -39,8 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Features\BoolToRowSpanConverterTests.cs" />
     <Compile Include="Features\LogViewerTests.cs" />
     <Compile Include="Features\MarkerHelperTests.cs" />
+    <Compile Include="UI Features\InverseBooleanToVisibilityConverterTests.cs" />
     <Compile Include="UI Features\TenthSecondToStringConverterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI Features\TimerMarkerHelperTests.cs" />

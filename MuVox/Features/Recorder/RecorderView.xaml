@@ -5,7 +5,9 @@
              xmlns:VolumeMeter="clr-namespace:TTech.Muvox.UI_Features.VolumeMeter"
              xmlns:WaveFormViewer="clr-namespace:TTech.Muvox.UI_Features.WaveFormViewer"
              xmlns:converters="clr-namespace:TTech.Muvox.UI_Features.Converters"
+             xmlns:converters2="clr-namespace:TTech.MuVox.UI_Features.Converters"
              x:Class="TTech.Muvox.Features.Recorder.RecorderView"
+             xmlns:local="clr-namespace:TTech.MuVox.Features.Recorder"
              Focusable="True"
              d:DesignHeight="300"
              DataContext="{Binding Recorder, Source={StaticResource ViewModelLocator}}"
@@ -21,6 +23,8 @@
                 <Setter Property="Margin" Value="10,10"/>
             </Style>
             <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
+            <converters2:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+            <local:BoolToRowSpanConverter x:Key="BoolToRowSpanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -62,16 +66,17 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10"  >
-                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" Margin="10,0"
+                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
                                          AccentColor="{StaticResource BorderBrushSelected}"
                                          Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding LeftAmplitude}"
                                          PeakMarkColor="{StaticResource BorderBrushSelected}"/>
-                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch"
+                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
                                          AccentColor="{StaticResource BorderBrushSelected}"
                                          Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding RightAmplitude}"
-                                         PeakMarkColor="{StaticResource BorderBrushSelected}"/>
+                                         PeakMarkColor="{StaticResource BorderBrushSelected}"
+                                         Visibility="{Binding MonoDisplay, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
             </StackPanel>
             <Grid Grid.Column="1" Margin="10,0,10,10" >
                 <Grid.RowDefinitions>
@@ -100,12 +105,14 @@
 
                 <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerLeft"
                                                    Grid.Row="1"
+                                                   Grid.RowSpan="{Binding MonoDisplay, Converter={StaticResource BoolToRowSpanConverter}}"
                                                    AddPoint="{Binding NewLeftPoint}"
                                                    LineColor="{StaticResource BorderBrushSelectedColor}" />
                 <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerRight"
                                                    Grid.Row="3"
                                                    AddPoint="{Binding NewRightPoint}"
-                                                   LineColor="{StaticResource BorderBrushSelectedColor}" />
+                                                   LineColor="{StaticResource BorderBrushSelectedColor}" 
+                                                   Visibility="{Binding MonoDisplay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
                 <ListBox Style="{StaticResource ListBox}" 
                             Grid.Column="2"

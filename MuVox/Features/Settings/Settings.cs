@@ -72,6 +72,11 @@ namespace TTech.Muvox.Features.Settings
         [Category(UX)]
         [DisplayName("Volumemeter, Num of samples")]
         public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
+
+
+        [Category(UX)]
+        [DisplayName("Display meters as mono")]
+        public bool UX_MonoDisplay { get; set; } = false;
     }
 
     public class WaveInDeviceItemsSource : IItemsSource
