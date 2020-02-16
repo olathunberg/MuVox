@@ -178,7 +178,7 @@ namespace TTech.Muvox.Features.Recorder
                 amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
 
-            amplitudesR.Enqueue(maxL);
+            amplitudesR.Enqueue(maxR);
             if (amplitudesR.Count > Settings.UX_VolumeMeter_NoSamples)
                 amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
