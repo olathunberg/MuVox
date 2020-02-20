@@ -1,13 +1,12 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using NAudio.Wave;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using NAudio.Lame;
-using NAudio.Wave;
 
 namespace TTech.MuVox.Features.Recorder
 {
@@ -115,10 +114,9 @@ namespace TTech.MuVox.Features.Recorder
 
         public ObservableCollection<int> Markers { get; set; } = new ObservableCollection<int>();
 
-        public int TenthOfSecondsRecorded
-        {
-            get { return GetTenthOfSecondsRecorded(); }
-        }
+        public int TenthOfSecondsRecorded => GetTenthOfSecondsRecorded();
+
+        public string DeviceName => WaveIn.GetCapabilities(waveIn.DeviceNumber).ProductName;
         #endregion
 
         #region Public methods

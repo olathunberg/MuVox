@@ -41,11 +41,6 @@ namespace TTech.MuVox.Features.Settings
         public uint Recorder_MinutesOnProgressbar { get; set; } = 200;
 
         [Category(RECORDER)]
-        [DisplayName("WaveInDevice")]
-        [ItemsSource(typeof(WaveInDeviceItemsSource))]
-        public int Recorder_WaveInDevice { get; set; } = 0;
-
-        [Category(RECORDER)]
         [DisplayName("Filename")]
         public string Recorder_FileName { get; set; } = "MuVox {0:yyyy-MM-dd HHmmss}";
 
@@ -77,18 +72,5 @@ namespace TTech.MuVox.Features.Settings
         [Category(UX)]
         [DisplayName("Display meters as mono")]
         public bool UX_MonoDisplay { get; set; } = false;
-    }
-
-    public class WaveInDeviceItemsSource : IItemsSource
-    {
-        public ItemCollection GetValues()
-        {
-            var items = new ItemCollection();
-
-            for (int waveInDevice = 0; waveInDevice < WaveIn.DeviceCount; waveInDevice++)
-                items.Add(waveInDevice, WaveIn.GetCapabilities(waveInDevice).ProductName);
-
-            return items;
-        }
     }
 }
