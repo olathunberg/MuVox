@@ -9,7 +9,7 @@
         Title="{Binding TitleText}"
         Width="684"
         Height="393"
-        ResizeMode="NoResize" 
+        ResizeMode="CanMinimize" 
         Icon="Resources/MuVox.ico" >
     <Window.Resources>
         <ResourceDictionary>

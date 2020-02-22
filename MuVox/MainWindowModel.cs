@@ -47,7 +47,7 @@ namespace TTech.MuVox
                 });
         }
 
-        public string TitleText => $"TTech - MuVox '{Assembly.GetExecutingAssembly().GetName().Version.ToString(2)} {Assembly.GetExecutingAssembly().GetLinkerTime().ToShortDateString()}'";
+        public string TitleText => $"TTech - MuVox {Assembly.GetExecutingAssembly().GetName().Version.ToString(2)} '{Assembly.GetExecutingAssembly().GetLinkerTime().ToShortDateString()}'";
 
         private RelayCommand<CancelEventArgs>? windowClosingCommand;
         public ICommand WindowClosingCommand
