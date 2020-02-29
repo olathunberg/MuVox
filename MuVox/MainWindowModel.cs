@@ -49,6 +49,8 @@ namespace TTech.MuVox
 
         public string TitleText => $"TTech - MuVox {Assembly.GetExecutingAssembly().GetName().Version.ToString(2)} '{Assembly.GetExecutingAssembly().GetLinkerTime().ToShortDateString()}'";
 
+        public bool CanStartRecording => viewModelLocator.Recorder.Recorder.RecordingState != Features.Recorder.RecordingState.Monitoring;
+
         private RelayCommand<CancelEventArgs>? windowClosingCommand;
         public ICommand WindowClosingCommand
         {
@@ -79,9 +81,39 @@ namespace TTech.MuVox
             }
         }
 
+        private RelayCommand? setMarkerCommand;
+        public ICommand SetMarkerCommand
+        {
+            get
+            {
+                return setMarkerCommand ?? (setMarkerCommand = new RelayCommand(
+                    () =>
+                    {
+                        Messenger.Default.Send(new SetMarkerMessage());
+                    },
+                    () => true));
+            }
+        }
+
+        private RelayCommand? startRecordningCommand;
+        public ICommand StartRecordningCommand
+        {
+            get
+            {
+                return startRecordningCommand ?? (startRecordningCommand = new RelayCommand(
+                    async () =>
+                    {
+                        Messenger.Default.Send(new StartRecordingMessage());
+                        await System.Threading.Tasks.Task.Delay(500);
+                        RaisePropertyChanged(() => CanStartRecording);
+                    },
+                    () => true));
+            }
+        }
+
         private void HotKeyManager_HotKeyPressed(object sender, Helpers.HotKeyEventArgs e)
         {
-            Messenger.Default.Send<SetMarkerMessage>(new SetMarkerMessage());
+            Messenger.Default.Send(new SetMarkerMessage());
         }
 
         public override void Cleanup()

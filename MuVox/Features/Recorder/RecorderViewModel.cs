@@ -36,6 +36,13 @@ namespace TTech.MuVox.Features.Recorder
                    if (SetMarker.CanExecute(null))
                        SetMarker.Execute(null);
                });
+
+            Messenger.Default.Register<StartRecordingMessage>(
+              this, (action) =>
+              {
+                  if (StartRecording.CanExecute(null))
+                      StartRecording.Execute(null);
+              });
         }
         #endregion
 
