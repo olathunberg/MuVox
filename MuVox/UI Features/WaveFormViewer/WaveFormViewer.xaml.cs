@@ -117,7 +117,8 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            if (streamData == null || IsLoading) return;
+
+            if (e == null || streamData == null || IsLoading) return;
 
             var x = (int)e.GetPosition(this).X;
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -253,7 +254,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
 
                 view.waveStream = newValue;
                 if (newValue != null)
-                    view.ReadStream().ContinueWith(a => view.Draw());
+                    view.ReadStream().ContinueWith(a => view.Draw(), TaskScheduler.FromCurrentSynchronizationContext());
             }));
 
         public ObservableCollection<int> MarkersCollection
@@ -355,7 +356,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                             DrawTimeMarkers();
                         });
                         IsLoading = false;
-                    });
+                    }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void DrawMarkers()

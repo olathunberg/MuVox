@@ -6,7 +6,7 @@ using TTech.MuVox.Features.Settings;
 
 namespace TTech.MuVox
 {
-    public class ViewModelLocator : IDisposable
+    public sealed class ViewModelLocator : IDisposable
     {
         public RecorderViewModel Recorder { get; } = new RecorderViewModel();
 
@@ -19,7 +19,7 @@ namespace TTech.MuVox
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
-        protected virtual void Dispose(bool disposing)
+        public void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
