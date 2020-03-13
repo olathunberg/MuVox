@@ -114,6 +114,7 @@
     <Compile Include="Features\LogViewer\LogViewerView.xaml.cs">
       <DependentUpon>LogViewerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Features\Marker\Marker.cs" />
     <Compile Include="Features\Marker\MarkerHelper.cs" />
     <Compile Include="Features\Marker\MarkerView.xaml.cs">
       <DependentUpon>MarkerView.xaml</DependentUpon>
@@ -320,7 +321,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\MuVox.ico" />
-    <Resource Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

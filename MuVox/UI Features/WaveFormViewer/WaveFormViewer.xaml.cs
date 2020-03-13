@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TTech.MuVox.Features.Marker;
 using TTech.MuVox.UI_Features.Helpers;
 
 namespace TTech.MuVox.UI_Features.WaveFormViewer
@@ -26,21 +27,13 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
     {
         private const string markerColor = "#FFFED262";
 
-        #region Fields
         private Point? dragStart = null;
-
         private bool isLoading;
-
         private int samplesPerPixel = 0;
-
         private short[]? streamData;
-
         private WaveStream? waveStream;
-
         private WriteableBitmap? bitmap;
-
         private int averageBytesPerSecond;
-        #endregion
 
         #region Properties
         public bool IsLoading
@@ -86,24 +79,47 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
 
         #region Commands
         private RelayCommand? deleteSelectedMarkerCommand;
-        public ICommand DeleteSelectedMarker
-        {
-            get
+        public ICommand DeleteSelectedMarker => deleteSelectedMarkerCommand ?? (deleteSelectedMarkerCommand = new RelayCommand(
+            () =>
             {
-                return deleteSelectedMarkerCommand ?? (deleteSelectedMarkerCommand = new RelayCommand(
-                    () =>
+                var selectedLine = markers.Children.OfType<Line>().FirstOrDefault(x => x.Stroke == Brushes.Red);
+                if (selectedLine != null)
+                {
+                    RemoveMarker(selectedLine);
+                    RemoveFromMarkersCollection(selectedLine.Tag as Marker);
+                    UpdateRemovalShadows();
+                }
+            },
+            () => true));
+
+        private RelayCommand? changeMarkerType;
+        public ICommand ChangeMarkerType => changeMarkerType ?? (changeMarkerType = new RelayCommand(
+            () =>
+            {
+                var selectedLine = markers.Children.OfType<Line>().FirstOrDefault(x => x.Stroke == Brushes.Red);
+                if (selectedLine != null)
+                {
+                    if (selectedLine.Tag is Marker marker)
                     {
-                        var selectedLine = markers.Children.OfType<Line>().FirstOrDefault(x => x.Stroke == Brushes.Red);
-                        if (selectedLine != null)
+                        switch (marker.Type)
                         {
-                            RemoveMarker(selectedLine);
-                            var mark = (int)SelectedPosition;
-                            RemoveFromMarkersCollection(mark);
+                            case Marker.MarkerType.Mark:
+                                marker.Type = Marker.MarkerType.RemoveBefore;
+                                break;
+                            case Marker.MarkerType.RemoveBefore:
+                                marker.Type = Marker.MarkerType.RemoveAfter;
+                                break;
+                            case Marker.MarkerType.RemoveAfter:
+                                marker.Type = Marker.MarkerType.Mark;
+                                break;
+                            default:
+                                break;
                         }
-                    },
-                    () => true));
-            }
-        }
+                        UpdateRemovalShadows();
+                    }
+                }
+            },
+            () => true));
         #endregion
 
         #region Events
@@ -111,7 +127,10 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         {
             var window = FindVisualAncestorOfType<UserControl>(this);
             if (window != null)
+            {
                 window.InputBindings.Add(new KeyBinding(DeleteSelectedMarker, Key.Delete, ModifierKeys.None));
+                window.InputBindings.Add(new KeyBinding(ChangeMarkerType, Key.F2, ModifierKeys.None));
+            }
         }
 
         protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -135,11 +154,10 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 }
                 else
                 {
-                    var mark = TimeHelper.PositionToTime(x, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+                    var mark = new Marker(PositionToTime(x), Marker.MarkerType.Mark);
 
-                    MarkersCollection.Add((int)mark);
-
-                    AddNewMarker(x);
+                    MarkersCollection.Add(mark);
+                    AddNewMarker(mark);
                 }
             }
             else if (e.RightButton == MouseButtonState.Pressed)
@@ -163,7 +181,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 line.Stroke = Brushes.Red;
             if (dragStart != null)
             {
-                SelectedPosition = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+                SelectedPosition = PositionToTime(dragStart.Value.X);
             }
             e.Handled = true;
         }
@@ -175,7 +193,14 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 var element = (UIElement)sender;
                 var p2 = args.GetPosition(this);
                 if (element is Line line)
+                {
                     line.X1 = line.X2 = p2.X;
+                    if (line.Tag is Marker marker)
+                    {
+                        marker.Time = PositionToTime(line.X1);
+                    }
+                    UpdateRemovalShadows();
+                }
             }
         }
 
@@ -185,21 +210,20 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
             {
                 element.ReleaseMouseCapture();
 
-                if (element is Line line && line.X1 >= this.ActualWidth)
+                if (element is Line line)
                 {
-                    RemoveMarker(line);
-                    if (dragStart != null)
+                    if (line.X1 >= this.ActualWidth || line.X1 < 0)
                     {
-                        var mark = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
-                        RemoveFromMarkersCollection(mark);
+                        if (dragStart != null)
+                        {
+                            RemoveMarker(line);
+                            RemoveFromMarkersCollection(line.Tag as Marker);
+                        }
                     }
-                }
-                else
-                {
-                    if (dragStart != null)
+                    else
                     {
-                        var mark = TimeHelper.PositionToTime(dragStart.Value.X, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
-                        RemoveFromMarkersCollection(mark);
+                        RemoveFromMarkersCollection(line.Tag as Marker);
+                        MarkersCollection.Add(line.Tag as Marker);
                     }
                 }
             }
@@ -233,7 +257,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
 
         // Using a DependencyProperty as the backing store for MarkersCollection.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MarkersCollectionProperty =
-            DependencyProperty.Register("MarkersCollection", typeof(ObservableCollection<int>), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
+            DependencyProperty.Register("MarkersCollection", typeof(ObservableCollection<Marker>), typeof(WaveFormViewer), new PropertyMetadata(null, (s, e) =>
             {
                 if (e.NewValue == null) return;
 
@@ -257,9 +281,9 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                     view.ReadStream().ContinueWith(a => view.Draw(), TaskScheduler.FromCurrentSynchronizationContext());
             }));
 
-        public ObservableCollection<int> MarkersCollection
+        public ObservableCollection<Marker> MarkersCollection
         {
-            get { return (ObservableCollection<int>)GetValue(MarkersCollectionProperty); }
+            get { return (ObservableCollection<Marker>)GetValue(MarkersCollectionProperty); }
             set { SetValue(MarkersCollectionProperty, value); }
         }
 
@@ -281,8 +305,9 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
             return default;
         }
 
-        private void AddNewMarker(int position)
+        private void AddNewMarker(Marker marker)
         {
+            var position = TimeToPosition(marker);
             var newLine = new Line
             {
                 Stroke = Brushes.Red,
@@ -292,16 +317,109 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 Y1 = 0,
                 X2 = position,
                 Y2 = (int)this.ActualHeight,
-                Cursor = Cursors.SizeWE
+                Cursor = Cursors.SizeWE,
+                Tag = marker
             };
 
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
 
-            SelectedPosition = TimeHelper.PositionToTime(position, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+            SelectedPosition = marker.Time;
 
             EnableDrag(newLine);
             markers.Children.Add(newLine);
+
+            AddRemovalShadow(marker);
+        }
+
+        private void UpdateRemovalShadows()
+        {
+            foreach (var line in markers.Children.OfType<Line>())
+            {
+                if (line.Tag is Marker marker)
+                {
+                    var shadow = removalShadows.Children.OfType<Rectangle>().FirstOrDefault(x => x.Tag == marker);
+                    if (shadow == null)
+                    {
+                        if (marker.Type != Marker.MarkerType.Mark)
+                        {
+                            AddRemovalShadow(marker);
+                        }
+                        continue;
+                    }
+
+                    shadow.Fill = CreateShadowFill(marker);
+
+                    Canvas.SetTop(shadow, 0);
+
+                    if (marker.Type == Marker.MarkerType.RemoveBefore)
+                    {
+                        shadow.Width = TimeToPosition(marker) - 1;
+
+                        var left = MarkersCollection.Where(x => x.Time < marker.Time).OrderBy(x => x.Time).LastOrDefault();
+                        if (left == null)
+                        {
+                            Canvas.SetLeft(shadow, 0);
+                        }
+                        else
+                        {
+                            Canvas.SetLeft(shadow, TimeToPosition(left));
+                            shadow.Width -= TimeToPosition(left);
+                        }
+                    }
+                    else if (marker.Type == Marker.MarkerType.RemoveAfter)
+                    {
+                        Canvas.SetLeft(shadow, TimeToPosition(marker) + 1);
+                        shadow.Width = (int)this.ActualWidth - TimeToPosition(marker) - 1;
+
+                        var right = MarkersCollection.Where(x => x.Time > marker.Time).OrderBy(x => x.Time).FirstOrDefault();
+                        if (right != null)
+                        {
+                            shadow.Width = TimeToPosition(right) - TimeToPosition(marker) - 1;
+                        }
+                    }
+                    else
+                    {
+                        RemoveShadow(shadow);
+                    }
+                }
+            }
+        }
+
+        private int TimeToPosition(Marker marker)
+        {
+            return TimeHelper.TimeToPosition(marker.Time, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+        }
+   
+        private int PositionToTime(double x)
+        {
+            return TimeHelper.PositionToTime(x, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+        }
+
+        private void AddRemovalShadow(Marker marker)
+        {
+            var shadow = new Rectangle
+            {
+                Fill = CreateShadowFill(marker),
+                StrokeThickness = 0,
+                SnapsToDevicePixels = true,
+                Height = (int)this.ActualHeight,
+                Opacity = 0.5f,
+
+                Tag = marker
+            };
+
+            removalShadows.Children.Add(shadow);
+
+            UpdateRemovalShadows();
+        }
+
+        private Brush CreateShadowFill(Marker marker)
+        {
+            if (marker.Type == Marker.MarkerType.RemoveAfter)
+                return new LinearGradientBrush(Colors.LightSeaGreen, Colors.Transparent, 0);
+            else
+                return new LinearGradientBrush(Colors.Transparent, Colors.LightSeaGreen, 0);
         }
 
         private void Draw()
@@ -361,14 +479,14 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
 
         private void DrawMarkers()
         {
-            var startTime = TimeHelper.PositionToTime(0, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
-            var endTime = TimeHelper.PositionToTime((int)this.ActualWidth, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
+            var startTime = PositionToTime(0);
+            var endTime = PositionToTime((int)this.ActualWidth);
 
             markers.Children.Clear();
             foreach (var mark in MarkersCollection)
             {
-                if (mark <= endTime && mark >= startTime)
-                    AddNewMarker(TimeHelper.TimeToPosition(mark, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel));
+                if (mark.Time <= endTime && mark.Time >= startTime)
+                    AddNewMarker(mark);
             }
             foreach (var item in markers.Children.OfType<Line>())
                 item.Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString(markerColor));
@@ -420,17 +538,22 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         private void RemoveMarker(Line marker)
         {
             if (markers.Children.Contains(marker))
+            {
                 markers.Children.Remove(marker);
+                RemoveShadow(marker.Tag as Rectangle);
+            }
         }
 
-        private void RemoveFromMarkersCollection(int mark)
+        private void RemoveShadow(Rectangle shadow)
+        {
+            if (removalShadows.Children.Contains(shadow))
+                removalShadows.Children.Remove(shadow);
+        }
+
+        private void RemoveFromMarkersCollection(Marker mark)
         {
             if (MarkersCollection.Contains(mark))
                 MarkersCollection.Remove(mark);
-            else if (MarkersCollection.Contains(mark + 1))
-                MarkersCollection.Remove(mark + 1);
-            else if (MarkersCollection.Contains(mark - 1))
-                MarkersCollection.Remove(mark - 1);
         }
         #endregion
 

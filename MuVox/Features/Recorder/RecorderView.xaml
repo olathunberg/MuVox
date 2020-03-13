@@ -124,11 +124,11 @@
                                                    Visibility="{Binding MonoDisplay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
                 <ListBox Style="{StaticResource ListBox}" 
-                            Grid.Column="2"
-                            Grid.Row="1" Grid.RowSpan="3" 
-                            ItemsSource="{Binding Recorder.Markers}"
-                            Background="Transparent"
-                            ScrollViewer.VerticalScrollBarVisibility="Visible">
+                         Grid.Column="2"
+                         Grid.Row="1" Grid.RowSpan="3" 
+                         ItemsSource="{Binding Recorder.Markers}"
+                         Background="Transparent"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Converter={StaticResource TenthSecondToStringConverter}, Mode=OneWay}" />

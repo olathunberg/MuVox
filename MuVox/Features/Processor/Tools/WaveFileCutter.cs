@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using TTech.MuVox.Features.Marker;
 
 namespace TTech.MuVox.Features.Processor.Tools
 {
@@ -59,33 +59,42 @@ namespace TTech.MuVox.Features.Processor.Tools
 
         private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            if (Marker.MarkerHelper.HasMarkerFile(baseFilename))
+            if (MarkerHelper.HasMarkerFile(baseFilename))
             {
                 using (var reader = new WaveFileReader(baseFilename))
                     sourceLengthCallback(reader.Length);
 
-                var markers = Marker.MarkerHelper.GetMarkersFromFile(baseFilename);
+                var markers = MarkerHelper
+                    .GetMarkersFromFile(baseFilename);
+
                 var newFiles = new ConcurrentBag<string>();
 
-                addLogMessage("Creating " + (markers.Count + 1) + " segments");
-
+                addLogMessage("Creating segments");
+                var fileIndex = 0;
                 Parallel.For(0, markers.Count + 1, i =>
                 {
+                    fileIndex++;
                     if (i == markers.Count)
                     {
-                        var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1] * 100);
+                        if (markers[i - 1].Type == Marker.Marker.MarkerType.RemoveAfter)
+                            return;
 
-                        var lastFilename = Path.ChangeExtension(baseFilename, "." + (markers.Count) + ".wav");
+                        var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1].Time * 100);
+
+                        var lastFilename = Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
                         CutWavFileToEnd(baseFilename, lastFilename, start2, progressCallback);
                         newFiles.Add(lastFilename);
                     }
                     else
                     {
-                        var marker = i == 0 ? 0 : markers[i - 1];
-                        var start = new TimeSpan(0, 0, 0, 0, marker * 100);
-                        var end = new TimeSpan(0, 0, 0, 0, markers[i] * 100);
+                        if (markers[i].Type == Marker.Marker.MarkerType.RemoveBefore || (i > 0 && markers[i - 1].Type == Marker.Marker.MarkerType.RemoveAfter))
+                            return;
 
-                        var newFilename = Path.ChangeExtension(baseFilename, "." + i + ".wav");
+                        var marker = i == 0 ? 0 : markers[i - 1].Time;
+                        var start = new TimeSpan(0, 0, 0, 0, marker * 100);
+                        var end = new TimeSpan(0, 0, 0, 0, markers[i].Time * 100);
+
+                        var newFilename = Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
                         CutWavFile(baseFilename, newFilename, start, end, progressCallback);
                         newFiles.Add(newFilename);
                     }
@@ -93,6 +102,7 @@ namespace TTech.MuVox.Features.Processor.Tools
 
                 return newFiles.ToList();
             }
+
             using (var reader = new WaveFileReader(baseFilename))
                 progressCallback(reader.Length);
 

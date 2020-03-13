@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using TTech.MuVox.Features.Marker;
 
 namespace TTech.MuVox.UI_Features.Converters
 {
@@ -11,7 +12,17 @@ namespace TTech.MuVox.UI_Features.Converters
         {
             if (value == null)
                 return string.Empty;
-            var secondsRecorded = (int)value;
+
+            int secondsRecorded = 0;
+            if (value is int intValue)
+            {
+                secondsRecorded = intValue;
+            }
+            if (value is Marker marker)
+            {
+                secondsRecorded = marker.Time;
+            }
+
             if (secondsRecorded < 0)
                 throw new ArgumentOutOfRangeException();
 

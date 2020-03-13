@@ -12,7 +12,7 @@ namespace TTech.MuVox.Features.Marker
             return File.Exists(markerFile);
         }
 
-        public static void AddMarkerToFile(string baseFilename, int mark)
+        public static void AddMarkerToFile(string baseFilename, Marker mark)
         {
             var markerFile = GetMarkerFilename(baseFilename);
 
@@ -28,25 +28,26 @@ namespace TTech.MuVox.Features.Marker
             }
         }
 
-        public static List<int> GetMarkersFromFile(string filename)
+        public static List<Marker> GetMarkersFromFile(string filename)
         {
             var markerFile = GetMarkerFilename(filename);
-            var markers = new List<int>();
-            if (!HasMarkerFile(filename)) return markers;
+            var markers = new List<Marker>();
+            if (!HasMarkerFile(filename))
+                return markers;
 
             using (var file = File.OpenText(markerFile))
             {
                 string? line = null;
                 while ((line = file.ReadLine()) != null)
                 {
-                    markers.Add(int.Parse(line));
+                    markers.Add(Marker.Parse(line));
                 }
             }
 
             return markers;
         }
 
-        public static void CreateFileFromList(string baseFilename, IList<int> markers)
+        public static void CreateFileFromList(string baseFilename, IList<Marker> markers)
         {
             var markerFile = GetMarkerFilename(baseFilename);
             using (var sw = File.CreateText(markerFile))

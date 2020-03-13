@@ -53,7 +53,7 @@ namespace TTech.MuVox.Features.Processor
                     {
                         Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Marker));
                     },
-                    () => !IsProcessing));
+                    () => !IsProcessing && !string.IsNullOrEmpty(FileName)));
             }
         }
 
@@ -66,7 +66,7 @@ namespace TTech.MuVox.Features.Processor
 #pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
                     async () => await ProcessFile(),
 #pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
-                    () => !IsProcessing));
+                    () => !IsProcessing && !string.IsNullOrEmpty(FileName)));
             }
         }
 

@@ -10,12 +10,12 @@ namespace TTech.MuVox.Features.Marker
 {
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        private readonly ObservableCollection<int> markers;
+        private readonly ObservableCollection<Marker> markers;
         private WaveOut? waveOut = null;
 
         public MarkerViewModel()
         {
-            markers = new ObservableCollection<int>();
+            markers = new ObservableCollection<Marker>();
             markers.CollectionChanged += Markers_CollectionChanged;
         }
 
@@ -92,7 +92,7 @@ namespace TTech.MuVox.Features.Marker
 
         public long SelectedPosition { get; set; }
 
-        public ObservableCollection<int> Markers
+        public ObservableCollection<Marker> Markers
         {
             get
             {

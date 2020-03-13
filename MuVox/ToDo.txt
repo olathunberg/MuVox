@@ -1,11 +1,2 @@
-﻿BUGS
-
-GUI
-x Ask before closing when recording
-- Display current soundsource
-
-SETTINGS
-
-FUNCTIONS
-- Postproduction, noise reduction
-- Postproduction, remove silence
+﻿- Trimma bakgrund till marker (skit i upplösning)
+- Lägg inte till filsuffix om bara en fil skall skapas
