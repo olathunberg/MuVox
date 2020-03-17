@@ -28,14 +28,14 @@ namespace TTech.MuVox.Features.Processor.Tools
         private string DoConvert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             var newFilename = Path.ChangeExtension(baseFilename, ".mp3");
-            if (!string.IsNullOrEmpty(Settings.Processor_OutputPath))
-                newFilename = Path.Combine(Settings.Processor_OutputPath, Path.GetFileName(newFilename));
-
+      
             using (var reader = new WaveFileReader(baseFilename))
             {
                 sourceLengthCallback(reader.Length);
                 FileCreator.CreateMp3File(newFilename, reader, Settings.Processor_Mp3Quality, progressCallback);
             }
+
+            addLogMessage($"Created {newFilename}");
 
             return newFilename;
         }

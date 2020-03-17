@@ -1,2 +1,3 @@
 ﻿- Trimma bakgrund till marker (skit i upplösning)
 - Lägg inte till filsuffix om bara en fil skall skapas
+- Om marker satts, visa tid i aktuell marker

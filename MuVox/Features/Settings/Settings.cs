@@ -27,7 +27,6 @@ namespace TTech.MuVox.Features.Settings
             return true;
         }
 
-
         [Category(PROCESSOR)]
         [DisplayName("Output path")]
         public string Processor_OutputPath { get; set; } = string.Empty;
@@ -35,6 +34,14 @@ namespace TTech.MuVox.Features.Settings
         [Category(PROCESSOR)]
         [DisplayName("MP3 Quality")]
         public int Processor_Mp3Quality { get; set; } = 160;
+
+        [Category(PROCESSOR)]
+        [DisplayName("Jingle Path")]
+        public string Jingle_Path { get; set; } = string.Empty;
+
+        [Category(PROCESSOR)]
+        [DisplayName("Jingle Adding")]
+        public JingleAdding Add_Jingle { get; set; } = JingleAdding.FirstSegment;
 
         [Category(RECORDER)]
         [DisplayName("Minutes on pregressbar")]

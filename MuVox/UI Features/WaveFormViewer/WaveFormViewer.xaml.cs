@@ -87,7 +87,9 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 {
                     RemoveMarker(selectedLine);
                     RemoveFromMarkersCollection(selectedLine.Tag as Marker);
-                    UpdateRemovalShadows();
+                    var shadow = removalShadows.Children.OfType<Rectangle>().FirstOrDefault(x => x.Tag == selectedLine.Tag);
+                    if (shadow != null)
+                        RemoveShadow(shadow);
                 }
             },
             () => true));
@@ -115,6 +117,8 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                             default:
                                 break;
                         }
+                        RemoveFromMarkersCollection(marker);
+                        MarkersCollection.Add(marker);
                         UpdateRemovalShadows();
                     }
                 }
@@ -198,6 +202,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                     if (line.Tag is Marker marker)
                     {
                         marker.Time = PositionToTime(line.X1);
+                        SelectedPosition = marker.Time;
                     }
                     UpdateRemovalShadows();
                 }
@@ -390,7 +395,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         {
             return TimeHelper.TimeToPosition(marker.Time, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);
         }
-   
+
         private int PositionToTime(double x)
         {
             return TimeHelper.PositionToTime(x, averageBytesPerSecond, (int)StartPosition, SamplesPerPixel);

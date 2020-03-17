@@ -12,6 +12,8 @@ namespace TTech.MuVox.Features.Processor.Tools
 {
     public class WaveFileCutter
     {
+        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+   
         public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
@@ -57,6 +59,14 @@ namespace TTech.MuVox.Features.Processor.Tools
             }
         }
 
+        private string GetTargetFileName(string baseFilename, int fileIndex)
+        {
+            if (!string.IsNullOrEmpty(Settings.Processor_OutputPath))
+                baseFilename = Path.Combine(Settings.Processor_OutputPath, Path.GetFileName(baseFilename));
+
+            return Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
+        }
+
         private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             if (MarkerHelper.HasMarkerFile(baseFilename))
@@ -81,7 +91,7 @@ namespace TTech.MuVox.Features.Processor.Tools
 
                         var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1].Time * 100);
 
-                        var lastFilename = Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
+                        var lastFilename = GetTargetFileName(baseFilename, fileIndex);
                         CutWavFileToEnd(baseFilename, lastFilename, start2, progressCallback);
                         newFiles.Add(lastFilename);
                     }
@@ -94,7 +104,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                         var start = new TimeSpan(0, 0, 0, 0, marker * 100);
                         var end = new TimeSpan(0, 0, 0, 0, markers[i].Time * 100);
 
-                        var newFilename = Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
+                        var newFilename = GetTargetFileName(baseFilename, fileIndex);
                         CutWavFile(baseFilename, newFilename, start, end, progressCallback);
                         newFiles.Add(newFilename);
                     }

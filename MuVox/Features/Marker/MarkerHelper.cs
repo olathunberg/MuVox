@@ -9,7 +9,7 @@ namespace TTech.MuVox.Features.Marker
         public static bool HasMarkerFile(string baseFilename)
         {
             var markerFile = GetMarkerFilename(baseFilename);
-            return File.Exists(markerFile);
+            return File.Exists(markerFile) && File.ReadAllLines(markerFile).Length > 0;
         }
 
         public static void AddMarkerToFile(string baseFilename, Marker mark)

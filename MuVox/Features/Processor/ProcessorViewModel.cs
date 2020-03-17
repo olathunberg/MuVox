@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -13,22 +14,18 @@ namespace TTech.MuVox.Features.Processor
 {
     public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
-        #region Fields
+
         private bool isProcessing;
         private long progressBarMaximum;
         private long progress;
         private long totalProgress;
         private long totalProgressMaximum;
-        #endregion
 
-        #region Constructors
         public ProcessorViewModel()
         {
             LogViewerModel = new LogViewer.LogViewerModel();
         }
-        #endregion
 
-        #region Commands
         private RelayCommand? recordCommand;
         public ICommand Record
         {
@@ -80,9 +77,7 @@ namespace TTech.MuVox.Features.Processor
                     () => !IsProcessing));
             }
         }
-        #endregion
 
-        #region Properties
         public bool IsProcessing
         {
             get { return isProcessing; }
@@ -136,16 +131,12 @@ namespace TTech.MuVox.Features.Processor
             get { return totalProgressMaximum; }
             set { totalProgressMaximum = value; RaisePropertyChanged(); }
         }
-        #endregion
 
-        #region Overrides
         public override void Cleanup()
         {
             base.Cleanup();
         }
-        #endregion
 
-        #region Private methods
         private async Task ProcessFile()
         {
             LogViewerModel.Add("Started processing");
@@ -157,6 +148,8 @@ namespace TTech.MuVox.Features.Processor
 
             try
             {
+                var processor = new Processor(LogViewerModel, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
+
                 TotalProgress = 0;
 
                 IsProcessing = true;
@@ -165,10 +158,10 @@ namespace TTech.MuVox.Features.Processor
                 var preConvert = Path.GetExtension(baseFileName) == ".mp3";
                 if (preConvert)
                     using (var reader = new Mp3FileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * 5;
+                        TotalProgressMaximum = reader.Length * 6;
                 else
                     using (var reader = new WaveFileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * 4;
+                        TotalProgressMaximum = reader.Length * 5;
 
                 if (preConvert)
                 {
@@ -178,27 +171,7 @@ namespace TTech.MuVox.Features.Processor
                     baseFileName = await mp3ToWave.Convert(baseFileName, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
                 }
 
-                LogViewerModel.Add("Splitting into tracks...");
-                var waveFileCutter = new WaveFileCutter();
-                var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
-                     baseFileName,
-                     LogViewerModel.Add,
-                     SetDetailProgressBarMaximum,
-                     UpdateDetailProgressBar);
-
-                var normalizer = new Normalizer();
-                var waveToMp3Converter = new WaveToMp3Converter();
-                foreach (var item in cuttedFiles)
-                {
-                    LogViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                    await normalizer.Normalize(item, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
-
-                    LogViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
-                    await waveToMp3Converter.Convert(item, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
-
-                    if (item != baseFileName)
-                        File.Delete(item);
-                }
+                await processor.Process(baseFileName);
             }
             catch (Exception ex)
             {
@@ -243,9 +216,6 @@ namespace TTech.MuVox.Features.Processor
             if (dlgResult.HasValue && dlgResult.Value)
                 FileName = fileDialog.FileName;
         }
-        #endregion
 
-        #region Events
-        #endregion
     }
 }

@@ -124,7 +124,9 @@
     <Compile Include="Features\Messages\Pages.cs" />
     <Compile Include="Features\Messages\SetMarkerMessage.cs" />
     <Compile Include="Features\Messages\StartRecordingMessage.cs" />
+    <Compile Include="Features\Processor\Processor.cs" />
     <Compile Include="Features\Processor\Tools\FileCreator.cs" />
+    <Compile Include="Features\Processor\Tools\WaveFileJoiner.cs" />
     <Compile Include="Features\Processor\Tools\WaveToMp3Converter.cs" />
     <Compile Include="Features\Processor\Tools\NormalizeProvider.cs" />
     <Compile Include="Features\Processor\Tools\FastAttckCompressor1175.cs" />
@@ -145,6 +147,7 @@
     <Compile Include="Features\Recorder\RecordingState.cs" />
     <Compile Include="Features\Recorder\RecorderViewModel.cs" />
     <Compile Include="Features\Settings\ISettings.cs" />
+    <Compile Include="Features\Settings\JingleAdding.cs" />
     <Compile Include="Features\Settings\SettingsViewModel.cs" />
     <Compile Include="Features\Settings\Settings.cs" />
     <Compile Include="Features\Settings\SettingsBase.cs" />
