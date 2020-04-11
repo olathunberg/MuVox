@@ -1,10 +1,6 @@
-﻿using GalaSoft.MvvmLight.Messaging;
-using Microsoft.Shell;
-using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Windows;
-using TTech.MuVox.Features.Messages;
+using Microsoft.Shell;
 
 namespace TTech.MuVox
 {
@@ -15,22 +11,19 @@ namespace TTech.MuVox
     {
         private const string Unique = "TTech.MuVox";
 
-        [STAThread]
-        public static void Main()
+        protected override void OnStartup(StartupEventArgs e)
         {
-            if (SingleInstance<App>.InitializeAsFirstInstance(Unique))
+            if (!SingleInstance<App>.InitializeAsFirstInstance(Unique))
             {
-                var application = new App();
-
-                Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
-
-                application.InitializeComponent();
-
-                application.Run();
-
-                // Allow single instance code to perform cleanup operations
-                SingleInstance<App>.Cleanup();
+                base.Shutdown();
             }
+            base.OnStartup(e);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+                SingleInstance<App>.Cleanup();
+            base.OnExit(e);
         }
 
         #region ISingleInstanceApp Members

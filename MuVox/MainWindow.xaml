@@ -10,8 +10,7 @@
         Title="{Binding TitleText}"
         Width="684"
         Height="393"
-        ResizeMode="CanMinimize" 
-        Icon="Resources/MuVox.ico" >
+        ResizeMode="CanMinimize" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
