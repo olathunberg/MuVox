@@ -7,8 +7,8 @@
     <Deterministic>false</Deterministic>
     <StartupObject>TTech.MuVox.App</StartupObject>
     <LangVersion>8</LangVersion>
-   <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-   <ApplicationIcon>Resources\MuVox.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>Resources\MuVox.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
