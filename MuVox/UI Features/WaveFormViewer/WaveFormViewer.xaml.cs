@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Command;
+﻿using GalaSoft.MvvmLight.CommandWpf;
 using NAudio.Wave;
 using System;
 using System.Collections.Concurrent;
@@ -86,7 +86,10 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 if (selectedLine != null)
                 {
                     RemoveMarker(selectedLine);
-                    RemoveFromMarkersCollection(selectedLine.Tag as Marker);
+                    if (selectedLine.Tag is Marker marker)
+                    {
+                        RemoveFromMarkersCollection(marker);
+                    }
                     var shadow = removalShadows.Children.OfType<Rectangle>().FirstOrDefault(x => x.Tag == selectedLine.Tag);
                     if (shadow != null)
                         RemoveShadow(shadow);
@@ -203,6 +206,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                     {
                         marker.Time = PositionToTime(line.X1);
                         SelectedPosition = marker.Time;
+                        line.X1 = line.X2 = (double)TimeToPosition(marker);
                     }
                     UpdateRemovalShadows();
                 }
@@ -215,20 +219,20 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
             {
                 element.ReleaseMouseCapture();
 
-                if (element is Line line)
+                if (element is Line line && line.Tag is Marker marker)
                 {
                     if (line.X1 >= this.ActualWidth || line.X1 < 0)
                     {
                         if (dragStart != null)
                         {
                             RemoveMarker(line);
-                            RemoveFromMarkersCollection(line.Tag as Marker);
+                            RemoveFromMarkersCollection(marker);
                         }
                     }
                     else
                     {
-                        RemoveFromMarkersCollection(line.Tag as Marker);
-                        MarkersCollection.Add(line.Tag as Marker);
+                        RemoveFromMarkersCollection(marker);
+                        MarkersCollection.Add(marker);
                     }
                 }
             }
@@ -300,7 +304,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         #endregion
 
         #region Private methods
-        private T FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
+        private T? FindVisualAncestorOfType<T>(DependencyObject d) where T : DependencyObject
         {
             for (var parent = VisualTreeHelper.GetParent(d); parent != null; parent = VisualTreeHelper.GetParent(parent))
             {
@@ -545,7 +549,10 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
             if (markers.Children.Contains(marker))
             {
                 markers.Children.Remove(marker);
-                RemoveShadow(marker.Tag as Rectangle);
+                if (marker.Tag is Rectangle rectangle)
+                {
+                    RemoveShadow(rectangle);
+                }
             }
         }
 

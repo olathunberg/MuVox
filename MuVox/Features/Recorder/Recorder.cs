@@ -13,7 +13,7 @@ namespace TTech.MuVox.Features.Recorder
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
-        private WaveIn? waveIn;
+        private WaveIn waveIn;
         private WaveFileWriter? writer;
         private string outputFolder = string.Empty;
         private string? outputFilenameBase;
@@ -174,7 +174,6 @@ namespace TTech.MuVox.Features.Recorder
             {
                 waveIn.StopRecording();
                 waveIn.Dispose();
-                waveIn = null;
             }
         }
 

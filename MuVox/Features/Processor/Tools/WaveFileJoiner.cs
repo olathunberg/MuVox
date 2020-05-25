@@ -15,7 +15,7 @@ namespace TTech.MuVox.Features.Processor.Tools
             if (files.Length < 2)
                 return string.Empty;
 
-            WaveFileWriter waveFileWriter = null;
+            WaveFileWriter? waveFileWriter = null;
 
             var newFilename = Path.GetFileNameWithoutExtension(Path.GetRandomFileName() + Path.GetExtension(files.First()));
             if (!string.IsNullOrEmpty(Settings.Processor_OutputPath))
@@ -60,7 +60,7 @@ namespace TTech.MuVox.Features.Processor.Tools
             }
             finally
             {
-                waveFileWriter.Dispose();
+                waveFileWriter?.Dispose();
             }
 
             return newFilename;
