@@ -26,7 +26,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                 return;
 
             EnsureOutputDirectory(outPath);
-            
+
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
             {
@@ -123,10 +123,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                     }
                 });
 
-                if (newFiles.Count() == 1)
-                {
-// Do rename
-                }
+                newFiles = EnsureSingleFileFilename(newFiles);
 
                 return newFiles.ToList();
             }
@@ -135,6 +132,26 @@ namespace TTech.MuVox.Features.Processor.Tools
                 progressCallback(reader.Length);
 
             return new List<string> { baseFilename };
+        }
+
+        private static ConcurrentBag<string> EnsureSingleFileFilename(ConcurrentBag<string> newFiles)
+        {
+            if (newFiles.Count() == 1)
+            {
+                var splitFilename = newFiles.First().Split('.');
+                var firstPart = splitFilename.Take(splitFilename.Count() - 2).Select(x => x).ToList();
+                firstPart.Add(splitFilename.Last());
+                var newFilename = string.Join(".", firstPart.ToArray());
+
+                if(File.Exists(newFilename))
+                {
+                    File.Delete(newFilename);
+                }
+                File.Move(newFiles.First(), newFilename);
+                newFiles = new ConcurrentBag<string>() { newFilename };
+            }
+
+            return newFiles;
         }
 
         private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, Action<long> progressCallback)

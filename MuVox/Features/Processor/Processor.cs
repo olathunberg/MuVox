@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using TTech.MuVox.Features.LogViewer;
 using TTech.MuVox.Features.Processor.Tools;
+using TTech.MuVox.Features.Settings;
 
 namespace TTech.MuVox.Features.Processor
 {
@@ -54,6 +55,10 @@ namespace TTech.MuVox.Features.Processor
 
                 if (AddJingle(i))
                 {
+                    if (string.IsNullOrEmpty(Settings.Jingle_Path))
+                    {
+                        throw new ArgumentException($"Jingle_Path must be when {nameof(JingleAdding)} is not {nameof(JingleAdding.None)}");
+                    }
                     logViewerModel.Add(string.Format("Adding jingle to segment {0}...", item));
 
                     string outFile = await waveFileJoiner.Join(new string[] { Settings.Jingle_Path, item }, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
