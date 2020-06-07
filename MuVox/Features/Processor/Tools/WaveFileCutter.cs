@@ -13,7 +13,7 @@ namespace TTech.MuVox.Features.Processor.Tools
     public class WaveFileCutter
     {
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
-   
+
         public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
@@ -24,6 +24,9 @@ namespace TTech.MuVox.Features.Processor.Tools
             Debug.Assert(progressCallback != null);
             if (progressCallback == null)
                 return;
+
+            EnsureOutputDirectory(outPath);
+            
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
             {
@@ -44,6 +47,8 @@ namespace TTech.MuVox.Features.Processor.Tools
             if (progressCallback == null)
                 return;
 
+            EnsureOutputDirectory(outPath);
+
             using (var reader = new WaveFileReader(inPath))
             using (var writer = new WaveFileWriter(outPath, reader.WaveFormat))
             {
@@ -56,6 +61,14 @@ namespace TTech.MuVox.Features.Processor.Tools
                 endPos -= endPos % reader.WaveFormat.BlockAlign;
 
                 CutWavFile(reader, writer, startPos, endPos, progressCallback);
+            }
+        }
+
+        private static void EnsureOutputDirectory(string outPath)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(outPath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(outPath));
             }
         }
 
@@ -109,6 +122,11 @@ namespace TTech.MuVox.Features.Processor.Tools
                         newFiles.Add(newFilename);
                     }
                 });
+
+                if (newFiles.Count() == 1)
+                {
+// Do rename
+                }
 
                 return newFiles.ToList();
             }
