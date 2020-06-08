@@ -108,10 +108,6 @@
                                FontSize="30" FontWeight="Bold"/>
                 </StackPanel>
 
-                <TextBlock Grid.Column="2" Text="Markers"
-                           VerticalAlignment="Bottom"
-                           Style="{StaticResource Header}" />
-
                 <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerLeft"
                                                    Grid.Row="1"
                                                    Grid.RowSpan="{Binding MonoDisplay, Converter={StaticResource BoolToRowSpanConverter}}"
@@ -123,11 +119,18 @@
                                                    LineColor="{StaticResource BorderBrushSelectedColor}" 
                                                    Visibility="{Binding MonoDisplay, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
+                <TextBlock Grid.Column="2" Text="Markers"
+                           VerticalAlignment="Bottom"
+                           Margin="2"
+                           Style="{StaticResource Header}" />
+
                 <ListBox Style="{StaticResource ListBox}" 
                          Grid.Column="2"
                          Grid.Row="1" Grid.RowSpan="3" 
+                         Margin="0,0,0,5"
                          ItemsSource="{Binding Recorder.Markers}"
-                         Background="Transparent"
+                         Background="{StaticResource BackgroundNormal}"
+                         Opacity=".2"
                          ScrollViewer.VerticalScrollBarVisibility="Visible">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
