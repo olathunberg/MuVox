@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 
@@ -14,19 +15,17 @@ namespace TTech.MuVox.Features.Settings
 
         public static Action Save => () => SettingsBase<Settings>.Save();
 
-        public string FILE_PATH
-        {
-            get { return @"Settings.json"; }
-        }
+        public string FILE_PATH => "Settings.json";
 
-        public bool AutoSave
-        {
-            get { return false; }
-        }
+        public bool AutoSave => false;
 
-        public bool Verify()
+        public IEnumerable<string> Verify()
         {
-            return true;
+            if (Add_Jingle != JingleAdding.None)
+            {
+                if (string.IsNullOrEmpty(Jingle_Path) || !File.Exists(Jingle_Path))
+                    yield return $"'{nameof(Jingle_Path)}' must be a valid file when '{nameof(Add_Jingle)}' is not '{nameof(JingleAdding.None)}'";
+            }
         }
 
         [Category(PROCESSOR)]
@@ -43,7 +42,7 @@ namespace TTech.MuVox.Features.Settings
 
         [Category(PROCESSOR)]
         [DisplayName("Jingle Adding")]
-        public JingleAdding Add_Jingle { get; set; } = JingleAdding.FirstSegment;
+        public JingleAdding Add_Jingle { get; set; } = JingleAdding.None;
 
         [Category(RECORDER)]
         [DisplayName("Minutes on pregressbar")]

@@ -1,4 +1,6 @@
-﻿namespace TTech.MuVox.Features.Settings
+﻿using System.Collections.Generic;
+
+namespace TTech.MuVox.Features.Settings
 {
     public interface ISettings
     {
@@ -6,6 +8,6 @@
 
         bool AutoSave { get; }
 
-        bool Verify();
+        IEnumerable<string> Verify();
     }
 }

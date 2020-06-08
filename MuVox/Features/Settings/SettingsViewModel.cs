@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
@@ -9,6 +11,9 @@ namespace TTech.MuVox.Features.Settings
     public class SettingsViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
         private RelayCommand? recordCommand;
+
+        public Settings Settings { get { return SettingsBase<Settings>.Current; } }
+
         public ICommand Record
         {
             get
@@ -16,7 +21,13 @@ namespace TTech.MuVox.Features.Settings
                 return recordCommand ?? (recordCommand = new RelayCommand(
                     () =>
                     {
-                        SettingsBase<Settings>.Save();
+                        Settings.Save();
+                        var validation = Settings.Verify().ToList();
+                        if (validation.Any())
+                        {
+                            MessageBox.Show(string.Join(Environment.NewLine, validation), "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            return;
+                        }
                         Messenger.Default.Send(new GotoPageMessage(Pages.Recorder));
                     },
                     () => true));
