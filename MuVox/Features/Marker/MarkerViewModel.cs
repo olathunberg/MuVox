@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TTech.MuVox.Features.Messages;
+using TTech.MuVox.Features.Settings;
 
 namespace TTech.MuVox.Features.Marker
 {
@@ -27,7 +28,7 @@ namespace TTech.MuVox.Features.Marker
                 return processCommand ?? (processCommand = new RelayCommand(
                     () =>
                     {
-                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Processor));
+                        Messenger.Default.Send(new GotoPageMessage(Pages.Processor));
                     },
                     () => true));
             }
@@ -45,7 +46,7 @@ namespace TTech.MuVox.Features.Marker
                         {
                             waveOut = new WaveOut();
 
-                            var reader = new NAudio.Wave.WaveFileReader(FileName)
+                            var reader = new WaveFileReader(FileName)
                             {
                                 CurrentTime = TimeSpan.FromSeconds(SelectedPosition / 10.0)
                             };
@@ -77,7 +78,7 @@ namespace TTech.MuVox.Features.Marker
             }
         }
 
-        public string FileName { get { return MuVox.Properties.Settings.Default.RECORDER_LastFile; } }
+        public string FileName { get { return Settings.Settings.Current.Recorder_LastFile; } }
 
         public WaveStream WaveStream
         {
@@ -86,7 +87,7 @@ namespace TTech.MuVox.Features.Marker
                 markers.CollectionChanged -= Markers_CollectionChanged;
                 markers.Clear();
                 markers.CollectionChanged += Markers_CollectionChanged;
-                return new NAudio.Wave.WaveFileReader(FileName);
+                return new WaveFileReader(FileName);
             }
         }
 

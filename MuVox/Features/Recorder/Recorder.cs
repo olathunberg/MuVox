@@ -1,12 +1,12 @@
-﻿using GalaSoft.MvvmLight;
-using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using GalaSoft.MvvmLight;
+using NAudio.Wave;
 
 namespace TTech.MuVox.Features.Recorder
 {
@@ -17,7 +17,6 @@ namespace TTech.MuVox.Features.Recorder
         private WaveFileWriter? writer;
         private string outputFolder = string.Empty;
         private string? outputFilenameBase;
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
         #endregion
 
         #region Constructors
@@ -136,13 +135,13 @@ namespace TTech.MuVox.Features.Recorder
                 throw new InvalidDataException(nameof(waveIn));
             if (writer == null)
             {
-                outputFolder = Settings.Recorder_OutputPath;
+                outputFolder = Settings.Settings.Current.Recorder_OutputPath;
                 Directory.CreateDirectory(outputFolder);
-                outputFilenameBase = string.Format(Settings.Recorder_FileName, DateTime.Now);
+                outputFilenameBase = string.Format(Settings.Settings.Current.Recorder_FileName, DateTime.Now);
                 writer = new WaveFileWriter(Path.Combine(outputFolder, outputFilenameBase) + ".wav", waveIn.WaveFormat);
 
-                MuVox.Properties.Settings.Default.RECORDER_LastFile = writer.Filename;
-                MuVox.Properties.Settings.Default.Save();
+                Settings.Settings.Current.Recorder_LastFile = writer.Filename;
+                Settings.Settings.Save();
 
                 Markers.Clear();
             }

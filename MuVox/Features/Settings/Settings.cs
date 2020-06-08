@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using NAudio.Wave;
-using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TTech.MuVox.Features.Settings
 {
@@ -11,6 +9,10 @@ namespace TTech.MuVox.Features.Settings
         private const string PROCESSOR = "Processor";
         private const string RECORDER = "Recorder";
         private const string UX = "UX";
+
+        public static Settings Current => SettingsBase<Settings>.Current;
+
+        public static Action Save => () => SettingsBase<Settings>.Save();
 
         public string FILE_PATH
         {
@@ -75,9 +77,11 @@ namespace TTech.MuVox.Features.Settings
         [DisplayName("Volumemeter, Num of samples")]
         public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
 
-
         [Category(UX)]
         [DisplayName("Display meters as mono")]
         public bool UX_MonoDisplay { get; set; } = false;
+
+        [Browsable(false)]
+        public string Recorder_LastFile { get; set; } = string.Empty;
     }
 }

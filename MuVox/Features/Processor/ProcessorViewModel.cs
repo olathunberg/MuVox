@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -98,14 +97,14 @@ namespace TTech.MuVox.Features.Processor
 
         public string FileName
         {
-            get { return MuVox.Properties.Settings.Default.RECORDER_LastFile; }
+            get { return Settings.Settings.Current.Recorder_LastFile; }
             set
             {
                 if (value == null)
                     return;
 
-                MuVox.Properties.Settings.Default.RECORDER_LastFile = value;
-                MuVox.Properties.Settings.Default.Save();
+                Settings.Settings.Current.Recorder_LastFile = value;
+                Settings.Settings.Save();
                 RaisePropertyChanged();
             }
         }
@@ -206,9 +205,9 @@ namespace TTech.MuVox.Features.Processor
                 DefaultExt = ".wav",
                 Multiselect = false,
                 Filter = "Wave|*.wav|MP3|*.mp3",
-                InitialDirectory = string.IsNullOrEmpty(MuVox.Properties.Settings.Default.RECORDER_LastFile)
+                InitialDirectory = string.IsNullOrEmpty(Settings.Settings.Current.Recorder_LastFile)
                     ? null
-                    : System.IO.Path.GetDirectoryName(MuVox.Properties.Settings.Default.RECORDER_LastFile)
+                    : Path.GetDirectoryName(Settings.Settings.Current.Recorder_LastFile)
             };
 
             var dlgResult = fileDialog.ShowDialog();

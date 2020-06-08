@@ -8,8 +8,6 @@ namespace TTech.MuVox.Features.Settings
 {
     public class SettingsViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        public Settings Settings { get { return SettingsBase<Settings>.Current; } }
-
         private RelayCommand? recordCommand;
         public ICommand Record
         {
