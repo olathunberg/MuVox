@@ -1,2 +1,1 @@
-﻿- Lägg inte till filsuffix om bara en fil skall skapas
-- Om marker satts, visa tid i aktuell marker
+﻿- Om marker satts, visa tid i aktuell marker
