@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using GalaSoft.MvvmLight;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace TTech.MuVox.Features.Recorder
@@ -29,6 +30,11 @@ namespace TTech.MuVox.Features.Recorder
             waveIn.RecordingStopped += WaveIn_RecordingStopped;
             waveIn.BufferMilliseconds = 15;
             waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
+
+            var enumerator = new MMDeviceEnumerator();
+            var wasapi = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).FirstOrDefault(x => x.FriendlyName.StartsWith(WaveIn.GetCapabilities(0).ProductName));
+            DeviceName = wasapi.FriendlyName;
+            Format = waveIn.WaveFormat.ToString();
 
             if (!(bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
                 waveIn.StartRecording();
@@ -115,7 +121,9 @@ namespace TTech.MuVox.Features.Recorder
 
         public int TenthOfSecondsRecorded => GetTenthOfSecondsRecorded();
 
-        public string DeviceName => WaveIn.GetCapabilities(waveIn.DeviceNumber).ProductName;
+        public string DeviceName { get; private set; }
+
+        public string Format { get; private set; }
         #endregion
 
         #region Public methods
@@ -175,6 +183,7 @@ namespace TTech.MuVox.Features.Recorder
                 waveIn.Dispose();
             }
         }
+        #endregion
 
         #region IDisposable Support
         private bool disposedValue;
@@ -201,7 +210,6 @@ namespace TTech.MuVox.Features.Recorder
             // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
             Dispose(true);
         }
-        #endregion
         #endregion
     }
 }

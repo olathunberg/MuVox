@@ -94,11 +94,12 @@
                 <StackPanel Grid.ColumnSpan="3" 
                             Orientation="Vertical"
                             HorizontalAlignment="Right">
-                    <TextBlock Style="{StaticResource defaultTextBlock}" 
-                               Text="Recordingdevice"/>
                     <TextBlock Style="{StaticResource defaultTextBlock}"
                                HorizontalAlignment="Right"
                                Text="{Binding Recorder.DeviceName}"/>
+                    <TextBlock Style="{StaticResource defaultTextBlock}"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Recorder.Format}"/>
                 </StackPanel>
 
                 <StackPanel>
