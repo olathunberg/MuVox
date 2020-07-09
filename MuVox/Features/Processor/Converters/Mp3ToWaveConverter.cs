@@ -9,29 +9,29 @@ namespace TTech.MuVox.Features.Processor.Converters
 {
     public class Mp3ToWaveConverter
     {
-        public Task<string> Convert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public Task<string> Convert(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
             Debug.Assert(addLogMessage != null);
-            Debug.Assert(sourceLengthCallback != null);
-            Debug.Assert(progressCallback != null);
+            Debug.Assert(progressMaximum != null);
+            Debug.Assert(progress != null);
 
             if (addLogMessage == null)
                 return Task.FromResult(string.Empty);
-            if (sourceLengthCallback == null) 
+            if (progressMaximum == null) 
                 return Task.FromResult(string.Empty);
-            if (progressCallback == null) 
+            if (progress == null) 
                 return Task.FromResult(string.Empty);
 
-            return Task.Run(() => DoConvert(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
+            return Task.Run(() => DoConvert(baseFilename, addLogMessage, progressMaximum, progress));
         }
 
-        private string DoConvert(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        private string DoConvert(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
             var newFilename = Path.ChangeExtension(baseFilename, ".wav");
             using (var reader = new Mp3FileReader(baseFilename))
             {
-                sourceLengthCallback(reader.Length);
-                FileCreator.CreateWaveFile(newFilename, reader, progressCallback);
+                progressMaximum.Report(reader.Length);
+                FileCreator.CreateWaveFile(newFilename, reader, progress);
             }
 
             return newFilename;

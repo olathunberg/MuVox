@@ -14,15 +14,15 @@ namespace TTech.MuVox.Features.Processor.Tools
     {
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
 
-        public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
-            return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
+            return Task.Run<List<string>>(() => DoCutWavFileFromMarkersFile(baseFilename, addLogMessage, progressMaximum, progress));
         }
 
-        public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, Action<long> progressCallback)
+        public void CutWavFileToEnd(string inPath, string outPath, TimeSpan cutFrom, IProgress<long> progress)
         {
-            Debug.Assert(progressCallback != null);
-            if (progressCallback == null)
+            Debug.Assert(progress != null);
+            if (progress == null)
                 return;
 
             EnsureOutputDirectory(outPath);
@@ -37,14 +37,14 @@ namespace TTech.MuVox.Features.Processor.Tools
 
                 var endPos = (int)reader.Length;
 
-                CutWavFile(reader, writer, startPos, endPos, progressCallback);
+                CutWavFile(reader, writer, startPos, endPos, progress);
             }
         }
 
-        public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo, Action<long> progressCallback)
+        public void CutWavFile(string inPath, string outPath, TimeSpan cutFrom, TimeSpan cutTo, IProgress<long> progress)
         {
-            Debug.Assert(progressCallback != null);
-            if (progressCallback == null)
+            Debug.Assert(progress != null);
+            if (progress == null)
                 return;
 
             EnsureOutputDirectory(outPath);
@@ -60,7 +60,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                 int endPos = (int)cutTo.TotalMilliseconds * bytesPerMillisecond;
                 endPos -= endPos % reader.WaveFormat.BlockAlign;
 
-                CutWavFile(reader, writer, startPos, endPos, progressCallback);
+                CutWavFile(reader, writer, startPos, endPos, progress);
             }
         }
 
@@ -80,12 +80,12 @@ namespace TTech.MuVox.Features.Processor.Tools
             return Path.ChangeExtension(baseFilename, "." + fileIndex + ".wav");
         }
 
-        private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
             if (MarkerHelper.HasMarkerFile(baseFilename))
             {
                 using (var reader = new WaveFileReader(baseFilename))
-                    sourceLengthCallback(reader.Length);
+                    progressMaximum.Report(reader.Length);
 
                 var markers = MarkerHelper
                     .GetMarkersFromFile(baseFilename);
@@ -105,7 +105,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                         var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1].Time * 100);
 
                         var lastFilename = GetTargetFileName(baseFilename, fileIndex);
-                        CutWavFileToEnd(baseFilename, lastFilename, start2, progressCallback);
+                        CutWavFileToEnd(baseFilename, lastFilename, start2, progress);
                         newFiles.Add(lastFilename);
                     }
                     else
@@ -118,7 +118,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                         var end = new TimeSpan(0, 0, 0, 0, markers[i].Time * 100);
 
                         var newFilename = GetTargetFileName(baseFilename, fileIndex);
-                        CutWavFile(baseFilename, newFilename, start, end, progressCallback);
+                        CutWavFile(baseFilename, newFilename, start, end, progress);
                         newFiles.Add(newFilename);
                     }
                 });
@@ -129,7 +129,7 @@ namespace TTech.MuVox.Features.Processor.Tools
             }
 
             using (var reader = new WaveFileReader(baseFilename))
-                progressCallback(reader.Length);
+                progress.Report(reader.Length);
 
             return new List<string> { baseFilename };
         }
@@ -154,7 +154,7 @@ namespace TTech.MuVox.Features.Processor.Tools
             return newFiles;
         }
 
-        private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, Action<long> progressCallback)
+        private void CutWavFile(WaveFileReader reader, WaveFileWriter writer, int startPos, int endPos, IProgress<long> progress)
         {
             reader.Position = startPos;
             byte[] buffer = new byte[1024];
@@ -170,7 +170,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                         writer.Write(buffer, 0, bytesRead);
                     }
 
-                    progressCallback(bytesRead);
+                    progress.Report(bytesRead);
                 }
             }
         }

@@ -147,7 +147,9 @@ namespace TTech.MuVox.Features.Processor
 
             try
             {
-                var processor = new Processor(LogViewerModel, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
+                var progressMaximum = new Progress<long>(SetDetailProgressBarMaximum);
+                var progress = new Progress<long>(UpdateDetailProgressBar);
+                var processor = new Processor(LogViewerModel, progressMaximum, progress);
 
                 TotalProgress = 0;
 
@@ -156,18 +158,22 @@ namespace TTech.MuVox.Features.Processor
 
                 var preConvert = Path.GetExtension(baseFileName) == ".mp3";
                 if (preConvert)
-                    using (var reader = new Mp3FileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * 6;
+                {
+                    using var reader = new Mp3FileReader(baseFileName);
+                    TotalProgressMaximum = reader.Length * 6;
+                }
                 else
-                    using (var reader = new WaveFileReader(baseFileName))
-                        TotalProgressMaximum = reader.Length * 5;
+                {
+                    using var reader = new WaveFileReader(baseFileName);
+                    TotalProgressMaximum = reader.Length * 5;
+                }
 
                 if (preConvert)
                 {
                     LogViewerModel.Add("Converting input MP3 to wave...");
 
                     var mp3ToWave = new Mp3ToWaveConverter();
-                    baseFileName = await mp3ToWave.Convert(baseFileName, LogViewerModel.Add, SetDetailProgressBarMaximum, UpdateDetailProgressBar);
+                    baseFileName = await mp3ToWave.Convert(baseFileName, LogViewerModel.Add, progressMaximum, progress);
                 }
 
                 await processor.Process(baseFileName);
