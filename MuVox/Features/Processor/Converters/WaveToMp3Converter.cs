@@ -3,8 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using NAudio.Wave;
+using TTech.MuVox.Features.Processor.Tools;
 
-namespace TTech.MuVox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.Converters
 {
     public class WaveToMp3Converter
     {

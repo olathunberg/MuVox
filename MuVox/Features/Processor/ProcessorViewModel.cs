@@ -7,13 +7,13 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
 using NAudio.Wave;
 using TTech.MuVox.Features.Messages;
+using TTech.MuVox.Features.Processor.Converters;
 using TTech.MuVox.Features.Processor.Tools;
 
 namespace TTech.MuVox.Features.Processor
 {
     public class ProcessorViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
-
         private bool isProcessing;
         private long progressBarMaximum;
         private long progress;

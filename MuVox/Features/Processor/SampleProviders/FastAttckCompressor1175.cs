@@ -31,11 +31,10 @@
 using NAudio.Wave;
 using System;
 
-namespace TTech.MuVox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.SampleProviders
 {
     public class FastAttackCompressor1175 : ISampleProvider
     {
-        #region Fields
         private readonly ISampleProvider sourceProvider;
 
         private readonly float autogain = 0;
@@ -50,8 +49,6 @@ namespace TTech.MuVox.Features.Processor.Tools
         private float cthresh;
         private float cthreshv;
         private float db2log;
-        private float gr_meter;
-        private float gr_meter_decay;
         private float log2db;
         private float makeup;
         private float makeupv;
@@ -67,50 +64,38 @@ namespace TTech.MuVox.Features.Processor.Tools
         private float rundb;
         private float runmax;
         private float runratio;
-        #endregion
 
         public FastAttackCompressor1175(ISampleProvider sourceProvider)
         {
             this.sourceProvider = sourceProvider;
             SampleRate = 44100;
 
-            Threshold = new Setting<float>(0, -60, 0, 0.1f, "Threshold (dB)");
-            Ratio = new Setting<int>(1, 0, 3, 1, "Ratio");
-            Gain = new Setting<float>(0, -20, 20, 0.1f, "Gain");
-            Attack = new Setting<int>(20, 20, 2000, 10, "Attack time (usec.)");
-            Release = new Setting<int>(250, 20, 1000, 1, "Release time (msec.)");
-            Mix = new Setting<float>(100, 0, 100, 0.1f, "Mix%");
+            Threshold = 0; // min -60, max 0
+            Ratio = 1; // min 0, max 3
+            Gain = 0; // min -20, max 20
+            Attack = 20; // min 20, max 2000
+            Release = 250; // min 20, max 1000
+            Mix = 100; // min 0, max 100
 
             Init();
         }
 
-        #region Properties
-        public Setting<int> Attack { get; set; }
+        public int Attack { get; set; }
 
-        public Setting<float> Gain { get; set; }
+        public float Gain { get; set; }
 
-        public Setting<float> Mix { get; set; }
+        public float Mix { get; set; }
 
-        public string Name
-        {
-            get { return ""; }
-        }
+        public int Ratio { get; set; }
 
-        public Setting<int> Ratio { get; set; }
-
-        public Setting<int> Release { get; set; }
+        public int Release { get; set; }
 
         public float SampleRate { get; set; }
 
-        public Setting<float> Threshold { get; set; }
+        public float Threshold { get; set; }
 
-        public WaveFormat WaveFormat
-        {
-            get { return sourceProvider.WaveFormat; }
-        }
-        #endregion
+        public WaveFormat WaveFormat => sourceProvider.WaveFormat;
 
-        #region Public methods
         public void Init()
         {
             log2db = 8.6858896380650365530225783783321f; // 20 / ln(10)
@@ -126,10 +111,8 @@ namespace TTech.MuVox.Features.Processor.Tools
             atcoef = (float)Math.Exp(-1 / (attime * SampleRate));
             relcoef = (float)Math.Exp(-1 / (reltime * SampleRate));
             mix = 1;
-            gr_meter = 1;
-            gr_meter_decay = (float)Math.Exp(1 / (1 * SampleRate));
 
-            switch (Ratio.Value)
+            switch (Ratio)
             {
                 case 0: ratio = 4; break;
                 case 1: ratio = 8; break;
@@ -146,18 +129,27 @@ namespace TTech.MuVox.Features.Processor.Tools
                     break;
             }
 
-            cthresh = (Math.Abs(softknee) > double.Epsilon) ? (Threshold.Value - 3) : Threshold.Value;
+            cthresh = (Math.Abs(softknee) > double.Epsilon) ? (Threshold - 3) : Threshold;
             cthreshv = (float)Math.Exp(cthresh * db2log);
-            makeup = Gain.Value;
+            makeup = Gain;
             makeupv = (float)Math.Exp((makeup + autogain) * db2log);
-            attime = Attack.Value / 1000000f;
-            reltime = Release.Value / 1000f;
+            attime = Attack / 1000000f;
+            reltime = Release / 1000f;
             atcoef = (float)Math.Exp(-1 / (attime * SampleRate));
             relcoef = (float)Math.Exp(-1 / (reltime * SampleRate));
-            mix = Mix.Value / 100;
+            mix = Mix / 100;
+        }
+      
+        public int Read(float[] buffer, int offset, int count)
+        {
+            int read = sourceProvider.Read(buffer, offset, count);
+
+            Process(buffer, offset, read);
+
+            return read;
         }
 
-        public void OnSample(ref float left, ref float right)
+        private void OnSample(ref float left, ref float right)
         {
             float ospl0 = left;
             float ospl1 = right;
@@ -197,38 +189,13 @@ namespace TTech.MuVox.Features.Processor.Tools
             runmax = maxover + relcoef * (runmax - maxover);  // highest peak for setting att/rel decays in reltime
             maxover = runmax;
 
-            if (grv < gr_meter)
-                gr_meter = grv;
-            else
-            {
-                gr_meter *= gr_meter_decay;
-                if (gr_meter > 1)
-                    gr_meter = 1;
-            }
-
             left *= grv * makeupv * mix;
             right *= grv * makeupv * mix;
 
             left += ospl0 * (1 - mix);
             right += ospl1 * (1 - mix);
         }
-
-        public int Read(float[] buffer, int offset, int count)
-        {
-            int read = sourceProvider.Read(buffer, offset, count);
-
-            Process(buffer, offset, read);
-
-            return read;
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-        #endregion
-
-        #region Private methods
+        
         private void Process(float[] buffer, int offset, int count)
         {
             int samples = count;
@@ -253,6 +220,5 @@ namespace TTech.MuVox.Features.Processor.Tools
                 }
             }
         }
-        #endregion
     }
 }

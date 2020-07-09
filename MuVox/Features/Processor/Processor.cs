@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using TTech.MuVox.Features.LogViewer;
+using TTech.MuVox.Features.Processor.Converters;
 using TTech.MuVox.Features.Processor.Tools;
 using TTech.MuVox.Features.Settings;
 
@@ -13,7 +14,7 @@ namespace TTech.MuVox.Features.Processor
         private readonly Action<long> setDetailProgressBarMaximum;
         private readonly Action<long> updateDetailProgressBar;
 
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings { get { return SettingsBase<Settings.Settings>.Current; } }
 
         public Processor(LogViewerModel logViewerModel,
             Action<long> setDetailProgressBarMaximum,
@@ -44,14 +45,15 @@ namespace TTech.MuVox.Features.Processor
                  setDetailProgressBarMaximum,
                  updateDetailProgressBar);
 
-            var normalizer = new Normalizer();
+            var simpleDsp = new SimpleDsp();
             var waveToMp3Converter = new WaveToMp3Converter();
             var waveFileJoiner = new WaveFileJoiner();
+
             for (var i = 0; i < cuttedFiles.Count; i++)
             {
                 var item = cuttedFiles[i];
                 logViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                await normalizer.Normalize(item, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
+                await simpleDsp.Process(item, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
 
                 if (AddJingle(i))
                 {
@@ -85,11 +87,11 @@ namespace TTech.MuVox.Features.Processor
         {
             switch (Settings.Add_Jingle)
             {
-                case Features.Settings.JingleAdding.None:
+                case JingleAdding.None:
                     return false;
-                case Features.Settings.JingleAdding.FirstSegment:
+                case JingleAdding.FirstSegment:
                     return segmentNumber == 0;
-                case Features.Settings.JingleAdding.AllSegments:
+                case JingleAdding.AllSegments:
                     return true;
                 default:
                     return false;

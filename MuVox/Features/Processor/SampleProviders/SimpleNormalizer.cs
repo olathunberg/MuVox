@@ -1,31 +1,17 @@
 ﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TTech.MuVox.Features.Processor.Tools
+namespace TTech.MuVox.Features.Processor.SampleProviders
 {
-    public class NormalizeProvider : ISampleProvider
+    public class SimpleNormalizer : ISampleProvider
     {
-        #region Fields
         private readonly ISampleProvider sourceProvider;
-
         private readonly float ratio;
-        #endregion
 
-        public NormalizeProvider(ISampleProvider sourceProvider, float ratio, float currentMax)
+        public SimpleNormalizer(ISampleProvider sourceProvider, float ratio, float currentMax)
         {
             this.sourceProvider = sourceProvider;
             this.ratio = ratio / currentMax;
             SampleRate = 44100;
-        }
-
-        #region Properties
-        public string Name
-        {
-            get { return ""; }
         }
 
         public float SampleRate { get; set; }
@@ -34,9 +20,7 @@ namespace TTech.MuVox.Features.Processor.Tools
         {
             get { return sourceProvider.WaveFormat; }
         }
-        #endregion
 
-        #region Public methods
         public void OnSample(ref float left, ref float right)
         {
             left *= ratio;
@@ -52,13 +36,6 @@ namespace TTech.MuVox.Features.Processor.Tools
             return read;
         }
 
-        public override string ToString()
-        {
-            return Name;
-        }
-        #endregion
-
-        #region Private methods
         private void Process(float[] buffer, int offset, int count)
         {
             int samples = count;
@@ -81,6 +58,5 @@ namespace TTech.MuVox.Features.Processor.Tools
                     buffer[offset++] = sampleRight;
             }
         }
-        #endregion
     }
 }

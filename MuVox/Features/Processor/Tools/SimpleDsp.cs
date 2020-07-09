@@ -4,17 +4,18 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using TTech.MuVox.Features.Processor.SampleProviders;
 
 namespace TTech.MuVox.Features.Processor.Tools
 {
-    public class Normalizer
+    public class SimpleDsp
     {
-        public Task Normalize(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public Task Process(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
-            return Task.Run(() => DoNormalize(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
+            return Task.Run(() => DoProcess(baseFilename, addLogMessage, sourceLengthCallback, progressCallback));
         }
 
-        private void DoNormalize(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        private void DoProcess(string baseFilename, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
         {
             Debug.Assert(addLogMessage != null);
             Debug.Assert(sourceLengthCallback != null);
@@ -29,8 +30,8 @@ namespace TTech.MuVox.Features.Processor.Tools
 
             addLogMessage("Running compressor...");
 
-            float maxValue = 0f;
             var tempFile = Path.ChangeExtension(baseFilename, ".temp");
+            var maxValue = 0f;
             // Try to remove files, use some memory stream
             using (var reader = new WaveFileReader(baseFilename))
             {
@@ -39,14 +40,14 @@ namespace TTech.MuVox.Features.Processor.Tools
                 var sampleReader = new Pcm16BitToSampleProvider(reader);
                 var compressor = new FastAttackCompressor1175(sampleReader);
                 var aggregator = new MaxSampleAggregator(compressor);
-                //SimpleCompressorStream
-                aggregator.MaximumCalculated += (s, a) => maxValue = Math.Max(maxValue, a.MaxSample);
                 var sampleWriter = new SampleToWaveProvider16(aggregator);
+
                 FileCreator.CreateWaveFile(tempFile, sampleWriter, progressCallback);
+                maxValue = aggregator.MaxValue;
+                addLogMessage("Found max: " + aggregator.MaxValue.ToString());
             }
 
             File.Delete(baseFilename);
-            addLogMessage("Found max: " + maxValue.ToString());
 
             addLogMessage("Normalizing...");
             using (var reader = new WaveFileReader(tempFile))
@@ -54,8 +55,9 @@ namespace TTech.MuVox.Features.Processor.Tools
                 sourceLengthCallback(reader.Length);
 
                 var sampleReader = new Pcm16BitToSampleProvider(reader);
-                var normalizer = new NormalizeProvider(sampleReader, .98f, maxValue);
+                var normalizer = new SimpleNormalizer(sampleReader, .98f, maxValue);
                 var sampleWriter = new SampleToWaveProvider16(normalizer);
+
                 FileCreator.CreateWaveFile(baseFilename, sampleWriter, progressCallback);
             }
 
