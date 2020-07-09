@@ -70,15 +70,11 @@ namespace TTech.MuVox.Features.Settings
 
         [Category(UX)]
         [DisplayName("Volumemeter, MaxDb")]
-        public float UX_VolumeMeter_MaxDb { get; set; } = 8;
+        public float UX_VolumeMeter_MaxDb { get; set; } = 2;
 
         [Category(UX)]
         [DisplayName("Volumemeter, Num of samples")]
         public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
-
-        [Category(UX)]
-        [DisplayName("Display meters as mono")]
-        public bool UX_MonoDisplay { get; set; } = false;
 
         [Browsable(false)]
         public string Recorder_LastFile { get; set; } = string.Empty;

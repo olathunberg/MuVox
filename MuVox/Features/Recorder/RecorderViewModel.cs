@@ -13,6 +13,7 @@ namespace TTech.MuVox.Features.Recorder
         #region Fields
         private float rightAmplitude;
         private float leftAmplitude;
+        private (float, float) newPoint;
         private readonly Recorder recorder;
 
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
@@ -92,8 +93,6 @@ namespace TTech.MuVox.Features.Recorder
         }
 
         private RelayCommand? processCommand;
-        private (float, float) newLeftPoint;
-        private (float, float) newRightPoint;
         public ICommand Process
         {
             get
@@ -125,8 +124,6 @@ namespace TTech.MuVox.Features.Recorder
         #region Properties
         public Recorder Recorder { get { return recorder; } }
 
-        public bool MonoDisplay => Settings.UX_MonoDisplay;
-
         public string StartButtonText
         {
             get
@@ -152,16 +149,10 @@ namespace TTech.MuVox.Features.Recorder
             set { leftAmplitude = value; RaisePropertyChanged(); }
         }
 
-        public (float, float) NewLeftPoint
+        public (float, float) NewPoint
         {
-            get { return newLeftPoint; }
-            set { newLeftPoint = value; RaisePropertyChanged(); }
-        }
-
-        public (float, float) NewRightPoint
-        {
-            get { return newRightPoint; }
-            set { newRightPoint = value; RaisePropertyChanged(); }
+            get { return newPoint; }
+            set { newPoint = value; RaisePropertyChanged(); }
         }
 
         public uint ProgressBarMaximum { get; set; }
@@ -179,8 +170,7 @@ namespace TTech.MuVox.Features.Recorder
         #region Events
         private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
         {
-            NewRightPoint = (maxR, minR);
-            NewLeftPoint = (maxL, minL);
+            NewPoint = ((maxL + maxR) / 2.0f, (minL + minL) / 2.0f);
 
             amplitudesL.Enqueue(maxL);
             if (amplitudesL.Count > Settings.UX_VolumeMeter_NoSamples)
