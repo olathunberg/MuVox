@@ -8,22 +8,14 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
 {
     public partial class LiveWaveFormViewer : UserControl
     {
-        #region Fields
         private readonly int blankZone = 2;
-        private int renderPosition;
         private readonly double xScale = 2;
-        private double yScale = 40;
-        private double yTranslate = 40;
-        private System.Windows.Media.Imaging.WriteableBitmap? bitmap;
+        private WriteableBitmap? bitmap;
         private int[] maxPoints = Array.Empty<int>();
         private int[] minPoints = Array.Empty<int>();
-
-        #endregion
-
-        #region Properties
-        public Color LineColor { get; set; }
-        public Color AccentColor { get; set; } = Colors.Red;
-        #endregion
+        private int renderPosition;
+        private int yScale = 40;
+        private int yTranslate = 40;
 
         public LiveWaveFormViewer()
         {
@@ -31,85 +23,24 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
             InitializeComponent();
         }
 
-        #region Events
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            renderPosition = 0;
-            maxPoints = new int[(int)(ActualWidth / xScale)];
-            minPoints = new int[(int)(ActualWidth / xScale)];
+        public Color AccentColor { get; set; } = Colors.Red;
 
-            this.yTranslate = this.ActualHeight / 2;
-            this.yScale = this.ActualHeight / 2;
-
-            bitmap = null;
-            bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
-            bitmap.Lock();
-            bitmap.Clear();
-            bitmap.Unlock();
-            mainCanvas.Source = bitmap;
-
-            ClearAllPoints();
-        }
-        #endregion
-
-        #region Dependency properties
         public (float, float) AddPoint
         {
             get { return ((float, float))GetValue(AddPointProperty); }
             set { SetValue(AddPointProperty, value); }
         }
 
-        public static readonly DependencyProperty AddPointProperty =
-            DependencyProperty.Register("AddPoint", typeof((float, float)), typeof(LiveWaveFormViewer), new PropertyMetadata((0f, 0f), (s, e) =>
-                {
-                    if (e.NewValue == null) return;
+        public Color LineColor { get; set; }
 
-                    var newValue = ((float, float))e.NewValue;
-                    if (s is LiveWaveFormViewer liveWaveFormViewer)
-                        liveWaveFormViewer.AddValue(newValue.Item1, newValue.Item2);
-                }));
-        #endregion
-
-        #region Private methods
-        private int Points
-        {
-            get { return maxPoints.Length; }
-        }
-
-        private void ClearAllPoints()
-        {
-            for (int i = 0; i < Points; i++)
-            {
-                maxPoints[i] = SampleToYPosition(0);
-                minPoints[i] = SampleToYPosition(0);
-            }
-        }
-
-        private void CreatePoint(float topValue, float bottomValue)
-        {
-            var topYPos = SampleToYPosition(topValue);
-            var bottomYPos = SampleToYPosition(bottomValue);
-
-            maxPoints[renderPosition] = topYPos;
-            minPoints[renderPosition] = bottomYPos;
-            renderPosition++;
-        }
-
-        private int SampleToYPosition(float value)
-        {
-            return (int)(yTranslate + value * yScale);
-        }
-        #endregion
-
-        #region Public methods
         public void AddValue(float maxValue, float minValue)
         {
             if (bitmap == null)
                 return;
 
-            if (Points > 0)
+            if (maxPoints.Length > 0)
             {
-                if (renderPosition < Points - blankZone)
+                if (renderPosition < maxPoints.Length - blankZone)
                 {
                     using (bitmap.GetBitmapContext())
                     {
@@ -131,10 +62,61 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                     }
                 }
 
-                if (renderPosition >= Points)
+                if (renderPosition >= maxPoints.Length)
                     renderPosition = 0;
             }
         }
-        #endregion
+
+        private void ClearAllPoints()
+        {
+            for (int i = 0; i < maxPoints.Length; i++)
+            {
+                maxPoints[i] = SampleToYPosition(0);
+                minPoints[i] = SampleToYPosition(0);
+            }
+        }
+
+        private void CreatePoint(float topValue, float bottomValue)
+        {
+            var topYPos = SampleToYPosition(topValue);
+            var bottomYPos = SampleToYPosition(bottomValue);
+
+            maxPoints[renderPosition] = topYPos;
+            minPoints[renderPosition] = bottomYPos;
+            renderPosition++;
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            renderPosition = 0;
+            maxPoints = new int[(int)(ActualWidth / xScale)];
+            minPoints = new int[(int)(ActualWidth / xScale)];
+
+            this.yTranslate = (int)(this.ActualHeight / 2);
+            this.yScale = (int)(this.ActualHeight / 2);
+
+            bitmap = null;
+            bitmap = BitmapFactory.New((int)this.ActualWidth, (int)this.ActualHeight);
+            bitmap.Lock();
+            bitmap.Clear();
+            bitmap.Unlock();
+            mainCanvas.Source = bitmap;
+
+            ClearAllPoints();
+        }
+
+        private int SampleToYPosition(float value)
+        {
+            return (int)(yTranslate + value * yScale);
+        }
+
+        public static readonly DependencyProperty AddPointProperty = DependencyProperty.Register(nameof(AddPoint), typeof((float, float)), typeof(LiveWaveFormViewer), new PropertyMetadata((0f, 0f), (s, e) =>
+        {
+            if (e.NewValue == null) return;
+
+            var newValue = ((float, float))e.NewValue;
+            if (s is LiveWaveFormViewer liveWaveFormViewer)
+                liveWaveFormViewer.AddValue(newValue.Item1, newValue.Item2);
+        }));
     }
 }

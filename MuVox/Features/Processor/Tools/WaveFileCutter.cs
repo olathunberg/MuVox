@@ -1,11 +1,11 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NAudio.Wave;
 using TTech.MuVox.Features.Marker;
 
 namespace TTech.MuVox.Features.Processor.Tools
@@ -143,7 +143,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                 firstPart.Add(splitFilename.Last());
                 var newFilename = string.Join(".", firstPart.ToArray());
 
-                if(File.Exists(newFilename))
+                if (File.Exists(newFilename))
                 {
                     File.Delete(newFilename);
                 }

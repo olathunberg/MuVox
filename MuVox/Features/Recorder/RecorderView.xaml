@@ -23,7 +23,6 @@
             </Style>
             <converters:TenthSecondToStringConverter x:Key="TenthSecondToStringConverter" />
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
-            <local:BoolToRowSpanConverter x:Key="BoolToRowSpanConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -111,7 +110,6 @@
 
                 <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerLeft"
                                                    Grid.Row="1"
-                                                   Grid.RowSpan="{Binding MonoDisplay, Converter={StaticResource BoolToRowSpanConverter}}"
                                                    AddPoint="{Binding NewLeftPoint}"
                                                    LineColor="{StaticResource BorderBrushSelectedColor}" />
                 <WaveFormViewer:LiveWaveFormViewer x:Name="WaveFormViewerRight"
