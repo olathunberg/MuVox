@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using TTech.MuVox.Features.LogViewer;
+using TTech.MuVox.Features.Processor.Converters;
 using TTech.MuVox.Features.Processor.Tools;
 using TTech.MuVox.Features.Settings;
 
@@ -10,18 +11,18 @@ namespace TTech.MuVox.Features.Processor
     public class Processor
     {
         private LogViewerModel logViewerModel;
-        private readonly Action<long> setDetailProgressBarMaximum;
-        private readonly Action<long> updateDetailProgressBar;
+        private readonly IProgress<long> progressMax;
+        private readonly IProgress<long> detailProgress;
 
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings { get { return SettingsBase<Settings.Settings>.Current; } }
 
         public Processor(LogViewerModel logViewerModel,
-            Action<long> setDetailProgressBarMaximum,
-            Action<long> updateDetailProgressBar)
+            IProgress<long> progressMax,
+            IProgress<long> detailProgress)
         {
             this.logViewerModel = logViewerModel;
-            this.setDetailProgressBarMaximum = setDetailProgressBarMaximum;
-            this.updateDetailProgressBar = updateDetailProgressBar;
+            this.progressMax = progressMax;
+            this.detailProgress = detailProgress;
         }
 
         public async Task Process(string baseFileName)
@@ -41,17 +42,18 @@ namespace TTech.MuVox.Features.Processor
             var cuttedFiles = await waveFileCutter.CutWavFileFromMarkersFile(
                  baseFileName,
                  logViewerModel.Add,
-                 setDetailProgressBarMaximum,
-                 updateDetailProgressBar);
+                 progressMax,
+                 detailProgress);
 
-            var normalizer = new Normalizer();
+            var simpleDsp = new SimpleDsp();
             var waveToMp3Converter = new WaveToMp3Converter();
             var waveFileJoiner = new WaveFileJoiner();
+
             for (var i = 0; i < cuttedFiles.Count; i++)
             {
                 var item = cuttedFiles[i];
                 logViewerModel.Add(string.Format("Normalizing segment {0}...", item));
-                await normalizer.Normalize(item, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
+                await simpleDsp.Process(item, logViewerModel.Add, progressMax, detailProgress);
 
                 if (AddJingle(i))
                 {
@@ -61,7 +63,7 @@ namespace TTech.MuVox.Features.Processor
                     }
                     logViewerModel.Add(string.Format("Adding jingle to segment {0}...", item));
 
-                    string outFile = await waveFileJoiner.Join(new string[] { Settings.Jingle_Path, item }, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
+                    string outFile = await waveFileJoiner.Join(new string[] { Settings.Jingle_Path, item }, logViewerModel.Add, progressMax, detailProgress);
 
                     if (item != baseFileName)
                         File.Delete(item);
@@ -74,7 +76,7 @@ namespace TTech.MuVox.Features.Processor
                 }
 
                 logViewerModel.Add(string.Format("Converting segment {0} to MP3...", item));
-                var mp3File = await waveToMp3Converter.Convert(item, logViewerModel.Add, setDetailProgressBarMaximum, updateDetailProgressBar);
+                var mp3File = await waveToMp3Converter.Convert(item, logViewerModel.Add, progressMax, detailProgress);
 
                 if (item != baseFileName)
                     File.Delete(item);
@@ -85,11 +87,11 @@ namespace TTech.MuVox.Features.Processor
         {
             switch (Settings.Add_Jingle)
             {
-                case Features.Settings.JingleAdding.None:
+                case JingleAdding.None:
                     return false;
-                case Features.Settings.JingleAdding.FirstSegment:
+                case JingleAdding.FirstSegment:
                     return segmentNumber == 0;
-                case Features.Settings.JingleAdding.AllSegments:
+                case JingleAdding.AllSegments:
                     return true;
                 default:
                     return false;

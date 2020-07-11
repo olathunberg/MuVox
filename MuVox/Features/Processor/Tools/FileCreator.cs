@@ -7,11 +7,8 @@ namespace TTech.MuVox.Features.Processor.Tools
 {
     internal static class FileCreator
     {
-        internal static void CreateWaveFile(string filename, IWaveProvider sourceProvider, Action<long> progressCallback)
+        internal static void CreateWaveFile(string filename, IWaveProvider sourceProvider, IProgress<long> progress)
         {
-            if (progressCallback == null)
-                return;
-
             using (var writer = new WaveFileWriter(filename, sourceProvider.WaveFormat))
             {
                 long outputLength = 0;
@@ -28,16 +25,14 @@ namespace TTech.MuVox.Features.Processor.Tools
                     // Write will throw exception if WAV file becomes too large
                     writer.Write(buffer, 0, bytesRead);
 
-                    progressCallback(bytesRead);
+                    if (progress != null)
+                        progress.Report(bytesRead);
                 }
             }
         }
 
-        internal static void CreateMp3File(string filename, IWaveProvider sourceProvider, int bitRate, Action<long> progressCallback)
+        internal static void CreateMp3File(string filename, IWaveProvider sourceProvider, int bitRate, IProgress<long> progress)
         {
-            if (progressCallback == null)
-                return;
-
             if (!Directory.Exists(Path.GetDirectoryName(filename)))
                 Directory.CreateDirectory(Path.GetDirectoryName(filename));
 
@@ -57,7 +52,8 @@ namespace TTech.MuVox.Features.Processor.Tools
                     // Write will throw exception if WAV file becomes too large
                     writer.Write(buffer, 0, bytesRead);
 
-                    progressCallback(bytesRead);
+                    if (progress != null)
+                        progress.Report(bytesRead);
                 }
             }
         }

@@ -10,7 +10,7 @@ namespace TTech.MuVox.Features.Processor.Tools
     {
         private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
 
-        public async Task<string> Join(string[] files, Action<string> addLogMessage, Action<long> sourceLengthCallback, Action<long> progressCallback)
+        public async Task<string> Join(string[] files, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
             if (files.Length < 2)
                 return string.Empty;
@@ -53,7 +53,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                             // Write will throw exception if WAV file becomes too large
                             await waveFileWriter.WriteAsync(buffer, 0, bytesRead);
 
-                            progressCallback(bytesRead);
+                            progress.Report(bytesRead);
                         }
                     }
                 }

@@ -68,6 +68,23 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         /// Start position (currently in bytes)
         /// </summary>
         public long StartPosition { get; set; }
+        
+        public double SelectedPosition
+        {
+            get { return (double)GetValue(SelectedPositionProperty); }
+            set { SetValue(SelectedPositionProperty, value); }
+        }
+        public ObservableCollection<Marker> MarkersCollection
+        {
+            get { return (ObservableCollection<Marker>)GetValue(MarkersCollectionProperty); }
+            set { SetValue(MarkersCollectionProperty, value); }
+        }
+
+        public WaveStream WaveStream
+        {
+            get { return (WaveStream)GetValue(WaveStreamProperty); }
+            set { SetValue(WaveStreamProperty, value); }
+        }
         #endregion
 
         public WaveFormViewer()
@@ -254,12 +271,7 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
         #endregion
 
         #region Dependency properties
-        public double SelectedPosition
-        {
-            get { return (double)GetValue(SelectedPositionProperty); }
-            set { SetValue(SelectedPositionProperty, value); }
-        }
-
+    
         // Using a DependencyProperty as the backing store for SelectedPosition.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedPositionProperty =
             DependencyProperty.Register("SelectedPosition", typeof(double), typeof(WaveFormViewer), new PropertyMetadata(0.0));
@@ -289,18 +301,6 @@ namespace TTech.MuVox.UI_Features.WaveFormViewer
                 if (newValue != null)
                     view.ReadStream().ContinueWith(a => view.Draw(), TaskScheduler.FromCurrentSynchronizationContext());
             }));
-
-        public ObservableCollection<Marker> MarkersCollection
-        {
-            get { return (ObservableCollection<Marker>)GetValue(MarkersCollectionProperty); }
-            set { SetValue(MarkersCollectionProperty, value); }
-        }
-
-        public WaveStream WaveStream
-        {
-            get { return (WaveStream)GetValue(WaveStreamProperty); }
-            set { SetValue(WaveStreamProperty, value); }
-        }
         #endregion
 
         #region Private methods
