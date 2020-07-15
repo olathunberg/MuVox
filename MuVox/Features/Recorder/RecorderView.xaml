@@ -6,7 +6,6 @@
              xmlns:WaveFormViewer="clr-namespace:TTech.MuVox.UI_Features.WaveFormViewer"
              xmlns:converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
              x:Class="TTech.MuVox.Features.Recorder.RecorderView"
-             xmlns:local="clr-namespace:TTech.MuVox.Features.Recorder"
              Focusable="True"
              d:DesignHeight="300"
              DataContext="{Binding Recorder, Source={StaticResource ViewModelLocator}}"
@@ -109,7 +108,8 @@
                                                    Grid.Row="1"
                                                    AddPoint="{Binding NewPoint}"
                                                    LineColor="{StaticResource BorderBrushSelectedColor}" />
-                      <TextBlock Grid.Column="2" Text="Markers"
+                <TextBlock Grid.Column="2" 
+                           Text="Markers"
                            VerticalAlignment="Bottom"
                            Margin="2"
                            Style="{StaticResource Header}" />
@@ -131,17 +131,19 @@
 
                 <Grid Grid.Row="4" Grid.ColumnSpan="3" Height="20" VerticalAlignment="Bottom">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="57*"/>
-                        <ColumnDefinition Width="233*"/>
+                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="20"/>
                     </Grid.ColumnDefinitions>
                     <ProgressBar IsIndeterminate="False" 
-                                 Height="10"
+                                 Height="13"
                                  VerticalAlignment="Bottom"
+                                 Background="{StaticResource BackgroundNormal}"
+                                 Margin="0,0,10,0"
+                                 Opacity="0.2"
                                  Value="{Binding Recorder.TenthOfSecondsRecorded, Mode=OneWay}" 
-                                 Maximum="{Binding ProgressBarMaximum}" Grid.ColumnSpan="2"/>
+                                 Maximum="{Binding ProgressBarMaximum}" />
                     <Button x:Name="SettingsButton"
-                            Grid.Column="2" 
+                            Grid.Column="1" 
                             Height="20" Width="20"
                             Background="Transparent"
                             Style="{StaticResource IconButton}"
