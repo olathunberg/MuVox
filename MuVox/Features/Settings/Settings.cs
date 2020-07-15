@@ -46,7 +46,7 @@ namespace TTech.MuVox.Features.Settings
 
         [Category(RECORDER)]
         [DisplayName("Minutes on pregressbar")]
-        public uint Recorder_MinutesOnProgressbar { get; set; } = 200;
+        public uint Recorder_MinutesOnProgressbar { get; set; } = 120;
 
         [Category(RECORDER)]
         [DisplayName("Filename")]
@@ -62,7 +62,7 @@ namespace TTech.MuVox.Features.Settings
 
         [Category(UX)]
         [DisplayName("Volumemeter, Peekmark holdtime (ms)")]
-        public int UX_VolumeMeter_PeakMarkHoldTime { get; set; } = 200;
+        public int UX_VolumeMeter_PeakMarkHoldTime { get; set; } = 500;
 
         [Category(UX)]
         [DisplayName("Volumemeter, MinDb")]
