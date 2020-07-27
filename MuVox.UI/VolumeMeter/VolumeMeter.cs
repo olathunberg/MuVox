@@ -19,7 +19,6 @@ namespace TTech.MuVox.UI.VolumeMeter
         /// </summary>
         public VolumeMeter()
         {
-            Orientation = Orientation.Vertical;
         }
 
         public float Amplitude
@@ -87,12 +86,6 @@ namespace TTech.MuVox.UI.VolumeMeter
         public float MaxDb { get { return Settings.UX_VolumeMeter_MaxDb; } }
 
         /// <summary>
-        /// Meter orientation
-        /// </summary>
-        [DefaultValue(Orientation.Vertical)]
-        public Orientation Orientation { get; set; }
-
-        /// <summary>
         /// Peakmark fallback speed
         /// </summary>
         [DefaultValue(2)]
@@ -129,14 +122,7 @@ namespace TTech.MuVox.UI.VolumeMeter
 
             var width = this.ActualWidth - 2;
             var height = this.ActualHeight - 2;
-            if (Orientation == Orientation.Horizontal)
-            {
-                width = (int)(width * percent);
-
-                drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, 1, width, height));
-                // TODO: Draw "top" mark
-            }
-            else
+      
             {
                 double zeroDb = (-MinDb) / (MaxDb - MinDb);
                 var zeroHeight = (int)(height * zeroDb);
