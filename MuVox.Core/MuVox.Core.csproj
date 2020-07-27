@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <RootNamespace>MuVox.Core</RootNamespace>
+    <LangVersion>8</LangVersion>
+    <Nullable>Enable</Nullable>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 

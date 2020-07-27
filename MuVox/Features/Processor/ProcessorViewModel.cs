@@ -47,7 +47,7 @@ namespace TTech.MuVox.Features.Processor
                 return editMarkersCommand ?? (editMarkersCommand = new RelayCommand(
                     () =>
                     {
-                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Marker));
+                        Messenger.Default.Send<GotoPageMessage>(new GotoPageMessage(Pages.Editor));
                     },
                     () => !IsProcessing && !string.IsNullOrEmpty(FileName)));
             }

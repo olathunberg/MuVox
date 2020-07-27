@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using NAudio.Wave;
-using TTech.MuVox.Features.Marker;
+using TTech.MuVox.Core;
 
 namespace TTech.MuVox.Features.Processor.Tools
 {
@@ -82,12 +82,12 @@ namespace TTech.MuVox.Features.Processor.Tools
 
         private List<string> DoCutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
-            if (MarkerHelper.HasMarkerFile(baseFilename))
+            if (MarkersHelper.HasMarkerFile(baseFilename))
             {
                 using (var reader = new WaveFileReader(baseFilename))
                     progressMaximum.Report(reader.Length);
 
-                var markers = MarkerHelper
+                var markers = MarkersHelper
                     .GetMarkersFromFile(baseFilename);
 
                 var newFiles = new ConcurrentBag<string>();

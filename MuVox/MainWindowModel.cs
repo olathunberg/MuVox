@@ -40,8 +40,8 @@ namespace TTech.MuVox
                         CurrentViewModel = viewModelLocator.Recorder;
                     if (action.GotoPage == Pages.Processor)
                         CurrentViewModel = viewModelLocator.Processor;
-                    if (action.GotoPage == Pages.Marker)
-                        CurrentViewModel = viewModelLocator.Marker;
+                    if (action.GotoPage == Pages.Editor)
+                        CurrentViewModel = viewModelLocator.Editor;
                     if (action.GotoPage == Pages.Settings)
                         CurrentViewModel = viewModelLocator.Settings;
                 });
@@ -122,7 +122,7 @@ namespace TTech.MuVox
 
             viewModelLocator.Recorder.Cleanup();
             viewModelLocator.Processor.Cleanup();
-            viewModelLocator.Marker.Cleanup();
+            viewModelLocator.Editor.Cleanup();
         }
     }
 }

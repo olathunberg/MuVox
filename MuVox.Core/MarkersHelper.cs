@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 
-namespace TTech.MuVox.Features.Marker
+namespace TTech.MuVox.Core
 {
-    public static class MarkerHelper
+    public static class MarkersHelper
     {
         public static bool HasMarkerFile(string baseFilename)
         {

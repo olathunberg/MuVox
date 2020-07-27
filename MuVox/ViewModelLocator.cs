@@ -1,5 +1,5 @@
 ﻿using System;
-using TTech.MuVox.Features.Marker;
+using TTech.MuVox.Features.Editor;
 using TTech.MuVox.Features.Processor;
 using TTech.MuVox.Features.Recorder;
 using TTech.MuVox.Features.Settings;
@@ -14,7 +14,7 @@ namespace TTech.MuVox
 
         public RecorderViewModel Recorder { get; } = new RecorderViewModel();
 
-        public MarkerViewModel Marker { get; } = new MarkerViewModel();
+        public EditorViewModel Editor { get; } = new EditorViewModel();
 
         public ProcessorViewModel Processor { get; } = new ProcessorViewModel();
 
@@ -29,8 +29,8 @@ namespace TTech.MuVox
             {
                 if (disposing)
                 {
-                    if (Marker != null)
-                        Marker.Dispose();
+                    if (Editor != null)
+                        Editor.Dispose();
                     if (Recorder != null)
                         Recorder.Dispose();
                     if (Settings != null)

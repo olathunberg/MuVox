@@ -9,7 +9,7 @@ namespace TTech.MuVox.Features.Messages
     public enum Pages
     {
         Recorder,
-        Marker,
+        Editor,
         Processor,
         Settings
     }

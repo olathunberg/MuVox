@@ -8,6 +8,7 @@ using System.Windows;
 using GalaSoft.MvvmLight;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
+using TTech.MuVox.Core;
 
 namespace TTech.MuVox.Features.Recorder
 {
@@ -132,7 +133,7 @@ namespace TTech.MuVox.Features.Recorder
             Markers.Add(new Core.Marker(GetTenthOfSecondsRecorded(), Core.Marker.MarkerType.Mark));
 
             var fileName = Path.Combine(outputFolder, outputFilenameBase);
-            Marker.MarkerHelper.AddMarkerToFile(fileName, Markers.Last());
+            MarkersHelper.AddMarkerToFile(fileName, Markers.Last());
 
             RaisePropertyChanged(() => Markers);
         }
