@@ -16,7 +16,7 @@ namespace TTech.MuVox.Features.Recorder
         private (float, float) newPoint;
         private readonly Recorder recorder;
 
-        internal Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        internal Settings.Settings Settings => Features.Settings.Settings.Current;
 
         // Move to volumemeter
         private readonly Queue<float> amplitudesL = new Queue<float>();

@@ -12,7 +12,7 @@ namespace TTech.MuVox.Features.Processor.Tools
 {
     public class WaveFileCutter
     {
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings => Features.Settings.Settings.Current;
 
         public Task<List<string>> CutWavFileFromMarkersFile(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {

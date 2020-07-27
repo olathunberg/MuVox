@@ -14,7 +14,7 @@ namespace TTech.MuVox.Features.Processor
         private readonly IProgress<long> progressMax;
         private readonly IProgress<long> detailProgress;
 
-        private Settings.Settings Settings { get { return SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings => Features.Settings.Settings.Current;
 
         public Processor(LogViewerModel logViewerModel,
             IProgress<long> progressMax,

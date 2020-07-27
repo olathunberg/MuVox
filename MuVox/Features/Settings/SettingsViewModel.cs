@@ -12,7 +12,7 @@ namespace TTech.MuVox.Features.Settings
     {
         private RelayCommand? recordCommand;
 
-        public Settings Settings { get { return SettingsBase<Settings>.Current; } }
+        public Settings Settings => Settings.Current;
 
         public ICommand Record
         {

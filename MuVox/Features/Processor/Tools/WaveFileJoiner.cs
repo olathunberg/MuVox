@@ -8,7 +8,7 @@ namespace TTech.MuVox.Features.Processor.Tools
 {
     public class WaveFileJoiner
     {
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings => Features.Settings.Settings.Current;
 
         public async Task<string> Join(string[] files, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {

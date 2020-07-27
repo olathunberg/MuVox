@@ -2,31 +2,35 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using Newtonsoft.Json;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TTech.MuVox.Features.Settings
 {
-    public class Settings : GalaSoft.MvvmLight.ObservableObject, ISettings
+    /// <summary>
+    /// Provides a singleton with lazy loading of settings
+    ///
+    /// Persists to JSON
+    ///
+    /// Observes PropertyChange on T and saves entire object
+    /// </summary>
+    /// <typeparam name="T">Class containing settings</typeparam>
+    public class Settings : GalaSoft.MvvmLight.ObservableObject
     {
         private const string PROCESSOR = "Processor";
         private const string RECORDER = "Recorder";
-        private const string UX = "UX";
+        private const string FILE_PATH = "Settings.json";
 
-        public static Settings Current => SettingsBase<Settings>.Current;
+        private static Settings? current;
 
-        public static Action Save => () => SettingsBase<Settings>.Save();
-
-        public string FILE_PATH => "Settings.json";
-
-        public bool AutoSave => false;
-
-        // TODO: Move to each subclass
-        public IEnumerable<string> Verify()
+        public static Settings Current
         {
-            if (Add_Jingle != JingleAdding.None)
+            get
             {
-                if (string.IsNullOrEmpty(Jingle_Path) || !File.Exists(Jingle_Path))
-                    yield return $"'{nameof(Jingle_Path)}' must be a valid file when '{nameof(Add_Jingle)}' is not '{nameof(JingleAdding.None)}'";
+                if (current == null)
+                    current = LoadCurrent();
+                return current;
             }
         }
 
@@ -58,11 +62,48 @@ namespace TTech.MuVox.Features.Settings
         [DisplayName("Output path")]
         public string Recorder_OutputPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
 
-        [Category(UX)]
         [ExpandableObject]
         public UI.VolumeMeter.VolumeMeterSettings VolumeMeterSettings { get; set; } = new UI.VolumeMeter.VolumeMeterSettings();
 
         [Browsable(false)]
         public string Recorder_LastFile { get; set; } = string.Empty;
+
+        public static void Save()
+        {
+            if (current == null)
+                return;
+
+            var serializerSettings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented
+            };
+
+            var dir = Path.GetDirectoryName(FILE_PATH);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            File.WriteAllText(FILE_PATH, JsonConvert.SerializeObject(current, serializerSettings));
+        }
+
+        public IEnumerable<string> Verify()
+        {
+            if (Add_Jingle != JingleAdding.None)
+            {
+                if (string.IsNullOrEmpty(Jingle_Path) || !File.Exists(Jingle_Path))
+                    yield return $"'{nameof(Jingle_Path)}' must be a valid file when '{nameof(Add_Jingle)}' is not '{nameof(JingleAdding.None)}'";
+            }
+        }
+
+        private static Settings LoadCurrent()
+        {
+            Settings newSettings;
+
+            if (File.Exists(FILE_PATH))
+                newSettings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(FILE_PATH));
+            else
+                newSettings = new Settings();
+
+            return newSettings;
+        }
     }
 }

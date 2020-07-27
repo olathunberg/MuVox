@@ -9,7 +9,7 @@ namespace TTech.MuVox.Features.Processor.Converters
 {
     public class WaveToMp3Converter
     {
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        private Settings.Settings Settings => Features.Settings.Settings.Current;
 
         public Task<string> Convert(string baseFilename, Action<string> addLogMessage, IProgress<long> progressMaximum, IProgress<long> progress)
         {
