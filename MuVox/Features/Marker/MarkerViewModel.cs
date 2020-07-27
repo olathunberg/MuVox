@@ -5,18 +5,18 @@ using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using TTech.MuVox.Features.Messages;
-using TTech.MuVox.Features.Settings;
 
 namespace TTech.MuVox.Features.Marker
 {
     public class MarkerViewModel : GalaSoft.MvvmLight.ViewModelBase, IDisposable
     {
-        private readonly ObservableCollection<Marker> markers;
+        private readonly ObservableCollection<Core.Marker> markers;
         private WaveOut? waveOut = null;
 
         public MarkerViewModel()
         {
-            markers = new ObservableCollection<Marker>();
+            var observableCollections = new ObservableCollection<Core.Marker>();
+            markers = observableCollections;
             markers.CollectionChanged += Markers_CollectionChanged;
         }
 
@@ -93,7 +93,7 @@ namespace TTech.MuVox.Features.Marker
 
         public long SelectedPosition { get; set; }
 
-        public ObservableCollection<Marker> Markers
+        public ObservableCollection<Core.Marker> Markers
         {
             get
             {

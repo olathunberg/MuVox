@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace TTech.MuVox.UI_Features.WaveFormViewer
+namespace TTech.MuVox.UI.WaveFormViewer
 {
     public partial class LiveWaveFormViewer : UserControl
     {

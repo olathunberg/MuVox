@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Windows.Media;
-using TTech.MuVox.UI_Features.Helpers;
+using TTech.MuVox.UI.Helpers;
 
-namespace MuVox.Testing.UI_Features
+namespace MuVox.Testing.UI
 {
     [TestClass]
     public class TimerMarkerHelperTests

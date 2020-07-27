@@ -9,7 +9,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MuVox.UI;component/Styles/Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="ItemsControl" x:Key="LogViewerStyle">
                 <Setter Property="Template">

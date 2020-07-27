@@ -117,7 +117,7 @@ namespace TTech.MuVox.Features.Recorder
 
         public RecordingState RecordingState { get; private set; }
 
-        public ObservableCollection<Marker.Marker> Markers { get; set; } = new ObservableCollection<Marker.Marker>();
+        public ObservableCollection<Core.Marker> Markers { get; set; } = new ObservableCollection<Core.Marker>();
 
         public int TenthOfSecondsRecorded => GetTenthOfSecondsRecorded();
 
@@ -129,7 +129,7 @@ namespace TTech.MuVox.Features.Recorder
         #region Public methods
         public void SetMarker()
         {
-            Markers.Add(new Marker.Marker(GetTenthOfSecondsRecorded(), Marker.Marker.MarkerType.Mark));
+            Markers.Add(new Core.Marker(GetTenthOfSecondsRecorded(), Core.Marker.MarkerType.Mark));
 
             var fileName = Path.Combine(outputFolder, outputFilenameBase);
             Marker.MarkerHelper.AddMarkerToFile(fileName, Markers.Last());

@@ -9,7 +9,6 @@ namespace TTech.MuVox.Features.Settings
     {
         private const string PROCESSOR = "Processor";
         private const string RECORDER = "Recorder";
-        private const string UX = "UX";
 
         public static Settings Current => SettingsBase<Settings>.Current;
 
@@ -56,25 +55,7 @@ namespace TTech.MuVox.Features.Settings
         [DisplayName("Output path")]
         public string Recorder_OutputPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
 
-        [Category(UX)]
-        [DisplayName("Volumemeter, Peekmark fallbackspeed")]
-        public int UX_VolumeMeter_PeakMarkFallBackSpeed { get; set; } = 2;
-
-        [Category(UX)]
-        [DisplayName("Volumemeter, Peekmark holdtime (ms)")]
-        public int UX_VolumeMeter_PeakMarkHoldTime { get; set; } = 500;
-
-        [Category(UX)]
-        [DisplayName("Volumemeter, MinDb")]
-        public float UX_VolumeMeter_MinDb { get; set; } = -24;
-
-        [Category(UX)]
-        [DisplayName("Volumemeter, MaxDb")]
-        public float UX_VolumeMeter_MaxDb { get; set; } = 2;
-
-        [Category(UX)]
-        [DisplayName("Volumemeter, Num of samples")]
-        public byte UX_VolumeMeter_NoSamples { get; set; } = 8;
+        public UI.VolumeMeter.VolumeMeterSettings VolumeMeterSettings { get; set; } = new UI.VolumeMeter.VolumeMeterSettings();
 
         [Browsable(false)]
         public string Recorder_LastFile { get; set; } = string.Empty;

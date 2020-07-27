@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Windows;
-using TTech.MuVox.UI_Features.Converters;
+using TTech.MuVox.UI.Converters;
 
-namespace MuVox.Testing.UI_Features
+namespace MuVox.Testing.UI
 {
     [TestClass]
     public class InverseBooleanToVisibilityConverterTests

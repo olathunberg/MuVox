@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:command="http://www.galasoft.ch/mvvmlight"
-        xmlns:Converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
+        xmlns:Converters="clr-namespace:TTech.MuVox.UI.Converters;assembly=MuVox.UI"
         x:Class="TTech.MuVox.MainWindow"
         Style="{DynamicResource WindowStyle}"
         DataContext="{DynamicResource MainWindowModel}"
@@ -13,8 +13,8 @@
         ResizeMode="CanMinimize" >
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/Styles/Style.xaml" />
+            <ResourceDictionary.MergedDictionaries>  
+                <ResourceDictionary Source="pack://application:,,,/MuVox.UI;component/Styles/Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
             <Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

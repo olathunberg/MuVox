@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace TTech.MuVox.UI_Features.LoadingPanel
+namespace TTech.MuVox.UI.LoadingPanel
 {
     /// <summary>
     /// Interaction logic for LoadingPanel.xaml

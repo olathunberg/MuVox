@@ -3,11 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuVox", "MuVox\MuVox.csproj", "{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox", "MuVox\MuVox.csproj", "{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MuVox.Testing", "MuVox.Testing\MuVox.Testing.csproj", "{CF5EFD1B-A05A-42A4-B891-5C73221AD596}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.Testing", "MuVox.Testing\MuVox.Testing.csproj", "{CF5EFD1B-A05A-42A4-B891-5C73221AD596}"
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MuVox.Installer", "MuVox.Installer\MuVox.Installer.wixproj", "{952574A2-0BC1-44E4-A157-5C2A60DA9597}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.MultiTrack", "MuVox.MultiTrack\MuVox.MultiTrack.csproj", "{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.UI", "MuVox.UI\MuVox.UI.csproj", "{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.Core", "MuVox.Core\MuVox.Core.csproj", "{54F978AB-0ABF-4116-8DB0-C27050BAE94D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,30 @@ Global
 		{952574A2-0BC1-44E4-A157-5C2A60DA9597}.Release|Any CPU.ActiveCfg = Release|x86
 		{952574A2-0BC1-44E4-A157-5C2A60DA9597}.Release|x86.ActiveCfg = Release|x86
 		{952574A2-0BC1-44E4-A157-5C2A60DA9597}.Release|x86.Build.0 = Release|x86
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Debug|x86.Build.0 = Debug|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Release|x86.ActiveCfg = Release|Any CPU
+		{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}.Release|x86.Build.0 = Release|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Debug|x86.Build.0 = Debug|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Release|x86.ActiveCfg = Release|Any CPU
+		{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}.Release|x86.Build.0 = Release|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Debug|x86.Build.0 = Debug|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Release|x86.ActiveCfg = Release|Any CPU
+		{54F978AB-0ABF-4116-8DB0-C27050BAE94D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

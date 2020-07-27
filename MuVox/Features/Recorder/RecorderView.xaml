@@ -2,9 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:VolumeMeter="clr-namespace:TTech.MuVox.UI_Features.VolumeMeter"
-             xmlns:WaveFormViewer="clr-namespace:TTech.MuVox.UI_Features.WaveFormViewer"
-             xmlns:converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
+             xmlns:VolumeMeter="clr-namespace:TTech.MuVox.UI.VolumeMeter;assembly=MuVox.UI"
+             xmlns:WaveFormViewer="clr-namespace:TTech.MuVox.UI.WaveFormViewer;assembly=MuVox.UI"
+             xmlns:converters="clr-namespace:TTech.MuVox.UI.Converters;assembly=MuVox.UI"
              x:Class="TTech.MuVox.Features.Recorder.RecorderView"
              Focusable="True"
              d:DesignHeight="300"
@@ -13,7 +13,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MuVox.UI;component/Styles/Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButton}">
                 <Setter Property="MinWidth" Value="150"/>
@@ -63,14 +63,18 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10"  >
-                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
+                <VolumeMeter:VolumeMeter x:Name="LeftVu"
+                                         Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
                                          AccentColor="{StaticResource BorderBrushSelected}"
                                          Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding LeftAmplitude}"
+                                         Settings="{Binding Settings.VolumeMeterSettings}"
                                          PeakMarkColor="{StaticResource BorderBrushSelected}"/>
-                <VolumeMeter:VolumeMeter Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
+                <VolumeMeter:VolumeMeter x:Name="RightVu"
+                                         Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
                                          AccentColor="{StaticResource BorderBrushSelected}"
                                          Foreground="{StaticResource Foreground}"
+                                         Settings="{Binding Settings.VolumeMeterSettings}"
                                          Amplitude="{Binding RightAmplitude}"
                                          PeakMarkColor="{StaticResource BorderBrushSelected}"/>
             </StackPanel>

@@ -1,6 +1,4 @@
-﻿using GalaSoft.MvvmLight.CommandWpf;
-using NAudio.Wave;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,10 +11,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using TTech.MuVox.Features.Marker;
-using TTech.MuVox.UI_Features.Helpers;
+using GalaSoft.MvvmLight.CommandWpf;
+using NAudio.Wave;
+using TTech.MuVox.Core;
+using TTech.MuVox.UI.Helpers;
 
-namespace TTech.MuVox.UI_Features.WaveFormViewer
+namespace TTech.MuVox.UI.WaveFormViewer
 {
     /// <summary>
     /// Interaction logic for WaveFormViewer.xaml

@@ -1,17 +1,17 @@
-﻿<UserControl xmlns:LoadingPanel="clr-namespace:TTech.MuVox.UI_Features.LoadingPanel"  
+﻿<UserControl xmlns:LoadingPanel="clr-namespace:TTech.MuVox.UI.LoadingPanel;assembly=MuVox.UI"  
              xmlns:LogViewer="clr-namespace:TTech.MuVox.Features.LogViewer"  
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:converters="clr-namespace:TTech.MuVox.UI_Features.Converters"
+             xmlns:converters="clr-namespace:TTech.MuVox.UI.Converters;assembly=MuVox.UI"
              x:Class="TTech.MuVox.Features.Processor.ProcessorView" 
              Focusable="True"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MuVox.UI;component/Styles/Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButton}">
                 <Setter Property="Width" Value="150"/>

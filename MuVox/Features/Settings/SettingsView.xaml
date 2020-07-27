@@ -3,7 +3,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TTech.MuVox.Features.Settings"
-             xmlns:Controls="clr-namespace:System.Windows.Controls"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              x:Class="TTech.MuVox.Features.Settings.SettingsView"
              mc:Ignorable="d"
@@ -11,7 +10,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../../Resources/Styles/Style.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MuVox.UI;component/Styles/Style.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource StandardButton}">
                 <Setter Property="Width" Value="150"/>

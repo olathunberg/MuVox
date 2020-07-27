@@ -16,7 +16,7 @@ namespace TTech.MuVox.Features.Recorder
         private (float, float) newPoint;
         private readonly Recorder recorder;
 
-        private Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
+        internal Settings.Settings Settings { get { return Features.Settings.SettingsBase<Settings.Settings>.Current; } }
 
         // Move to volumemeter
         private readonly Queue<float> amplitudesL = new Queue<float>();
@@ -173,12 +173,12 @@ namespace TTech.MuVox.Features.Recorder
             NewPoint = ((maxL + maxR) / 2.0f, (minL + minL) / 2.0f);
 
             amplitudesL.Enqueue(maxL);
-            if (amplitudesL.Count > Settings.UX_VolumeMeter_NoSamples)
+            if (amplitudesL.Count > Settings.VolumeMeterSettings.UX_VolumeMeter_NoSamples)
                 amplitudesL.Dequeue();
             LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
 
             amplitudesR.Enqueue(maxR);
-            if (amplitudesR.Count > Settings.UX_VolumeMeter_NoSamples)
+            if (amplitudesR.Count > Settings.VolumeMeterSettings.UX_VolumeMeter_NoSamples)
                 amplitudesR.Dequeue();
             RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
         }

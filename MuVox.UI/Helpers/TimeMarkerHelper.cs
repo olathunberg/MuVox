@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace TTech.MuVox.UI_Features.Helpers
+namespace TTech.MuVox.UI.Helpers
 {
     public static class TimeMarkerHelper
     {

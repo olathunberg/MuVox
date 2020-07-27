@@ -3,21 +3,16 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TTech.MuVox.Features.Settings;
 
-namespace TTech.MuVox.UI_Features.VolumeMeter
+namespace TTech.MuVox.UI.VolumeMeter
 {
-    internal class VolumeMeter : FrameworkElement
+    public class VolumeMeter : FrameworkElement
     {
-        #region Fields
         private Brush accentColor = Brushes.Transparent;
         private Brush foreground = Brushes.Transparent;
         private Brush background = Brushes.Transparent;
         private double maxMark;
         private DateTime maxTime = DateTime.Now;
-
-        private Settings Settings { get { return SettingsBase<Settings>.Current; } }
-        #endregion
 
         /// <summary>
         /// Basic volume meter
@@ -27,7 +22,6 @@ namespace TTech.MuVox.UI_Features.VolumeMeter
             Orientation = Orientation.Vertical;
         }
 
-        #region Dependency properties
         public float Amplitude
         {
             get { return (float)GetValue(AmplitudeProperty); }
@@ -42,9 +36,16 @@ namespace TTech.MuVox.UI_Features.VolumeMeter
                         frameworkElement.InvalidateVisual();
                 }));
 
-        #endregion
+        public VolumeMeterSettings Settings
+        {
+            get { return (VolumeMeterSettings)GetValue(SettingsProperty); }
+            set { SetValue(SettingsProperty, value); }
+        }
 
-        #region Properties
+        // Using a DependencyProperty as the backing store for Settings.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SettingsProperty =
+            DependencyProperty.Register("Settings", typeof(VolumeMeterSettings), typeof(VolumeMeter), new PropertyMetadata(new VolumeMeterSettings()));
+
         public Brush AccentColor
         {
             get { return accentColor; }
@@ -106,7 +107,6 @@ namespace TTech.MuVox.UI_Features.VolumeMeter
         /// Number of milliseconds befor peak starts to fall
         /// </summary>
         public int PeakMarkHoldTime { get { return Settings.UX_VolumeMeter_PeakMarkHoldTime; } }
-        #endregion
 
         /// <summary>
         /// Paints the volume meter

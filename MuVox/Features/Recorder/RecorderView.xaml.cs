@@ -11,6 +11,11 @@ namespace TTech.MuVox.Features.Recorder
         {
             InitializeComponent();
 
+            if(DataContext is RecorderViewModel recorderViewModel)
+            {
+               LeftVu.Settings = RightVu.Settings = recorderViewModel.Settings.VolumeMeterSettings;
+            }
+
             this.Loaded += RecorderView_Loaded;
         }
 

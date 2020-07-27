@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TTech.MuVox.Features.Marker;
+using TTech.MuVox.Core;
 
 namespace MuVox.Testing.Features
 {

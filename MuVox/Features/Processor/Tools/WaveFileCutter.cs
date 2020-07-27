@@ -99,7 +99,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                     fileIndex++;
                     if (i == markers.Count)
                     {
-                        if (markers[i - 1].Type == Marker.Marker.MarkerType.RemoveAfter)
+                        if (markers[i - 1].Type == Core.Marker.MarkerType.RemoveAfter)
                             return;
 
                         var start2 = new TimeSpan(0, 0, 0, 0, markers[i - 1].Time * 100);
@@ -110,7 +110,7 @@ namespace TTech.MuVox.Features.Processor.Tools
                     }
                     else
                     {
-                        if (markers[i].Type == Marker.Marker.MarkerType.RemoveBefore || (i > 0 && markers[i - 1].Type == Marker.Marker.MarkerType.RemoveAfter))
+                        if (markers[i].Type == Core.Marker.MarkerType.RemoveBefore || (i > 0 && markers[i - 1].Type == Core.Marker.MarkerType.RemoveAfter))
                             return;
 
                         var marker = i == 0 ? 0 : markers[i - 1].Time;

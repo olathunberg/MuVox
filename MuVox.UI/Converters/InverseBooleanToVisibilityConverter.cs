@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace TTech.MuVox.UI_Features.Converters
+namespace TTech.MuVox.UI.Converters
 {
     public class InverseBooleanToVisibilityConverter : IValueConverter
     {

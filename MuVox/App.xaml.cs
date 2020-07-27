@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Shell;
 
 namespace TTech.MuVox
@@ -17,12 +18,13 @@ namespace TTech.MuVox
             {
                 base.Shutdown();
             }
+
             base.OnStartup(e);
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-                SingleInstance<App>.Cleanup();
+            SingleInstance<App>.Cleanup();
             base.OnExit(e);
         }
 

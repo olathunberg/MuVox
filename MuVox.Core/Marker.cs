@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TTech.MuVox.Features.Marker
+namespace TTech.MuVox.Core
 {
     public class Marker : IComparable
     {

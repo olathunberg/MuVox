@@ -8,6 +8,10 @@ namespace TTech.MuVox
 {
     public sealed class ViewModelLocator : IDisposable
     {
+        public ViewModelLocator()
+        {
+        }
+
         public RecorderViewModel Recorder { get; } = new RecorderViewModel();
 
         public MarkerViewModel Marker { get; } = new MarkerViewModel();

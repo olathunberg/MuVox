@@ -1,4 +1,4 @@
-﻿namespace TTech.MuVox.UI_Features.Helpers
+﻿namespace TTech.MuVox.UI.Helpers
 {
     public static class TimeHelper
     {

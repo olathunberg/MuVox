@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using TTech.MuVox.Features.Marker;
+using TTech.MuVox.Core;
 
-namespace TTech.MuVox.UI_Features.Converters
+namespace TTech.MuVox.UI.Converters
 {
     public class TenthSecondToStringConverter : IValueConverter
     {
