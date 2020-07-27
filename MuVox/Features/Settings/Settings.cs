@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TTech.MuVox.Features.Settings
 {
@@ -9,6 +10,7 @@ namespace TTech.MuVox.Features.Settings
     {
         private const string PROCESSOR = "Processor";
         private const string RECORDER = "Recorder";
+        private const string UX = "UX";
 
         public static Settings Current => SettingsBase<Settings>.Current;
 
@@ -18,6 +20,7 @@ namespace TTech.MuVox.Features.Settings
 
         public bool AutoSave => false;
 
+        // TODO: Move to each subclass
         public IEnumerable<string> Verify()
         {
             if (Add_Jingle != JingleAdding.None)
@@ -55,6 +58,8 @@ namespace TTech.MuVox.Features.Settings
         [DisplayName("Output path")]
         public string Recorder_OutputPath { get; set; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "MuVox");
 
+        [Category(UX)]
+        [ExpandableObject]
         public UI.VolumeMeter.VolumeMeterSettings VolumeMeterSettings { get; set; } = new UI.VolumeMeter.VolumeMeterSettings();
 
         [Browsable(false)]
