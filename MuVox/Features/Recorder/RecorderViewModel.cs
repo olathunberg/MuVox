@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.CommandWpf;
 using GalaSoft.MvvmLight.Messaging;
@@ -17,10 +15,6 @@ namespace TTech.MuVox.Features.Recorder
         private readonly Recorder recorder;
 
         internal Settings.Settings Settings => Features.Settings.Settings.Current;
-
-        // Move to volumemeter
-        private readonly Queue<float> amplitudesL = new Queue<float>();
-        private readonly Queue<float> amplitudesR = new Queue<float>();
         #endregion
 
         #region Constructors
@@ -172,15 +166,8 @@ namespace TTech.MuVox.Features.Recorder
         {
             NewPoint = ((maxL + maxR) / 2.0f, (minL + minL) / 2.0f);
 
-            amplitudesL.Enqueue(maxL);
-            if (amplitudesL.Count > Settings.VolumeMeterSettings.UX_VolumeMeter_NoSamples)
-                amplitudesL.Dequeue();
-            LeftAmplitude = amplitudesL.Sum() / amplitudesL.Count;
-
-            amplitudesR.Enqueue(maxR);
-            if (amplitudesR.Count > Settings.VolumeMeterSettings.UX_VolumeMeter_NoSamples)
-                amplitudesR.Dequeue();
-            RightAmplitude = amplitudesR.Sum() / amplitudesR.Count;
+            LeftAmplitude = maxL;
+            RightAmplitude = maxR;
         }
         #endregion
 

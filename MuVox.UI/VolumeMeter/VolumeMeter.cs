@@ -1,25 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace TTech.MuVox.UI.VolumeMeter
 {
     public class VolumeMeter : FrameworkElement
     {
-        private Brush accentColor = Brushes.Transparent;
-        private Brush foreground = Brushes.Transparent;
-        private Brush background = Brushes.Transparent;
         private double maxMark;
         private DateTime maxTime = DateTime.Now;
-
-        /// <summary>
-        /// Basic volume meter
-        /// </summary>
-        public VolumeMeter()
-        {
-        }
 
         public float Amplitude
         {
@@ -45,106 +34,95 @@ namespace TTech.MuVox.UI.VolumeMeter
         public static readonly DependencyProperty SettingsProperty =
             DependencyProperty.Register("Settings", typeof(VolumeMeterSettings), typeof(VolumeMeter), new PropertyMetadata(new VolumeMeterSettings()));
 
-        public Brush AccentColor
-        {
-            get { return accentColor; }
-            set
-            {
-                accentColor = value;
-                this.InvalidateVisual();
-            }
-        }
-
-        public Brush Foreground
-        {
-            get { return foreground; }
-            set
-            {
-                foreground = value;
-                this.InvalidateVisual();
-            }
-        }
-
-        public Brush Background
-        {
-            get { return background; }
-            set
-            {
-                background = value;
-                this.InvalidateVisual();
-            }
-        }
-
         /// <summary>
         /// Minimum decibels
         /// </summary>
-        public float MinDb { get { return Settings.UX_VolumeMeter_MinDb; } }
+        public float MinDb { get { return Settings.MinDb; } }
 
         /// <summary>
         /// Maximum decibels
         /// </summary>
-        public float MaxDb { get { return Settings.UX_VolumeMeter_MaxDb; } }
+        public float MaxDb { get { return Settings.MaxDb; } }
 
         /// <summary>
-        /// Peakmark fallback speed
+        /// Number of milliseconds before peak starts to fall
         /// </summary>
-        [DefaultValue(2)]
-        public int PeakMarkFallBackSpeed { get { return Settings.UX_VolumeMeter_PeakMarkFallBackSpeed; } }
+        public int PeakHoldTime { get { return Settings.PeakHoldTime; } }
 
-        /// <summary>
-        /// Color of peak mark
-        /// </summary>
-        public Brush PeakMarkColor { get; set; } = Brushes.Red;
+        private Brush darkGreen = new SolidColorBrush(Color.FromRgb(0x00, 0x4d, 0x0d));
+        private Brush darkOrange = new SolidColorBrush(Color.FromRgb(0x4d, 0x4d, 0x00));
+        private Brush brightRed = new SolidColorBrush(Color.FromRgb(0xff, 0x00, 0x00));
+        private Brush brightGreen = new SolidColorBrush(Color.FromRgb(0x00, 0xe6, 0x00));
+        private Brush brightOrange = new SolidColorBrush(Color.FromRgb(0xe6, 0xe6, 0x00));
+        private Brush darkRed = new SolidColorBrush(Color.FromRgb(0x8b, 0x00, 0x00));
+        private double width;
+        private int blockHeight = 5;
+        private int blockSpacing = 2;
+        private int numBlocks;
 
-        /// <summary>
-        /// Number of milliseconds befor peak starts to fall
-        /// </summary>
-        public int PeakMarkHoldTime { get { return Settings.UX_VolumeMeter_PeakMarkHoldTime; } }
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            width = this.ActualWidth - 2;
+            numBlocks = (int)((this.ActualHeight + blockSpacing - 1) / blockHeight);
+        }
 
-        /// <summary>
-        /// Paints the volume meter
-        /// </summary>
         protected override void OnRender(DrawingContext drawingContext)
         {
             if (this.Height < 0 || this.Width < 0)
                 return;
-            if (this.ActualWidth <= 2 || this.ActualHeight <= 2)
+            if (this.ActualWidth <= 2 || this.ActualHeight <= blockSpacing)
                 return;
+            if (numBlocks == 0)
+            {
+                numBlocks = (int)((this.ActualHeight + blockSpacing - 1) / blockHeight);
+                width = this.ActualWidth - 2;
+                for (int i = 0; i < numBlocks; i++)
+                {
+                    PaintBlock(drawingContext, i, false);
+                }
+            }
 
-            drawingContext.DrawRectangle(Background, new Pen(Background, 0), new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-
-            double db = NAudio.Utils.Decibels.LinearToDecibels(Amplitude);
+            var db = DesignerProperties.GetIsInDesignMode(this)
+                ? NAudio.Utils.Decibels.LinearToDecibels(0) //new Random(DateTime.Now.Millisecond).NextDouble())
+                : NAudio.Utils.Decibels.LinearToDecibels(Amplitude);
             if (db < MinDb)
                 db = MinDb;
             if (db > MaxDb)
                 db = MaxDb;
-            double percent = (db - MinDb) / (MaxDb - MinDb);
 
-            var width = this.ActualWidth - 2;
-            var height = this.ActualHeight - 2;
-      
+            if (db > maxMark)
             {
-                double zeroDb = (-MinDb) / (MaxDb - MinDb);
-                var zeroHeight = (int)(height * zeroDb);
-
-                height = (int)(height * percent);
-                if (height > maxMark)
-                {
-                    maxMark = height;
-                    maxTime = DateTime.Now;
-                }
-                if ((DateTime.Now - maxTime).TotalMilliseconds > PeakMarkHoldTime && maxMark > 1)
-                    maxMark -= PeakMarkFallBackSpeed;
-
-                if (this.ActualHeight - 1 - maxMark > 1)
-                    drawingContext.DrawLine(new Pen(PeakMarkColor, 2), new Point(1, this.ActualHeight - 1 - maxMark), new Point(width + 1, this.ActualHeight - 1 - maxMark));
-
-                if (this.ActualHeight - 1 - height > 0)
-                    drawingContext.DrawRectangle(Foreground, new Pen(Foreground, 0), new Rect(1, this.ActualHeight - 1 - height, width, height));
-
-                // 0db mark
-                drawingContext.DrawLine(new Pen(Brushes.Red, 1), new Point(1, this.ActualHeight - 1 - zeroHeight), new Point(width + 1, this.ActualHeight - 1 - zeroHeight));
+                maxMark = db;
+                maxTime = DateTime.Now;
             }
+
+            if ((DateTime.Now - maxTime).TotalMilliseconds > PeakHoldTime && maxMark > MinDb)
+                maxMark -= 2;
+
+            var numBlocksToPaint = ((maxMark - MinDb) / (MaxDb - MinDb)) * numBlocks;
+
+            for (int i = 0; i < numBlocks; i++)
+            {
+                PaintBlock(drawingContext, i, i < numBlocksToPaint);
+            }
+        }
+
+        private void PaintBlock(DrawingContext drawingContext, int i, bool isOn)
+        {
+            var color = i switch
+            {
+                _ when !isOn => i switch
+                {
+                    _ when i < numBlocks - 4 => darkGreen,  // Config
+                    _ when i < numBlocks - 1 => darkOrange, // Config
+                    _ => darkRed,
+                },
+                _ when i < numBlocks - 4 => brightGreen,  // Config
+                _ when i < numBlocks - 1 => brightOrange, // Config
+                _ => brightRed
+            };
+
+            drawingContext.DrawRectangle(color, null, new Rect(1, this.ActualHeight - ((i + 1) * blockHeight) + blockSpacing - 1, width, blockHeight - blockSpacing));
         }
     }
 }

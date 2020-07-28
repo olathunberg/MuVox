@@ -65,18 +65,12 @@
             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,10"  >
                 <VolumeMeter:VolumeMeter x:Name="LeftVu"
                                          Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
-                                         AccentColor="{StaticResource BorderBrushSelected}"
-                                         Foreground="{StaticResource Foreground}"
                                          Amplitude="{Binding LeftAmplitude}"
-                                         Settings="{Binding Settings.VolumeMeterSettings}"
-                                         PeakMarkColor="{StaticResource BorderBrushSelected}"/>
+                                         Settings="{Binding Settings.VolumeMeterSettings}"/>
                 <VolumeMeter:VolumeMeter x:Name="RightVu"
                                          Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
-                                         AccentColor="{StaticResource BorderBrushSelected}"
-                                         Foreground="{StaticResource Foreground}"
                                          Settings="{Binding Settings.VolumeMeterSettings}"
-                                         Amplitude="{Binding RightAmplitude}"
-                                         PeakMarkColor="{StaticResource BorderBrushSelected}"/>
+                                         Amplitude="{Binding RightAmplitude}"/>
             </StackPanel>
             <Grid Grid.Column="1" Margin="10,0,10,10" >
                 <Grid.RowDefinitions>
