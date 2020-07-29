@@ -10,7 +10,7 @@ namespace TTech.MuVox.UI.VolumeMeter
         public int PeakHoldTime { get; set; } = 100;
 
         [DisplayName("MinDb")]
-        public float MinDb { get; set; } = -40;
+        public float MinDb { get; set; } = -39;
 
         [DisplayName("MaxDb")]
         public float MaxDb { get; set; } = 0;

@@ -21,6 +21,7 @@ namespace TTech.MuVox.UI.VolumeMeter
         private DateTime maxTime = DateTime.Now;
         private double yellowMark;
         private double redMark;
+        private float oldAmplitude = float.NegativeInfinity;
 
         public float Amplitude
         {
@@ -32,7 +33,7 @@ namespace TTech.MuVox.UI.VolumeMeter
         public static readonly DependencyProperty AmplitudeProperty =
             DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(0f, (s, e) =>
                 {
-                    if (e.OldValue != e.NewValue && s is FrameworkElement frameworkElement)
+                    if (s is FrameworkElement frameworkElement)
                         frameworkElement.InvalidateVisual();
                 }));
 
@@ -69,13 +70,23 @@ namespace TTech.MuVox.UI.VolumeMeter
         protected override void OnRender(DrawingContext drawingContext)
         {
             if (this.Height < 0 || this.Width < 0)
+            {
                 return;
-            if (this.ActualWidth <= 2 || this.ActualHeight <= blockSpacing)
+            }
+            if (ActualWidth <= 2 || this.ActualHeight <= blockSpacing)
+            {
                 return;
+            }
             if (numBlocks == 0)
             {
                 Initialize();
             }
+            if(oldAmplitude == Amplitude)
+            {
+                return;
+            }
+
+            oldAmplitude = Amplitude;
 
             var db = NAudio.Utils.Decibels.LinearToDecibels(Amplitude);
             if (db < MinDb)
