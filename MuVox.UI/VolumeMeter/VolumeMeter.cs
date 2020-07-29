@@ -105,6 +105,7 @@ namespace TTech.MuVox.UI.VolumeMeter
             width = this.ActualWidth - 2;
             yellowMark = DecibelToBlock(-12);
             redMark = DecibelToBlock(-3);
+            maxMark = 0;
         }
 
         private double DecibelToBlock(double db)
