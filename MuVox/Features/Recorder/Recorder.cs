@@ -15,7 +15,8 @@ namespace TTech.MuVox.Features.Recorder
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
-        private WaveIn waveIn;
+        private WasapiLoopbackCapture waveIn;
+        //private WaveIn waveIn;
         private WaveFileWriter? writer;
         private string outputFolder = string.Empty;
         private string? outputFilenameBase;
@@ -26,11 +27,11 @@ namespace TTech.MuVox.Features.Recorder
         {
             RecordingState = RecordingState.Monitoring;
 
-            waveIn = new WaveIn();
+            waveIn = new WasapiLoopbackCapture(); //new WaveIn();
             waveIn.DataAvailable += WaveIn_DataAvailable;
             waveIn.RecordingStopped += WaveIn_RecordingStopped;
-            waveIn.BufferMilliseconds = 15;
-            waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
+            //waveIn.BufferMilliseconds = 15;
+            //waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
 
             var enumerator = new MMDeviceEnumerator();
             var wasapi = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).FirstOrDefault(x => x.FriendlyName.StartsWith(WaveIn.GetCapabilities(0).ProductName));
@@ -71,16 +72,16 @@ namespace TTech.MuVox.Features.Recorder
             float maxR = 0;
             float minR = 0;
 
-            for (int index = 0; index < e.BytesRecorded; index += 4)
+            var buffer = new WaveBuffer(e.Buffer);
+
+            for (int index = 0; index < e.BytesRecorded / (waveIn.WaveFormat.BitsPerSample / 8); index += 2)
             {
-                var sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
-                var sample32 = sample / 32768f;
+                var sample32 = buffer.FloatBuffer[index];
 
                 maxL = Math.Max(sample32, maxL);
                 minL = Math.Min(sample32, minL);
 
-                sample = (short)((e.Buffer[index + 3] << 8) | (e.Buffer[index + 2]));
-                sample32 = sample / 32768f;
+                sample32 = buffer.FloatBuffer[index + 1];
 
                 maxR = Math.Max(sample32, maxR);
                 minR = Math.Min(sample32, minR);
