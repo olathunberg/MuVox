@@ -5,6 +5,7 @@
     <LangVersion>8</LangVersion>
     <UseWPF>true</UseWPF>
     <Nullable>Enable</Nullable>
+    <RootNamespace>TTech.MuVox.UI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

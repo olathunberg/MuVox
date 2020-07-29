@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <RootNamespace>TTech.MuVox.Testing</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\MuVox\MuVox.csproj">
