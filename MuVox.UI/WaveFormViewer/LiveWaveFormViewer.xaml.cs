@@ -33,7 +33,7 @@ namespace TTech.MuVox.UI.WaveFormViewer
 
         public Color LineColor { get; set; }
 
-        public void AddValue(float maxValue, float minValue)
+        public void AddValue(float maxValueLeft, float maxValueRight)
         {
             if (bitmap == null)
                 return;
@@ -49,7 +49,7 @@ namespace TTech.MuVox.UI.WaveFormViewer
                     }
                 }
 
-                CreatePoint(maxValue, minValue);
+                CreatePoint(maxValueLeft, maxValueRight);
 
                 if (renderPosition > 1)
                 {
@@ -57,7 +57,7 @@ namespace TTech.MuVox.UI.WaveFormViewer
                     {
                         var i = renderPosition - 1;
                         bitmap.DrawLine((i - 1) * (int)xScale, maxPoints[i - 1], (i) * (int)xScale, maxPoints[i], LineColor);
-                        if (maxPoints[i] != minPoints[i])
+                        //if (maxPoints[i] != minPoints[i])
                             bitmap.DrawLine((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
                     }
                 }
@@ -79,7 +79,7 @@ namespace TTech.MuVox.UI.WaveFormViewer
         private void CreatePoint(float topValue, float bottomValue)
         {
             var topYPos = SampleToYPosition(topValue);
-            var bottomYPos = SampleToYPosition(bottomValue);
+            var bottomYPos = SampleToYPosition(-bottomValue);
 
             maxPoints[renderPosition] = topYPos;
             minPoints[renderPosition] = bottomYPos;
