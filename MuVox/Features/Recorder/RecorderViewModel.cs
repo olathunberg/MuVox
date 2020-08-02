@@ -162,9 +162,9 @@ namespace TTech.MuVox.Features.Recorder
         #endregion
 
         #region Events
-        private void RecorderNewSample(float minL, float maxL, float minR, float maxR)
+        private void RecorderNewSample( float maxL, float maxR)
         {
-            NewPoint = ((maxL + maxR) / 2.0f, (minL + minL) / 2.0f);
+            NewPoint = (maxL, maxR);
 
             LeftAmplitude = maxL;
             RightAmplitude = maxR;

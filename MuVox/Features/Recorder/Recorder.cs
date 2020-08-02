@@ -68,9 +68,7 @@ namespace TTech.MuVox.Features.Recorder
                 return;
 
             float maxL = 0;
-            float minL = 0;
             float maxR = 0;
-            float minR = 0;
 
             var buffer = new WaveBuffer(e.Buffer);
 
@@ -79,15 +77,13 @@ namespace TTech.MuVox.Features.Recorder
                 var sample32 = buffer.FloatBuffer[index];
 
                 maxL = Math.Max(sample32, maxL);
-                minL = Math.Min(sample32, minL);
 
                 sample32 = buffer.FloatBuffer[index + 1];
 
                 maxR = Math.Max(sample32, maxR);
-                minR = Math.Min(sample32, minR);
             }
 
-            NewSample?.Invoke(minL, maxL, minR, maxR);
+            NewSample?.Invoke(maxL, maxR);
 
             RaisePropertyChanged(() => TenthOfSecondsRecorded);
         }
@@ -115,7 +111,7 @@ namespace TTech.MuVox.Features.Recorder
         #endregion
 
         #region Properties
-        public Action<float, float, float, float>? NewSample { get; set; }
+        public Action<float, float>? NewSample { get; set; }
 
         public RecordingState RecordingState { get; private set; }
 
