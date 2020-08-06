@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="MuVox.MultiTrack.Fader.Fader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:VolumeMeter="clr-namespace:TTech.MuVox.UI.VolumeMeter;assembly=MuVox.UI"
+             mc:Ignorable="d" 
+             Width="70">
+
+    <StackPanel>
+        <Label Content="{Binding Label}" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Slider Orientation="Vertical"
+                    Margin="5,0"/>
+            <VolumeMeter:VolumeMeter x:Name="Meter" Width="15" 
+                                     Amplitude="{Binding Amplitude}"/>
+            <VolumeMeter:Scale FontSize="10"
+                               Margin="5,0"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
