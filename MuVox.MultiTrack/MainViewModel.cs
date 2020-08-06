@@ -1,33 +1,31 @@
 ﻿using System;
+using System.Windows.Threading;
+using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
 namespace MuVox.MultiTrack
 {
     public class MainViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
-        private WasapiLoopbackCapture waveIn;
-        private float amp;
+        private Dispatcher dispatcher;
+        private WasapiCapture waveIn;
 
         public MainViewModel()
         {
-
-            waveIn = new WasapiLoopbackCapture(); //new WaveIn();
+            dispatcher = Dispatcher.CurrentDispatcher;
+            waveIn = new WasapiLoopbackCapture(); 
             waveIn.DataAvailable += WaveIn_DataAvailable;
-            waveIn.RecordingStopped += WaveIn_RecordingStopped;
+
+            Faders = new System.Collections.ObjectModel.ObservableCollection<Fader.Fader>();
+            for (int i = 0; i < waveIn.WaveFormat.Channels; i++)
+            {
+                Faders.Add(new Fader.Fader { Label = $"Track {i + 1}" });
+            }
 
             waveIn.StartRecording();
         }
 
-        public float Amp
-        {
-            get { return amp; }
-            set { amp = value;  RaisePropertyChanged(); }
-        }
-
-        private void WaveIn_RecordingStopped(object sender, StoppedEventArgs e)
-        {
-            //throw new NotImplementedException();
-        }
+        public System.Collections.ObjectModel.ObservableCollection<Fader.Fader> Faders { get; set; }
 
         private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
@@ -36,14 +34,26 @@ namespace MuVox.MultiTrack
 
             var buffer = new WaveBuffer(e.Buffer);
 
-            float max = 0;
-            for (int index = 0; index < e.BytesRecorded / (waveIn.WaveFormat.BitsPerSample / 8); index += 2)
+            float[] max = new float[waveIn.WaveFormat.Channels];
+            for (int index = 0; index < e.BytesRecorded / (waveIn.WaveFormat.BitsPerSample / 8); index += waveIn.WaveFormat.Channels)
             {
-                var sample32 = buffer.FloatBuffer[index];
-                max = Math.Max(sample32, max);
+                for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
+                {
+                    var sample32 = buffer.FloatBuffer[index + channel];
+                    max[channel] = Math.Max(sample32, max[channel]);
+                }
             }
 
-            Amp = max;
+            if (!dispatcher.HasShutdownStarted)
+            {
+                dispatcher.Invoke(() =>
+                {
+                    for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
+                    {
+                        Faders[channel].Amplitude = max[channel];
+                    }
+                });
+            }
         }
     }
 }
