@@ -43,7 +43,7 @@ namespace TTech.MuVox.UI.VolumeMeter
                     CultureInfo.CurrentUICulture,
                     FlowDirection.LeftToRight,
                     new Typeface(FontFamily, FontStyle, FontWeights.Thin, FontStretch),
-                    12,
+                    FontSize,
                     Foreground,
                     VisualTreeHelper.GetDpi(this).PixelsPerDip));
             }
