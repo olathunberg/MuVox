@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 
 namespace MuVox.MultiTrack
 {
@@ -10,6 +11,8 @@ namespace MuVox.MultiTrack
         public MainWindow()
         {
             InitializeComponent();
+
+            this.Width = (DataContext as MainViewModel).Faders.Sum(x => x.Width) + 38;
         }
     }
 }
