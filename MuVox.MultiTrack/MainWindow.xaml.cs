@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using GalaSoft.MvvmLight;
 
 namespace MuVox.MultiTrack
 {
@@ -13,6 +14,14 @@ namespace MuVox.MultiTrack
             InitializeComponent();
 
             this.Width = (DataContext as MainViewModel).Faders.Sum(x => x.Width) + 38;
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnClosing(e);
+
+            if (!e.Cancel && DataContext is ICleanup cleanup)
+                cleanup.Cleanup();
         }
     }
 }

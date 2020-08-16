@@ -21,7 +21,13 @@ namespace TTech.MuVox.UI.VolumeMeter
         private DateTime maxTime = DateTime.Now;
         private double yellowMark;
         private double redMark;
-        private float oldAmplitude = float.NegativeInfinity;
+        private double oldNumBlocksToPaint;
+        private double numBlocksToPaint;
+
+        public VolumeMeter()
+        {
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+        }
 
         public float Amplitude
         {
@@ -31,11 +37,7 @@ namespace TTech.MuVox.UI.VolumeMeter
 
         // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty AmplitudeProperty =
-            DependencyProperty.Register("Amplitude", typeof(float), typeof(VolumeMeter), new PropertyMetadata(0f, (s, e) =>
-                {
-                    if (s is FrameworkElement frameworkElement)
-                        frameworkElement.InvalidateVisual();
-                }));
+            DependencyProperty.Register(nameof(Amplitude), typeof(float), typeof(VolumeMeter), new PropertyMetadata(0.0f));
 
         public VolumeMeterSettings Settings
         {
@@ -45,7 +47,7 @@ namespace TTech.MuVox.UI.VolumeMeter
 
         // Using a DependencyProperty as the backing store for Settings.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SettingsProperty =
-            DependencyProperty.Register("Settings", typeof(VolumeMeterSettings), typeof(VolumeMeter), new PropertyMetadata(new VolumeMeterSettings()));
+            DependencyProperty.Register(nameof(Settings), typeof(VolumeMeterSettings), typeof(VolumeMeter), new PropertyMetadata(new VolumeMeterSettings()));
 
         /// <summary>
         /// Minimum decibels
@@ -69,6 +71,23 @@ namespace TTech.MuVox.UI.VolumeMeter
 
         protected override void OnRender(DrawingContext drawingContext)
         {
+            for (int i = 0; i < numBlocks; i++)
+            {
+                PaintBlock(drawingContext, i, i < numBlocksToPaint);
+            }
+        }
+
+        private void Initialize()
+        {
+            numBlocks = (int)((this.ActualHeight + blockSpacing - 1) / blockHeight);
+            width = this.ActualWidth - 2;
+            yellowMark = DecibelToBlock(-12);
+            redMark = DecibelToBlock(-3);
+            maxMark = 0;
+        }
+
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
             if (this.Height < 0 || this.Width < 0)
             {
                 return;
@@ -81,12 +100,6 @@ namespace TTech.MuVox.UI.VolumeMeter
             {
                 Initialize();
             }
-            if(oldAmplitude == Amplitude)
-            {
-                return;
-            }
-
-            oldAmplitude = Amplitude;
 
             var db = NAudio.Utils.Decibels.LinearToDecibels(Amplitude);
             if (db < MinDb)
@@ -103,20 +116,12 @@ namespace TTech.MuVox.UI.VolumeMeter
             if ((DateTime.Now - maxTime).TotalMilliseconds > PeakHoldTime && maxMark > MinDb)
                 maxMark -= 2;
 
-            var numBlocksToPaint = DecibelToBlock(maxMark);
-            for (int i = 0; i < numBlocks; i++)
+            oldNumBlocksToPaint = numBlocksToPaint;
+            numBlocksToPaint = DecibelToBlock(maxMark);
+            if (oldNumBlocksToPaint != numBlocksToPaint)
             {
-                PaintBlock(drawingContext, i, i < numBlocksToPaint);
+                this.InvalidateVisual();
             }
-        }
-
-        private void Initialize()
-        {
-            numBlocks = (int)((this.ActualHeight + blockSpacing - 1) / blockHeight);
-            width = this.ActualWidth - 2;
-            yellowMark = DecibelToBlock(-12);
-            redMark = DecibelToBlock(-3);
-            maxMark = 0;
         }
 
         private double DecibelToBlock(double db)

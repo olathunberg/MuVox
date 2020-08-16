@@ -13,23 +13,10 @@ namespace MuVox.MultiTrack.Fader
             InitializeComponent();
         }
 
-        public float Amplitude
+        public void SetAmplitude(float amplitude)
         {
-            get { return (float)GetValue(AmplitudeProperty); }
-            set { SetValue(AmplitudeProperty, value); }
+            Application.Current.Dispatcher.Invoke(() => Meter.Amplitude = amplitude);
         }
-
-        // Using a DependencyProperty as the backing store for Amplitude.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AmplitudeProperty =
-            DependencyProperty.Register(nameof(Amplitude), typeof(float), typeof(Fader), new PropertyMetadata(0f, (s, e) =>
-            {
-                if (s is Fader fader)
-                {
-                    fader.Meter.Amplitude = (float)e.NewValue;
-                }
-                if (s is FrameworkElement frameworkElement)
-                    frameworkElement.InvalidateVisual();
-            }));
 
         public string Label
         {

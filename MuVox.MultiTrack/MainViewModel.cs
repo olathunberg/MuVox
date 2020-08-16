@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Threading;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
@@ -7,13 +6,11 @@ namespace MuVox.MultiTrack
 {
     public class MainViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
-        private Dispatcher dispatcher;
         private WasapiCapture waveIn;
 
         public MainViewModel()
         {
-            dispatcher = Dispatcher.CurrentDispatcher;
-            waveIn = new WasapiLoopbackCapture(); 
+            waveIn = new WasapiLoopbackCapture();
             waveIn.DataAvailable += WaveIn_DataAvailable;
 
             Faders = new System.Collections.ObjectModel.ObservableCollection<Fader.Fader>();
@@ -44,15 +41,18 @@ namespace MuVox.MultiTrack
                 }
             }
 
-            if (!dispatcher.HasShutdownStarted)
+            for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
             {
-                dispatcher.Invoke(() =>
-                {
-                    for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
-                    {
-                        Faders[channel].Amplitude = max[channel];
-                    }
-                });
+                Faders[channel].SetAmplitude(max[channel]);
+            }
+        }
+
+        public override void Cleanup()
+        {
+            if (waveIn != null)
+            {
+                waveIn.StopRecording();
+                waveIn.Dispose();
             }
         }
     }

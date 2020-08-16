@@ -69,8 +69,8 @@
                                          Settings="{Binding Settings.VolumeMeterSettings}"/>
                 <VolumeMeter:VolumeMeter x:Name="RightVu"
                                          Width="20" VerticalAlignment="Stretch" Margin="10,0,0,0"
-                                         Settings="{Binding Settings.VolumeMeterSettings}"
-                                         Amplitude="{Binding RightAmplitude}"/>
+                                         Amplitude="{Binding RightAmplitude}"
+                                         Settings="{Binding Settings.VolumeMeterSettings}"/>
                 <VolumeMeter:Scale VerticalAlignment="Stretch"
                                    Settings="{Binding Settings.VolumeMeterSettings}"/>
             </StackPanel>

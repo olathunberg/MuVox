@@ -29,8 +29,7 @@
             <!--<Slider Orientation="Vertical"
                     Margin="5,0"/>-->
             <VolumeMeter:VolumeMeter x:Name="Meter" 
-                                     Width="15" 
-                                     Amplitude="{Binding Amplitude}"/>
+                                     Width="15" />
             <VolumeMeter:Scale FontSize="12"
                                Margin="5,0"/>
         </StackPanel>
