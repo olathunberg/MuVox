@@ -2,7 +2,7 @@
 using System.Windows;
 using GalaSoft.MvvmLight;
 
-namespace MuVox.MultiTrack
+namespace MuVox.Metering
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -13,7 +13,7 @@ namespace MuVox.MultiTrack
         {
             InitializeComponent();
 
-            this.Width = (DataContext as MainViewModel).Faders.Sum(x => x.Width) + 38;
+            this.Width = (DataContext as MainViewModel).Meters.Sum(x => x.Width) + 38;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

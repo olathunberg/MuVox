@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.Testing", "MuVox.Test
 EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "MuVox.Installer", "MuVox.Installer\MuVox.Installer.wixproj", "{952574A2-0BC1-44E4-A157-5C2A60DA9597}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.MultiTrack", "MuVox.MultiTrack\MuVox.MultiTrack.csproj", "{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.Metering", "MuVox.Metering\MuVox.Metering.csproj", "{6D82E0EE-7D24-40B9-8B51-04FFB7AE2279}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.UI", "MuVox.UI\MuVox.UI.csproj", "{0FC33084-6D5C-4E9D-84BA-BE40F9A3756D}"
 EndProject

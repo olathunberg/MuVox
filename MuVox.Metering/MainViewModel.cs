@@ -2,7 +2,7 @@
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 
-namespace MuVox.MultiTrack
+namespace MuVox.Metering
 {
     public class MainViewModel : GalaSoft.MvvmLight.ViewModelBase
     {
@@ -13,16 +13,16 @@ namespace MuVox.MultiTrack
             waveIn = new WasapiLoopbackCapture();
             waveIn.DataAvailable += WaveIn_DataAvailable;
 
-            Faders = new System.Collections.ObjectModel.ObservableCollection<Fader.Fader>();
+            Meters = new System.Collections.ObjectModel.ObservableCollection<Meter.Meter>();
             for (int i = 0; i < waveIn.WaveFormat.Channels; i++)
             {
-                Faders.Add(new Fader.Fader { Label = $"Track {i + 1}" });
+                Meters.Add(new Meter.Meter { Label = $"Track {i + 1}" });
             }
 
             waveIn.StartRecording();
         }
 
-        public System.Collections.ObjectModel.ObservableCollection<Fader.Fader> Faders { get; set; }
+        public System.Collections.ObjectModel.ObservableCollection<Meter.Meter> Meters { get; set; }
 
         private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
@@ -43,7 +43,7 @@ namespace MuVox.MultiTrack
 
             for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
             {
-                Faders[channel].SetAmplitude(max[channel]);
+                Meters[channel].SetAmplitude(max[channel]);
             }
         }
 
@@ -52,7 +52,6 @@ namespace MuVox.MultiTrack
             if (waveIn != null)
             {
                 waveIn.StopRecording();
-                waveIn.Dispose();
             }
         }
     }

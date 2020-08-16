@@ -1,21 +1,21 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace MuVox.MultiTrack.Fader
+namespace MuVox.Metering.Meter
 {
     /// <summary>
-    /// Interaction logic for Fader.xaml
+    /// Interaction logic for Meter.xaml
     /// </summary>
-    public partial class Fader : UserControl
+    public partial class Meter : UserControl
     {
-        public Fader()
+        public Meter()
         {
             InitializeComponent();
         }
 
         public void SetAmplitude(float amplitude)
         {
-            Application.Current.Dispatcher.Invoke(() => Meter.Amplitude = amplitude);
+            Application.Current.Dispatcher.Invoke(() => VolumeMeter.Amplitude = amplitude);
         }
 
         public string Label
@@ -26,6 +26,6 @@ namespace MuVox.MultiTrack.Fader
 
         // Using a DependencyProperty as the backing store for Label.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty LabelProperty =
-            DependencyProperty.Register("Label", typeof(string), typeof(Fader), new PropertyMetadata("Track x"));
+            DependencyProperty.Register(nameof(Label), typeof(string), typeof(Meter), new PropertyMetadata("Track x"));
     }
 }

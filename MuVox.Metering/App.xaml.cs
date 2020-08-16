@@ -2,7 +2,7 @@
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuVox.MultiTrack
+namespace MuVox.Metering
 {
     public partial class App : Application
     {

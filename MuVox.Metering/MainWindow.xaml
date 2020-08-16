@@ -1,9 +1,9 @@
-﻿<Window x:Class="MuVox.MultiTrack.MainWindow"
+﻿<Window x:Class="MuVox.Metering.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MuVox.MultiTrack"
+        xmlns:local="clr-namespace:MuVox.Metering"
         mc:Ignorable="d"
         Style="{DynamicResource WindowStyle}"
         DataContext="{DynamicResource MainViewModel}"
@@ -20,7 +20,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <ListBox ItemsSource="{Binding Faders}" 
+    <ListBox ItemsSource="{Binding Meters}" 
              Background="Transparent"
              Foreground="{StaticResource Foreground}"
              VerticalAlignment="Stretch"

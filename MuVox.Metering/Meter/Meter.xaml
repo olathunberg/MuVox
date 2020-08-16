@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MuVox.MultiTrack.Fader.Fader"
+﻿<UserControl x:Class="MuVox.Metering.Meter.Meter"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -26,9 +26,7 @@
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     Margin="2,4">
-            <!--<Slider Orientation="Vertical"
-                    Margin="5,0"/>-->
-            <VolumeMeter:VolumeMeter x:Name="Meter" 
+            <VolumeMeter:VolumeMeter x:Name="VolumeMeter" 
                                      Width="15" />
             <VolumeMeter:Scale FontSize="12"
                                Margin="5,0"/>

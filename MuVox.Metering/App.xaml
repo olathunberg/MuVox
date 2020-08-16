@@ -1,7 +1,7 @@
-﻿<Application x:Class="MuVox.MultiTrack.App"
+﻿<Application x:Class="MuVox.Metering.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:MuVox.MultiTrack"
+             xmlns:local="clr-namespace:MuVox.Metering"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          
