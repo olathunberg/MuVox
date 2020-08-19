@@ -15,8 +15,7 @@ namespace TTech.MuVox.Features.Recorder
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
-        private WasapiLoopbackCapture waveIn;
-        //private WaveIn waveIn;
+        private WaveIn waveIn;
         private WaveFileWriter? writer;
         private string outputFolder = string.Empty;
         private string? outputFilenameBase;
@@ -27,11 +26,11 @@ namespace TTech.MuVox.Features.Recorder
         {
             RecordingState = RecordingState.Monitoring;
 
-            waveIn = new WasapiLoopbackCapture(); //new WaveIn();
+            waveIn = new WaveIn();
             waveIn.DataAvailable += WaveIn_DataAvailable;
             waveIn.RecordingStopped += WaveIn_RecordingStopped;
-            //waveIn.BufferMilliseconds = 15;
-            //waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
+            waveIn.BufferMilliseconds = 15;
+            waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
 
             var enumerator = new MMDeviceEnumerator();
             var wasapi = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).FirstOrDefault(x => x.FriendlyName.StartsWith(WaveIn.GetCapabilities(0).ProductName));
@@ -70,15 +69,15 @@ namespace TTech.MuVox.Features.Recorder
             float maxL = 0;
             float maxR = 0;
 
-            var buffer = new WaveBuffer(e.Buffer);
-
-            for (int index = 0; index < e.BytesRecorded / (waveIn.WaveFormat.BitsPerSample / 8); index += 2)
+            for (int index = 0; index < e.BytesRecorded; index += 4)
             {
-                var sample32 = buffer.FloatBuffer[index];
+                var sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
+                var sample32 = sample / 32768f;
 
                 maxL = Math.Max(sample32, maxL);
 
-                sample32 = buffer.FloatBuffer[index + 1];
+                sample = (short)((e.Buffer[index + 3] << 8) | (e.Buffer[index + 2]));
+                sample32 = sample / 32768f;
 
                 maxR = Math.Max(sample32, maxR);
             }
