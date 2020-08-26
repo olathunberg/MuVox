@@ -15,7 +15,8 @@ namespace MuVox.Metering.Meter
 
         public void SetAmplitude(float amplitude)
         {
-            Application.Current.Dispatcher.Invoke(() => VolumeMeter.Amplitude = amplitude);
+            if (Application.Current != null)
+                Application.Current.Dispatcher.Invoke(() => VolumeMeter.Amplitude = amplitude);
         }
 
         public string Label
