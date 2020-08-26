@@ -15,7 +15,7 @@ namespace TTech.MuVox.Features.Recorder
     public class Recorder : ObservableObject, ICleanup, IDisposable
     {
         #region Fields
-        private WaveIn waveIn;
+        private WasapiCapture waveIn;
         private WaveFileWriter? writer;
         private string outputFolder = string.Empty;
         private string? outputFilenameBase;
@@ -26,16 +26,14 @@ namespace TTech.MuVox.Features.Recorder
         {
             RecordingState = RecordingState.Monitoring;
 
-            waveIn = new WaveIn();
+            var enumerator = new MMDeviceEnumerator();
+            var mmDevice = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).FirstOrDefault(x => x.FriendlyName.StartsWith(WaveIn.GetCapabilities(0).ProductName));
+            waveIn = new WasapiCapture(mmDevice);
             waveIn.DataAvailable += WaveIn_DataAvailable;
             waveIn.RecordingStopped += WaveIn_RecordingStopped;
-            waveIn.BufferMilliseconds = 15;
-            waveIn.WaveFormat = new WaveFormat(44100, 16, 2);
-
-            var enumerator = new MMDeviceEnumerator();
-            var wasapi = enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).FirstOrDefault(x => x.FriendlyName.StartsWith(WaveIn.GetCapabilities(0).ProductName));
-            DeviceName = wasapi.FriendlyName;
-            Format = waveIn.WaveFormat.ToString();
+            DeviceName = mmDevice.FriendlyName;
+            var fmt = waveIn.WaveFormat;
+            Format = $"{fmt.BitsPerSample} bit {fmt.Encoding}: {fmt.SampleRate / 1000} kHz {fmt.Channels} channels";
 
             if (!(bool)(DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue))
                 waveIn.StartRecording();
@@ -66,23 +64,19 @@ namespace TTech.MuVox.Features.Recorder
             if (e == null)
                 return;
 
-            float maxL = 0;
-            float maxR = 0;
+            var buffer = new WaveBuffer(e.Buffer);
 
-            for (int index = 0; index < e.BytesRecorded; index += 4)
+            float[] max = new float[waveIn.WaveFormat.Channels];
+            for (int index = 0; index < e.BytesRecorded / (waveIn.WaveFormat.BitsPerSample / 8); index += waveIn.WaveFormat.Channels)
             {
-                var sample = (short)((e.Buffer[index + 1] << 8) | (e.Buffer[index]));
-                var sample32 = sample / 32768f;
-
-                maxL = Math.Max(sample32, maxL);
-
-                sample = (short)((e.Buffer[index + 3] << 8) | (e.Buffer[index + 2]));
-                sample32 = sample / 32768f;
-
-                maxR = Math.Max(sample32, maxR);
+                for (int channel = 0; channel < waveIn.WaveFormat.Channels; channel++)
+                {
+                    var sample32 = buffer.FloatBuffer[index + channel];
+                    max[channel] = Math.Max(sample32, max[channel]);
+                }
             }
 
-            NewSample?.Invoke(maxL, maxR);
+            NewSample?.Invoke(max[0], max[1]);
 
             RaisePropertyChanged(() => TenthOfSecondsRecorded);
         }
