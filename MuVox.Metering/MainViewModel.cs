@@ -13,10 +13,13 @@ namespace MuVox.Metering
             waveIn = new WasapiLoopbackCapture();
             waveIn.DataAvailable += WaveIn_DataAvailable;
 
+            var trackConfig = ChannelConfiguration.Read();
+
             Meters = new System.Collections.ObjectModel.ObservableCollection<Meter.Meter>();
             for (int i = 0; i < waveIn.WaveFormat.Channels; i++)
             {
-                Meters.Add(new Meter.Meter { Label = $"Track {i + 1}" });
+                var label = trackConfig.Channels[i]?.Label ?? $"Track {i + 1}";
+                Meters.Add(new Meter.Meter { Label = label });
             }
 
             waveIn.StartRecording();

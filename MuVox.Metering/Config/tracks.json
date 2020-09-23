@@ -1,0 +1,10 @@
+﻿{
+  "Channels": [
+    {
+      "Label": "Left"
+    },
+    {
+      "Label": "Right"
+    }
+  ]
+}
