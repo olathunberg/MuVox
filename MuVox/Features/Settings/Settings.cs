@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace TTech.MuVox.Features.Settings
@@ -73,16 +72,16 @@ namespace TTech.MuVox.Features.Settings
             if (current == null)
                 return;
 
-            var serializerSettings = new JsonSerializerSettings
+            var serializerSettings = new JsonSerializerOptions
             {
-                Formatting = Formatting.Indented
+                WriteIndented = true
             };
 
             var dir = Path.GetDirectoryName(FILE_PATH);
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
                 Directory.CreateDirectory(dir);
 
-            File.WriteAllText(FILE_PATH, JsonConvert.SerializeObject(current, serializerSettings));
+            File.WriteAllText(FILE_PATH, JsonSerializer.Serialize(current, serializerSettings));
         }
 
         public IEnumerable<string> Verify()
@@ -99,7 +98,7 @@ namespace TTech.MuVox.Features.Settings
             Settings newSettings;
 
             if (File.Exists(FILE_PATH))
-                newSettings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(FILE_PATH));
+                newSettings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(FILE_PATH));
             else
                 newSettings = new Settings();
 
