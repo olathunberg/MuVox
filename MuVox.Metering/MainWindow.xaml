@@ -20,17 +20,27 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <ListBox ItemsSource="{Binding Meters}" 
-             Background="Transparent"
-             Foreground="{StaticResource Foreground}"
-             VerticalAlignment="Stretch"
-             VerticalContentAlignment="Stretch"
-             BorderThickness="0"
-             AlternationCount="1">
-        <ListBox.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal"/>
-            </ItemsPanelTemplate>
-        </ListBox.ItemsPanel>
-    </ListBox>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0"
+                Content="{Binding FadeText}"
+                Command="{Binding FadeCommand, Mode=OneWay}" />
+        <ListBox Grid.Row="1"
+                 ItemsSource="{Binding Meters}" 
+                 Background="Transparent"
+                 Foreground="{StaticResource Foreground}"
+                 VerticalAlignment="Stretch"
+                 VerticalContentAlignment="Stretch"
+                 BorderThickness="0"
+                 AlternationCount="1">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+    </Grid>
 </Window>

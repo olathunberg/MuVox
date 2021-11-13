@@ -28,8 +28,8 @@ namespace TTech.MuVox
 
         public MainWindowModel()
         {
-            Helpers.HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.F3, Helpers.KeyModifiers.Alt);
-            Helpers.HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
+            Shared.HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.F3, Shared.KeyModifiers.Alt);
+            Shared.HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
 
             CurrentViewModel = viewModelLocator.Recorder;
 
@@ -111,7 +111,7 @@ namespace TTech.MuVox
             }
         }
 
-        private void HotKeyManager_HotKeyPressed(object sender, Helpers.HotKeyEventArgs e)
+        private void HotKeyManager_HotKeyPressed(object sender, Shared.HotKeyEventArgs e)
         {
             Messenger.Default.Send(new SetMarkerMessage());
         }

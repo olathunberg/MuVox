@@ -33,4 +33,5 @@
 		<Reference Include="System.Windows.Forms" />
 	</ItemGroup>
 
+	<Import Project="..\MuVox.Shared\MuVox.Shared.projitems" Label="Shared" />
 </Project>

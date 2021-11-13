@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox", "MuVox\MuVox.csproj", "{DE47FF85-6E21-43A5-BD71-3F5BE9F48713}"
 EndProject
@@ -15,7 +15,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.UI", "MuVox.UI\MuVox.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MuVox.Core", "MuVox.Core\MuVox.Core.csproj", "{54F978AB-0ABF-4116-8DB0-C27050BAE94D}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "MuVox.Shared", "MuVox.Shared\MuVox.Shared.shproj", "{9E176F6E-CB92-456D-B94C-5B475E7F191C}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		MuVox.Shared\MuVox.Shared.projitems*{6d82e0ee-7d24-40b9-8b51-04ffb7ae2279}*SharedItemsImports = 5
+		MuVox.Shared\MuVox.Shared.projitems*{9e176f6e-cb92-456d-b94c-5b475e7f191c}*SharedItemsImports = 13
+		MuVox.Shared\MuVox.Shared.projitems*{de47ff85-6e21-43a5-bd71-3f5be9f48713}*SharedItemsImports = 5
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86

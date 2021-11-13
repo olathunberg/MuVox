@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace TTech.MuVox.Helpers
+namespace TTech.MuVox.Shared
 {
     public static class HotKeyManager
     {
