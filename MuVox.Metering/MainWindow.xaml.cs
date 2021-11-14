@@ -13,7 +13,7 @@ namespace MuVox.Metering
         {
             InitializeComponent();
 
-            this.Width = (DataContext as MainViewModel).Meters.Sum(x => x.Width) + 38;
+            this.Width = (DataContext as MainViewModel).Meters.Sum(x => x.Width) + 38 + 220;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -22,6 +22,11 @@ namespace MuVox.Metering
 
             if (!e.Cancel && DataContext is ICleanup cleanup)
                 cleanup.Cleanup();
+        }
+
+        private void Window_Activated(object sender, System.EventArgs e)
+        {
+
         }
     }
 }

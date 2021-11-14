@@ -8,7 +8,7 @@
         Style="{DynamicResource WindowStyle}"
         DataContext="{DynamicResource MainViewModel}"
         ResizeMode="NoResize"
-        Height="420"
+        Height="325"
         Title="MuVox" >
     <Window.Resources>
         <ResourceDictionary>
@@ -21,13 +21,11 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <Button Grid.Row="0"
-                Content="{Binding FadeText}"
-                Command="{Binding FadeCommand, Mode=OneWay}" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="220"/>
+        </Grid.ColumnDefinitions>
+        
         <ListBox Grid.Row="1"
                  ItemsSource="{Binding Meters}" 
                  Background="Transparent"
@@ -35,6 +33,7 @@
                  VerticalAlignment="Stretch"
                  VerticalContentAlignment="Stretch"
                  BorderThickness="0"
+                 SelectionMode="Single"
                  AlternationCount="1">
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -42,5 +41,19 @@
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
         </ListBox>
+
+        <StackPanel Grid.Column="1"
+                    Grid.RowSpan="2"
+                    Margin="5">
+            <Image Source="{Binding PlaybackInfo.Image}" MaxHeight="220"/>
+            <TextBlock FontSize="16" 
+                       FontWeight="SemiBold"
+                       Text="{Binding PlaybackInfo.Artist}" />
+            <TextBlock Text="{Binding PlaybackInfo.Track}" 
+                       Margin="0,0,0,2"/>
+            <Button Content="{Binding PlaybackInfo.FadeText}"
+                    Command="{Binding FadeCommand, Mode=OneWay}"
+                    Style="{StaticResource StandardButton}" />
+        </StackPanel>
     </Grid>
 </Window>

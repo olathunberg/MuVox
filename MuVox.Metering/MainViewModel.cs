@@ -1,10 +1,10 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight.Command;
+using NAudio.CoreAudioApi;
+using NAudio.Wave;
+using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
-using NAudio.CoreAudioApi;
-using NAudio.Wave;
 using TTech.MuVox.Shared;
 
 namespace MuVox.Metering
@@ -30,21 +30,18 @@ namespace MuVox.Metering
                 Meters.Add(new Meter.Meter { Label = label });
             }
 
-            FadeText = GetFadeText(new WasapiOut());
             waveIn.StartRecording();
 
             HotKeyManager.RegisterHotKey(System.Windows.Forms.Keys.F1, KeyModifiers.Control);
             HotKeyManager.HotKeyPressed += HotKeyManager_HotKeyPressed;
+
+            PlaybackInfo = new MediaPlaybackInfo();
+            PlaybackInfo.Initialize();
         }
+
+        public MediaPlaybackInfo PlaybackInfo { get; set; }
 
         public System.Collections.ObjectModel.ObservableCollection<Meter.Meter> Meters { get; set; }
-
-        public string FadeText { get; private set; }
-
-        private string GetFadeText(WasapiOut waveOut)
-        {
-            return waveOut.Volume < 0.05f ? "Fade up" : "Fade down";
-        }
 
         private void WaveIn_DataAvailable(object sender, WaveInEventArgs e)
         {
@@ -99,6 +96,7 @@ namespace MuVox.Metering
             // Fade up to last or max
             if (waveOut.Volume < (desiredVolume - (fadeStep / 2.0)))
             {
+                PlaybackInfo.Play();
                 var volumeFade = desiredVolume - waveOut.Volume;
                 while (waveOut.Volume < desiredVolume - fadeStep)
                 {
@@ -120,10 +118,11 @@ namespace MuVox.Metering
                 }
 
                 waveOut.Volume = 0;
+
+                PlaybackInfo.Pause();
             }
 
-            FadeText = GetFadeText(waveOut);
-            RaisePropertyChanged(() => FadeText);
+            PlaybackInfo.UpdateFadeText(waveOut);
         }
 
         public override void Cleanup()

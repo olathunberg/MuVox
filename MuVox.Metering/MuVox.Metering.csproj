@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
 		<PackageReference Include="MvvmLight" Version="5.4.1.1" />
 		<PackageReference Include="NAudio" Version="2.0.1" />
+		<PackageReference Include="NPSMLib" Version="0.9.14" />
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
 	</ItemGroup>
 
