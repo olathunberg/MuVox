@@ -160,12 +160,12 @@ namespace TTech.MuVox.Features.Processor
                 if (preConvert)
                 {
                     using var reader = new Mp3FileReader(baseFileName);
-                    TotalProgressMaximum = reader.Length * 6;
+                    TotalProgressMaximum = reader.Length * 5;
                 }
                 else
                 {
                     using var reader = new WaveFileReader(baseFileName);
-                    TotalProgressMaximum = reader.Length * 5;
+                    TotalProgressMaximum = reader.Length * 4;
                 }
 
                 if (preConvert)

@@ -37,10 +37,10 @@ namespace TTech.MuVox.Features.Processor.Tools
             {
                 progressMaximum.Report(reader.Length);
 
-                var sampleReader = new Pcm16BitToSampleProvider(reader);
+                var sampleReader = new WaveToSampleProvider(reader);
                 var compressor = new FastAttackCompressor1175(sampleReader);
                 var aggregator = new MaxSampleAggregator(compressor);
-                var sampleWriter = new SampleToWaveProvider16(aggregator);
+                var sampleWriter = new SampleToWaveProvider(aggregator);
 
                 FileCreator.CreateWaveFile(tempFile, sampleWriter, progress);
                 maxValue = aggregator.MaxValue;
@@ -54,9 +54,9 @@ namespace TTech.MuVox.Features.Processor.Tools
             {
                 progressMaximum.Report(reader.Length);
 
-                var sampleReader = new Pcm16BitToSampleProvider(reader);
+                var sampleReader = new WaveToSampleProvider(reader);
                 var normalizer = new SimpleNormalizer(sampleReader, .98f, maxValue);
-                var sampleWriter = new SampleToWaveProvider16(normalizer);
+                var sampleWriter = new SampleToWaveProvider(normalizer);
 
                 FileCreator.CreateWaveFile(baseFilename, sampleWriter, progress);
             }
