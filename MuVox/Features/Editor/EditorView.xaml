@@ -6,7 +6,7 @@
              x:Class="TTech.MuVox.Features.Editor.EditorView"
              Focusable="True"
              d:DesignHeight="200"
-             DataContext="{Binding Marker, Source={StaticResource ViewModelLocator}}"
+             DataContext="{Binding Editor, Source={StaticResource ViewModelLocator}}"
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -60,13 +60,13 @@
         </Grid>
 
         <Grid Grid.Row="1" Margin="10,0,10,10">
-            <WaveFormViewer:WaveFormViewer WaveStream="{Binding Marker.WaveStream, Source={StaticResource ViewModelLocator}}"
-                                           MarkersCollection="{Binding Marker.Markers, Source={StaticResource ViewModelLocator}}"
+            <WaveFormViewer:WaveFormViewer WaveStream="{Binding Editor.WaveStream, Source={StaticResource ViewModelLocator}}"
+                                           MarkersCollection="{Binding Editor.Markers, Source={StaticResource ViewModelLocator}}"
                                            Foreground="{StaticResource BorderBrushSelected}"
                                            Background="{StaticResource BackgroundNormal}"
                                            LineColor="{StaticResource BorderBrushSelectedColor}"
                                            BorderBrush="{StaticResource BorderBrushSelected}"
-                                           SelectedPosition="{Binding Marker.SelectedPosition, Source={StaticResource ViewModelLocator}, Mode=TwoWay}"
+                                           SelectedPosition="{Binding Editor.SelectedPosition, Source={StaticResource ViewModelLocator}, Mode=TwoWay}"
                                            BorderThickness="1"/>
         </Grid>
     </Grid>
