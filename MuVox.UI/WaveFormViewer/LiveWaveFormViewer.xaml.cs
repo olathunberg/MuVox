@@ -57,8 +57,7 @@ namespace TTech.MuVox.UI.WaveFormViewer
                     {
                         var i = renderPosition - 1;
                         bitmap.DrawLine((i - 1) * (int)xScale, maxPoints[i - 1], (i) * (int)xScale, maxPoints[i], LineColor);
-                        //if (maxPoints[i] != minPoints[i])
-                            bitmap.DrawLine((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
+                        bitmap.DrawLine((i - 1) * (int)xScale, minPoints[i - 1], (i) * (int)xScale, minPoints[i], LineColor);
                     }
                 }
 

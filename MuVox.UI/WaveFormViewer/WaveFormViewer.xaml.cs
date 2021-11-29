@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GalaSoft.MvvmLight.CommandWpf;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using TTech.MuVox.Core;
 using TTech.MuVox.UI.Helpers;
 
@@ -525,14 +526,15 @@ namespace TTech.MuVox.UI.WaveFormViewer
                 {
                     if (waveStream != null)
                     {
-                        streamData = new short[waveStream.Length / 2];
+                        streamData = new short[waveStream.Length/(waveStream.WaveFormat.BitsPerSample/waveStream.WaveFormat.BlockAlign)];
+                        var sampleProvider = new WaveToSampleProvider(waveStream);
                         waveStream.Position = 0;
-                        averageBytesPerSecond = waveStream.WaveFormat.AverageBytesPerSecond;
+                        averageBytesPerSecond = waveStream.WaveFormat.AverageBytesPerSecond / (waveStream.WaveFormat.BitsPerSample / waveStream.WaveFormat.BlockAlign);
 
                         int bytesRead;
                         var waveData = new byte[8192];
                         int pos = 0;
-                        while ((bytesRead = waveStream.Read(waveData, 0, 8192)) == 8192)
+                        while ((bytesRead = sampleProvider.ToWaveProvider16().Read(waveData, 0, 8192)) == 8192)
                         {
                             for (int n = 0; n < bytesRead; n += 2)
                                 streamData[pos++] = BitConverter.ToInt16(waveData, n);
